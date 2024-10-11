@@ -28,12 +28,28 @@ class HomeView extends GetView<HomeController> {
             color: const Color(0xff365194),
           ),
           Container(
-            margin: EdgeInsets.only(top: 75),
+            margin: EdgeInsets.only(top: 55),
             child: Column(
               children: [
                 Container(
-                  height: Get.height * 0.310,
+                  height: Get.height * 0.325,
                   color: Colors.green,
+                  child: Column(
+                    children: [
+                      ClipPath(
+                        clipper: ClipInfoClass(),
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 25),
+                          height: 289,
+                          color: Colors.amber,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 20,
+                  color: Color(0xfffffff),
                 ),
                 Expanded(
                   child: Container(
@@ -47,6 +63,33 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
+}
+
+
+
+
+// for class clipPath
+
+class ClipInfoClass extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.lineTo(0.0, size.height);
+
+    var FirstControlPoint = Offset(size.width, size.height);
+    var FirstPoint = Offset(size.width, size.height);
+
+    path.quadraticBezierTo(FirstControlPoint.dx, FirstControlPoint.dy,
+        FirstPoint.dx, FirstPoint.dy);
+
+    path.lineTo(size.width, 0.0);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
 class ClipPathClass extends CustomClipper<Path> {
