@@ -23,5 +23,10 @@ class AppPages {
       page: () => LoginView(),
       binding: LoginBinding(),
     ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () => ProfileView(),
+      binding: ProfileBinding(),
+    ),
   ];
 }
