@@ -19,7 +19,7 @@ class LoginView extends GetView<LoginController> {
 
               // gambar logo
               Image.asset(
-                'assets/images/logo.png',
+                'assets\logo\flexy.png',
                 width: 100, // Adjust the width
                 height: 100, // Adjust the height
               ),
@@ -68,7 +68,7 @@ class LoginView extends GetView<LoginController> {
                   height:
                       40), // Increased spacing between password input and button
               ElevatedButton(
-                onPressed: ()=> Get.offAllNamed(Routes.HOME),
+                onPressed: () => Get.offAllNamed(Routes.PROFILE),
                 style: ElevatedButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
