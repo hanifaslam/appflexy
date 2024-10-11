@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -62,7 +63,9 @@ class ProfileView extends GetView<ProfileController> {
             // Simpan Button
             ElevatedButton(
               onPressed: () {
-                // Add save functionality
+                // Fungsi simpan dan pindah ke halaman HOME
+                // Tambahkan logika penyimpanan di sini
+                Get.offAllNamed(Routes.HOME); // Navigasi ke halaman HOME
               },
               child: Text(
                 'Simpan',
