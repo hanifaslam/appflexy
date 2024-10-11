@@ -28,11 +28,11 @@ class HomeView extends GetView<HomeController> {
             color: const Color(0xff365194),
           ),
           Container(
-            margin: EdgeInsets.only(top: 55),
+            margin: EdgeInsets.only(top: 75),
             child: Column(
               children: [
                 Container(
-                  height: Get.height * 0.325,
+                  height: Get.height * 0.300,
                   color: Colors.green,
                   child: Column(
                     children: [
@@ -40,7 +40,7 @@ class HomeView extends GetView<HomeController> {
                         clipper: ClipInfoClass(),
                         child: Container(
                           margin: EdgeInsets.symmetric(horizontal: 25),
-                          height: 289,
+                          height: 267,
                           color: Colors.amber,
                         ),
                       )
