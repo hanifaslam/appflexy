@@ -23,9 +23,25 @@ class HomeView extends GetView<HomeController> {
       body: Stack(
         children: [
           Container(
-            height: Get.height,
+            height: 250,
             width: Get.width,
             color: const Color(0xff365194),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 75),
+            child: Column(
+              children: [
+                Container(
+                  height: Get.height * 0.310,
+                  color: Colors.green,
+                ),
+                Expanded(
+                  child: Container(
+                    color: Colors.purple ,
+                  ),
+                )
+              ],
+            ),
           )
         ],
       ),
