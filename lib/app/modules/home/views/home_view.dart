@@ -37,7 +37,7 @@ class HomeView extends GetView<HomeController> {
                 ),
                 Expanded(
                   child: Container(
-                    color: Colors.red,
+                    color: Colors.purple,
                   ),
                 )
               ],
