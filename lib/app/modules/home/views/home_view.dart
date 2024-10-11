@@ -33,15 +33,16 @@ class HomeView extends GetView<HomeController> {
               children: [
                 Container(
                   height: Get.height * 0.300,
-                  color: Colors.green,
+                  // color: Colors.green,
                   child: Column(
                     children: [
-                      ClipPath(
-                        clipper: ClipInfoClass(),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 25),
-                          height: 267,
-                          color: Colors.amber,
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 25),
+                        height: 267,
+                        decoration: BoxDecoration(
+                          color: Colors.amber, // Pindahkan warna ke sini
+                          borderRadius: BorderRadius.circular(
+                              20), // Tambahkan border radius
                         ),
                       )
                     ],
@@ -68,48 +69,53 @@ class HomeView extends GetView<HomeController> {
 
 
 
+
+
+
+
+
 // for class clipPath
 
-class ClipInfoClass extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.lineTo(0.0, size.height);
+// class ClipInfoClass extends CustomClipper<Path> {
+//   @override
+//   Path getClip(Size size) {
+//     var path = Path();
+//     path.lineTo(0.0, size.height);
 
-    var FirstControlPoint = Offset(size.width, size.height);
-    var FirstPoint = Offset(size.width, size.height);
+//     var FirstControlPoint = Offset(size.width, size.height);
+//     var FirstPoint = Offset(size.width, size.height);
 
-    path.quadraticBezierTo(FirstControlPoint.dx, FirstControlPoint.dy,
-        FirstPoint.dx, FirstPoint.dy);
+//     path.quadraticBezierTo(FirstControlPoint.dx, FirstControlPoint.dy,
+//         FirstPoint.dx, FirstPoint.dy);
 
-    path.lineTo(size.width, 0.0);
-    path.close();
+//     path.lineTo(size.width, 0.0);
+//     path.close();
 
-    return path;
-  }
+//     return path;
+//   }
 
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
-}
+//   @override
+//   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+// }
 
-class ClipPathClass extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.lineTo(0.0, size.height);
+// class ClipPathClass extends CustomClipper<Path> {
+//   @override
+//   Path getClip(Size size) {
+//     var path = Path();
+//     path.lineTo(0.0, size.height);
 
-    var FirstControlPoint = Offset(size.width, size.height);
-    var FirstPoint = Offset(size.width, size.height);
+//     var FirstControlPoint = Offset(size.width, size.height);
+//     var FirstPoint = Offset(size.width, size.height);
 
-    path.quadraticBezierTo(FirstControlPoint.dx, FirstControlPoint.dy,
-        FirstPoint.dx, FirstPoint.dy);
+//     path.quadraticBezierTo(FirstControlPoint.dx, FirstControlPoint.dy,
+//         FirstPoint.dx, FirstPoint.dy);
 
-    path.lineTo(size.width, 0.0);
-    path.close();
+//     path.lineTo(size.width, 0.0);
+//     path.close();
 
-    return path;
-  }
+//     return path;
+//   }
 
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
-}
+//   @override
+//   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+// }
