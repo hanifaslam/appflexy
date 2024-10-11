@@ -1,16 +1,56 @@
-# apptiket
+# Flexy
+Ini adalah aplikasi tiketing sederhana
 
-A new Flutter project.
+## Tutorial Instalasi
+1. Clone Repo:
+   ```bash
+   git clone https://github.com/hanifaslam/appflexy
+   ```
+2. Masuk folder proyek:
+   ```bash
+   cd appflexy
+   ```
+3. Install dependencies:
+   ```bash
+   cd flutter pub get
+   ```
+4. Jalankan proyek melalui emulator / web:
+   ```bash
+   flutter run
+   ```
 
-## Getting Started
+## Development
+1. Buat branch untuk fitur baru:
+   ```bash
+   git checkout -b nama_branch
+   ```
+2. Commit perubahan:
+   ```bash
+   git commit -m "deskripsi perubahan"
+   ```
+3. Push branch ke repository GitHub:
+   ```bash
+   git push origin nama_branch
+4. Buat **Merge Request** di GitHub
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## Update jika ada perubahan kecil direpo GitHub
+**Pastikan nama_branch sesuai dengan branch kalian saat ini**, ketika kalian sedang berada di branch **main** , maka nama_branch = main. begitu juga ketika kalian sedang berada di branch lain, maka nama_branch = branch yang kalian gunakan itu
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1. Pull branch
+   ```bash
+   git pull origin nama_branch
+   ```
+2. Tambahkan  perubahan untuk commit:
+   ```bash
+   git add .
+   ```
+3. Commit perubahan:
+   ```bash
+   git commit -m "deskripsi perubahan"
+   ```
+4. Push perubahan:
+   ```bash
+   git push -u origin nama_branch
+   ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
