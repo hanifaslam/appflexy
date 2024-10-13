@@ -24,11 +24,15 @@ Ini adalah aplikasi tiketing sederhana
    ```bash
    git checkout -b nama_branch
    ```
-2. Commit perubahan:
+2. Tambahkan perubahan yang sudah terjadi ke git:
+   ```bash
+   git add .
+   ```
+3. Commit perubahan:
    ```bash
    git commit -m "deskripsi perubahan"
    ```
-3. Push branch ke repository GitHub:
+4. Push branch ke repository GitHub:
    ```bash
    git push origin nama_branch
 4. Buat **Merge Request** di GitHub

@@ -6,6 +6,8 @@ import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
+import '../modules/tambah_produk/views/tambah_produk_view.dart';
 
 part 'app_routes.dart';
 
@@ -29,6 +31,11 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.TAMBAH_PRODUK,
+      page: () => TambahProdukView(),
+      binding: TambahProdukBinding(),
     ),
   ];
 }
