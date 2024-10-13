@@ -20,22 +20,30 @@ Ini adalah aplikasi tiketing sederhana
    ```
 
 ## Development
-1. Buat branch untuk fitur baru:
+1. Pindah ke branch utama dahulu:
+   ```bash
+   git checkout main
+   ```
+2. Pull dahulu branch utama:
+   ```bash
+   git pull origin main
+   ```
+3. Buat branch untuk fitur baru:
    ```bash
    git checkout -b nama_branch
    ```
-2. Tambahkan perubahan yang sudah terjadi ke git:
+4. Tambahkan perubahan yang sudah terjadi ke git:
    ```bash
    git add .
    ```
-3. Commit perubahan:
+5. Commit perubahan:
    ```bash
    git commit -m "deskripsi perubahan"
    ```
-4. Push branch ke repository GitHub:
+6. Push branch ke repository GitHub:
    ```bash
    git push origin nama_branch
-4. Buat **Merge Request** di GitHub
+7. Buat **Merge Request** di GitHub
 
 
 ## Update jika ada perubahan kecil direpo GitHub
