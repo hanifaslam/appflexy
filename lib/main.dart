@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Application",
-            initialRoute: Routes.LOGIN,
+            initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,
           );
         }
