@@ -18,20 +18,25 @@ class LoginView extends GetView<LoginController> {
               const Spacer(flex: 2), // Creates space at the top
 
               // gambar logo
-              Image.asset(
-                'assets\logo\flexy.png',
-                width: 100, // Adjust the width
-                height: 100, // Adjust the height
+              ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Container(
+                    height: 200,
+                    width: 200,
+                    child: FittedBox(
+                        alignment: Alignment.center,
+                        fit: BoxFit.fill,
+                        child: Image.asset("assets/logo/flexy.png"))),
               ),
 
-              const SizedBox(height: 30), // Increased spacing
+              const SizedBox(height: 40), // Increased spacing
               const Text(
                 "Buka tiket Anda untuk pengalaman luar biasa!",
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(
-                  height: 40), // Increased spacing between text and input
+                  height: 30), // Increased spacing between text and input
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
@@ -71,7 +76,7 @@ class LoginView extends GetView<LoginController> {
                 onPressed: () => Get.offAllNamed(Routes.PROFILE),
                 style: ElevatedButton.styleFrom(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                      const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
                   backgroundColor: const Color(0xFF213F84),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
