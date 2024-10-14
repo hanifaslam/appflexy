@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:apptiket/app/routes/app_pages.dart';
+import 'package:apptiket/app/widgets/navbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -28,53 +29,33 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(), // AppBar dengan custom style
+      appBar: _buildAppBar(), // AppBar dengan gaya kustom
       body: Stack(
         children: [
           _buildBackground(), // Latar belakang putih
           _buildContent(), // Konten utama di atas latar
         ],
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.white, // Latar belakang navbar
-        color: const Color(0xffF5F5DD), // Warna navbar
-        height: 70, // Tinggi navbar diperbesar
-        animationDuration: const Duration(milliseconds: 300), // Durasi animasi
+      bottomNavigationBar: CustomNavigationBar(
+        currentIndex: _pageIndex,
         onTap: (index) {
-          print('Tab index: $index'); // Log saat tab ditekan
           setState(() {
             _pageIndex = index; // Update halaman aktif
 
             // Navigasi ke halaman yang sesuai
             if (index == 0) {
-              Get.offAllNamed(Routes.HOME); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(
+                  Routes.HOME); // Ganti dengan nama rute yang sesuai
             } else if (index == 1) {
-              Get.offAllNamed(Routes.HOME); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(
+                  Routes.KASIR); // Ganti dengan nama rute yang sesuai
             } else if (index == 2) {
-              Get.offAllNamed(Routes.HOME); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(
+                  Routes.SETTINGS); // Ganti dengan nama rute yang sesuai
             }
           });
         },
-        items: [
-          _buildNavBarItem(Icons.home_outlined),
-          _buildNavBarItem(CupertinoIcons.arrow_right_arrow_left),
-          _buildNavBarItem(Icons.person_2_outlined),
-        ],
       ),
-    );
-  }
-
-  // Widget untuk item navbar tanpa teks di bawah ikon
-  Widget _buildNavBarItem(IconData icon) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircleAvatar(
-          radius: 25, // Ukuran lingkaran
-          backgroundColor: const Color(0xffF5F5DD),
-          child: Icon(icon, color: Colors.black, size: 40),
-        ),
-      ],
     );
   }
 
@@ -185,16 +166,22 @@ class _HomeViewState extends State<HomeView> {
                 children: [
                   _buildCircularIconButton(
                     Icons.confirmation_num_outlined,
+                    'Data',
+                    'Tiket',
                     const Color(0xffD8F4FC),
                     const Color(0xff64B3CA),
                   ),
                   _buildCircularIconButton(
                     Icons.bar_chart,
+                    'Riwayat',
+                    'Penjualan',
                     const Color(0xffA8B4D1),
                     const Color(0xff213F84),
                   ),
                   _buildCircularIconButton(
                     CupertinoIcons.cube_box,
+                    'Data',
+                    'Barang',
                     const Color(0xffE2F7FD),
                     const Color(0xff96C0CC),
                   ),
@@ -256,23 +243,37 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  // Widget untuk tombol dengan ikon lingkaran (tanpa teks)
+  // Widget untuk tombol dengan ikon lingkaran
   Widget _buildCircularIconButton(
     IconData icon,
+    String label1,
+    String label2,
     Color circleColor,
     Color iconColor,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle, // Bentuk lingkaran
-        color: circleColor, // Warna latar
-      ),
-      padding: const EdgeInsets.all(10.0),
-      child: Icon(
-        icon, // Ikon yang diterima
-        size: 35,
-        color: iconColor, // Warna ikon
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min, // Ukuran minimum kolom
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle, // Bentuk lingkaran
+            color: circleColor, // Warna latar
+          ),
+          padding: const EdgeInsets.all(10.0),
+          child: Icon(
+            icon, // Ikon yang diterima
+            size: 35,
+            color: iconColor, // Warna ikon
+          ),
+        ),
+        const SizedBox(height: 4), // Jarak dengan teks
+        Column(
+          children: [
+            Text(label1, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(label2, style: const TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ],
     );
   }
 }

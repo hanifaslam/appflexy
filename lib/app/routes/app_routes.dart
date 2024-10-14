@@ -9,6 +9,8 @@ abstract class Routes {
   static const TAMBAH_PRODUK = _Paths.TAMBAH_PRODUK;
   static const PENJUALAN = _Paths.PENJUALAN;
   static const CHECKOUT = _Paths.CHECKOUT;
+  static const KASIR = _Paths.KASIR;
+  static const SETTINGS = _Paths.SETTINGS;
 }
 
 abstract class _Paths {
@@ -19,4 +21,6 @@ abstract class _Paths {
   static const TAMBAH_PRODUK = '/tambah-produk';
   static const PENJUALAN = '/penjualan';
   static const CHECKOUT = '/checkout';
+  static const KASIR = '/kasir';
+  static const SETTINGS = '/settings';
 }
