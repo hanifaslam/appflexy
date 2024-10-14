@@ -10,7 +10,7 @@ class SettingsView extends GetView<SettingsController> {
 
   @override
   Widget build(BuildContext context) {
-    int _pageIndex = 3; // Indeks halaman aktif, sesuaikan dengan urutan tab
+    int _pageIndex = 2; // Indeks halaman aktif, sesuaikan dengan urutan tab
 
     return Scaffold(
       appBar: AppBar(
@@ -28,11 +28,11 @@ class SettingsView extends GetView<SettingsController> {
         onTap: (index) {
           // Navigasi berdasarkan tab yang dipilih
           if (index == 0) {
-            Get.offAllNamed(Routes.HOME); // Navigasi ke halaman HOME
+            Get.offNamed(Routes.HOME); // Navigasi ke halaman HOME
           } else if (index == 1) {
-            Get.offAllNamed(Routes.KASIR); // Navigasi ke halaman KASIR
+            Get.offNamed(Routes.KASIR); // Navigasi ke halaman KASIR
           } else if (index == 2) {
-            Get.offAllNamed(Routes.SETTINGS); // Navigasi ke halaman PENJUALAN
+            Get.offNamed(Routes.SETTINGS); // Navigasi ke halaman PENJUALAN
           } else if (index == 3) {
             // Tab SettingsView sudah aktif, tidak melakukan apa-apa
             print('Tab SettingsView sudah aktif'); 

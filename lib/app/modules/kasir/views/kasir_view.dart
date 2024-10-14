@@ -28,12 +28,12 @@ class KasirView extends GetView<KasirController> {
         onTap: (index) {
           // Navigasi berdasarkan tab yang dipilih
           if (index == 0) {
-            Get.offAllNamed(Routes.HOME); // Navigasi ke halaman HOME
+            Get.offNamed(Routes.HOME); // Navigasi ke halaman HOME
           } else if (index == 1) {
             // Tab KasirView sudah aktif, tidak melakukan apa-apa
             print('Tab KasirView sudah aktif'); 
           } else if (index == 2) {
-            Get.offAllNamed(Routes.SETTINGS); // Navigasi ke halaman PENJUALAN
+            Get.offNamed(Routes.SETTINGS); // Navigasi ke halaman PENJUALAN
           }
         },
       ),
