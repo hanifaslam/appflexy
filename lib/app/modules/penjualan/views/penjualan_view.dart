@@ -1,4 +1,5 @@
 import 'package:apptiket/app/modules/checkout/views/checkout_view.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,7 +19,8 @@ class _PenjualanViewState extends State<PenjualanView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Aksi ketika tombol kembali ditekan
+            // Pindah ke halaman profil ketika tombol kembali ditekan
+            Get.offAllNamed(Routes.HOME);
           },
         ),
       ),
