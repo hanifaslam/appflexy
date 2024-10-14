@@ -2,14 +2,14 @@ import 'package:apptiket/app/modules/checkout/views/checkout_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TicketScreen extends StatefulWidget {
-  const TicketScreen({super.key});
+class PenjualanView extends StatefulWidget {
+  const PenjualanView({super.key});
 
   @override
-  State<TicketScreen> createState() => _TicketScreenState();
+  State<PenjualanView> createState() => _PenjualanViewState();
 }
 
-class _TicketScreenState extends State<TicketScreen> {
+class _PenjualanViewState extends State<PenjualanView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
