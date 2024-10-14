@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:get/get.dart'; // Pastikan Anda memiliki GetX di pubspec.yaml
+
 
 class CustomNavigationBar extends StatelessWidget {
   final int currentIndex; // Indeks halaman saat ini
