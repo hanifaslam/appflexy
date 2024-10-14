@@ -1,23 +1,25 @@
 import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
-  //TODO: Implement ProfileController
+  var companyName = ''.obs;
+  var companyType = ''.obs;
+  var companyAddress = ''.obs;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  void setCompanyName(String value) {
+    companyName.value = value;
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  void setCompanyType(String value) {
+    companyType.value = value;
   }
 
-  @override
-  void onClose() {
-    super.onClose();
+  void setCompanyAddress(String value) {
+    companyType.value = value;
   }
 
-  void increment() => count.value++;
+  void clearInput() {
+    companyName.value = '';
+    companyType.value = '';
+    companyAddress.value = '';
+  }
 }

@@ -19,10 +19,10 @@ class LoginView extends GetView<LoginController> {
 
               // gambar logo
               ClipRRect(
-                borderRadius: BorderRadius.circular(40),
+                borderRadius: BorderRadius.circular(25),
                 child: Container(
-                    height: 200,
-                    width: 200,
+                    height: 100,
+                    width: 100,
                     child: FittedBox(
                         alignment: Alignment.center,
                         fit: BoxFit.fill,
@@ -77,7 +77,7 @@ class LoginView extends GetView<LoginController> {
                 style: ElevatedButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-                  backgroundColor: const Color(0xFF213F84),
+                  backgroundColor: Color(0xFF2B47CA),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),

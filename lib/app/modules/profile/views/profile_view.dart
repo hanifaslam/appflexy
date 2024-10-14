@@ -36,17 +36,22 @@ class ProfileView extends GetView<ProfileController> {
                     size: 50, color: Colors.grey),
               ),
             ),
+
             SizedBox(height: 16),
             // Informasi Toko
             TextField(
+              onChanged: (value) => controller.setCompanyName(value),
               decoration: InputDecoration(
                 labelText: 'Nama Toko',
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
               ),
             ),
+
+            // jenis_usaha
             SizedBox(height: 16),
             TextField(
+              onChanged: (value) => controller.companyType(value),
               decoration: InputDecoration(
                 labelText: 'Bidang Usaha',
                 border:
@@ -55,6 +60,7 @@ class ProfileView extends GetView<ProfileController> {
             ),
             SizedBox(height: 16),
             TextField(
+              onChanged: (value) => controller.companyAddress(value),
               maxLines: 2,
               decoration: InputDecoration(
                 labelText: 'Alamat',
@@ -66,17 +72,35 @@ class ProfileView extends GetView<ProfileController> {
             // Simpan Button
             ElevatedButton(
               onPressed: () {
-                // Fungsi simpan dan pindah ke halaman HOME
-                // Tambahkan logika penyimpanan di sini
-                Get.offAllNamed(Routes.HOME); // Navigasi ke halaman HOME
+                // Fungsi untuk menyimpan dan pindah ke halaman HOME
+                if (controller.companyName.value.isNotEmpty &&
+                    controller.companyType.value.isNotEmpty &&
+                    controller.companyAddress.value.isNotEmpty) {
+                  Get.offAllNamed(Routes.HOME); // Navigasi ke halaman HOME
+                } else {
+                  Get.snackbar(
+                    'Peringatan',
+                    'Harap isi semua kolom',
+                    backgroundColor: Color(0xFF5C8FDA).withOpacity(0.2),
+                    colorText: Color(0xFF2B47CA),
+                    margin: EdgeInsets.all(16), // Margin untuk memberi jarak
+                    borderRadius: 8, // Border radius untuk sudut melengkung
+                    snackStyle: SnackStyle.FLOATING, // Snackbar tipe floating
+                  );
+                }
               },
               child: Text(
                 'Simpan',
                 style: TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF213F84),
-                minimumSize: Size(double.infinity, 48), // Full width button
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+                backgroundColor: Color(0xFF2B47CA),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                // Full width button
               ),
             ),
           ],
