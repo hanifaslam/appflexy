@@ -44,8 +44,8 @@ class CustomNavigationBar extends StatelessWidget {
     final bool isSelected = currentIndex == index; // Cek apakah ikon terpilih
 
     return Container(
-      width: 50, // Lebar kontainer (ukuran lingkaran)
-      height: 50, // Tinggi kontainer (ukuran lingkaran)
+      width: 30, // Lebar kontainer (ukuran lingkaran)
+      height: 30, // Tinggi kontainer (ukuran lingkaran)
       decoration: BoxDecoration(
         shape: BoxShape.circle, // Bentuk lingkaran
         color: const Color(0xffF5F5DD), // Warna latar belakang
@@ -54,7 +54,7 @@ class CustomNavigationBar extends StatelessWidget {
         child: Icon(
           icon,
           color: isSelected ? Colors.black : Colors.grey, // Ubah warna berdasarkan status
-          size: 40, // Ukuran ikon
+          size: 30, // Ukuran ikon
         ),
       ),
     );

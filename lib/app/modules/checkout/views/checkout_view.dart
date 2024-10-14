@@ -1,3 +1,6 @@
+// MODULE GA KEPAKE (SAMA KYK KASIR)
+
+
 import 'package:apptiket/app/modules/checkout/controllers/checkout_controller.dart';
 import 'package:apptiket/app/widgets/ticket_card.dart';
 import 'package:flutter/material.dart';
