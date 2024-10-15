@@ -107,7 +107,7 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 25), // Margin kiri-kanan
       decoration: BoxDecoration(
-        color: const Color(0xff365194).withOpacity(0.5), // Warna biru tua
+        color: const Color(0xff365194).withOpacity(1), // Warna biru tua
         borderRadius: BorderRadius.circular(20), // Sudut melengkung
       ),
       child: Padding(
