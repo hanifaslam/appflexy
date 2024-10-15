@@ -25,4 +25,5 @@ abstract class _Paths {
   static const KASIR = '/kasir';
   static const SETTINGS = '/settings';
   static const MANAJEMEN_TIKET = '/manajemen-tiket';
+
 }

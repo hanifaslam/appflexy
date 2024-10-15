@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 
-import '../modules/checkout/bindings/checkout_binding.dart';
-import '../modules/checkout/views/checkout_view.dart';
+
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/kasir/bindings/kasir_binding.dart';
@@ -53,16 +52,6 @@ class AppPages {
       binding: PenjualanBinding(),
     ),
     GetPage(
-      name: _Paths.CHECKOUT,
-      page: () => CheckoutScreen(),
-      binding: CheckoutBinding(),
-    ),
-    GetPage(
-      name: _Paths.KASIR,
-      page: () => const KasirView(),
-      binding: KasirBinding(),
-    ),
-    GetPage(
       name: _Paths.SETTINGS,
       page: () => const SettingsView(),
       binding: SettingsBinding(),
@@ -71,6 +60,11 @@ class AppPages {
       name: _Paths.MANAJEMEN_TIKET,
       page: () => const ManajemenTiketView(),
       binding: ManajemenTiketBinding(),
+    ),
+    GetPage(
+      name: _Paths.KASIR,
+      page: () => const KasirView(),
+      binding: KasirBinding(),
     ),
   ];
 }

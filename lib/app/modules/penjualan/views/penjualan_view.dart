@@ -2,7 +2,7 @@
 
 
 
-import 'package:apptiket/app/modules/checkout/views/checkout_view.dart';
+import 'package:apptiket/app/modules/kasir/controllers/kasir_controller.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,7 +62,7 @@ class TicketCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(() => CheckoutScreen());
+        Get.to(() => KasirController());
       },
       child: Card(
         shape: RoundedRectangleBorder(

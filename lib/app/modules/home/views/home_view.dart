@@ -4,9 +4,7 @@ import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:apptiket/app/widgets/navbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:get/get.dart';
-import '../controllers/home_controller.dart';
 
 // HomeView dengan CurvedNavigationBar
 class HomeView extends StatefulWidget {
@@ -29,6 +27,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff181681),
       appBar: _buildAppBar(), // AppBar dengan gaya kustom
       body: Stack(
         children: [
@@ -63,7 +62,7 @@ class _HomeViewState extends State<HomeView> {
   AppBar _buildAppBar() {
     return AppBar(
       toolbarHeight: 150, // Tinggi AppBar
-      backgroundColor: const Color(0xffffffff), // Warna latar AppBar
+      backgroundColor: const Color(0xff181681), // Warna latar AppBar
       elevation: 0, // Hilangkan bayangan
       title: Container(
         padding: const EdgeInsets.only(top: 5.0), // Padding atas kecil
@@ -73,7 +72,7 @@ class _HomeViewState extends State<HomeView> {
             fontFamily: 'Pacifico',
             fontSize: 50, // Ukuran font besar
             fontWeight: FontWeight.normal,
-            color: Color(0xff365194), // Warna biru
+            color: Color(0xffffffff), // Warna biru
           ),
         ),
       ),
@@ -85,7 +84,7 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       height: Get.height, // Isi layar penuh secara vertikal
       width: Get.width, // Isi layar penuh secara horizontal
-      color: const Color(0xffffffff), // Warna putih
+      color: Color(0xff181681), // Warna putih
     );
   }
 
@@ -108,7 +107,7 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 25), // Margin kiri-kanan
       decoration: BoxDecoration(
-        color: const Color(0xff365194), // Warna biru tua
+        color: const Color(0xff365194).withOpacity(0.5), // Warna biru tua
         borderRadius: BorderRadius.circular(20), // Sudut melengkung
       ),
       child: Padding(
@@ -168,8 +167,8 @@ class _HomeViewState extends State<HomeView> {
                     Icons.confirmation_num_outlined,
                     'Data',
                     'Tiket',
-                    const Color(0xffD8F4FC),
-                    const Color(0xff64B3CA),
+                    const Color(0xffFFAF00),
+                    Colors.white,
                     onTap: () {
                       Get.offAllNamed(Routes.MANAJEMEN_TIKET);
                     }
@@ -178,8 +177,8 @@ class _HomeViewState extends State<HomeView> {
                     Icons.bar_chart,
                     'Riwayat',
                     'Penjualan',
-                    const Color(0xffA8B4D1),
-                    const Color(0xff213F84),
+                    const Color(0xff5475F9),
+                    Colors.white,
                     onTap: () {
                       Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama 
                     }
@@ -188,8 +187,8 @@ class _HomeViewState extends State<HomeView> {
                     CupertinoIcons.cube_box,
                     'Data',
                     'Barang',
-                    const Color(0xffE2F7FD),
-                    const Color(0xff96C0CC),
+                    const Color(0xffF95454),
+                    Colors.white,
                     onTap: () {
                       Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama 
                     }
