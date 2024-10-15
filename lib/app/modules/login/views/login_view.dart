@@ -32,7 +32,7 @@ class LoginView extends GetView<LoginController> {
                     child: FittedBox(
                       alignment: Alignment.center,
                       fit: BoxFit.fill,
-                      child: Image.asset("assets/logo/flexy.png"),
+                      child: Image.asset("assets/logo/logoflex.png"),
                     ),
                   ),
                 ),
@@ -52,7 +52,7 @@ class LoginView extends GetView<LoginController> {
                   child: TextField(
                     controller: controller.emailController,
                     decoration: InputDecoration(
-                      labelText: "Email",
+                      hintText: "Email",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: BorderSide(color: Color(0xFF84AFC2)),
@@ -70,7 +70,7 @@ class LoginView extends GetView<LoginController> {
                         controller: controller.passwordController,
                         obscureText: controller.isPasswordHidden.value,
                         decoration: InputDecoration(
-                          labelText: "Password",
+                          hintText: "Password",
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
