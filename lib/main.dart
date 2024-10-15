@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     // return GetMaterialApp(
     //   debugShowCheckedModeBanner: false,
     //   title: "Application",
-    //   initialRoute: Routes.PROFILE,
+    //   initialRoute: Routes.TAMBAH_PRODUK,
     //   getPages: AppPages.routes,
     // );
     return FutureBuilder(

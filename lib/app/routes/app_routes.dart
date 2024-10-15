@@ -11,6 +11,7 @@ abstract class Routes {
   static const CHECKOUT = _Paths.CHECKOUT;
   static const KASIR = _Paths.KASIR;
   static const SETTINGS = _Paths.SETTINGS;
+  static const MANAJEMEN_TIKET = _Paths.MANAJEMEN_TIKET;
 }
 
 abstract class _Paths {
@@ -23,4 +24,5 @@ abstract class _Paths {
   static const CHECKOUT = '/checkout';
   static const KASIR = '/kasir';
   static const SETTINGS = '/settings';
+  static const MANAJEMEN_TIKET = '/manajemen-tiket';
 }

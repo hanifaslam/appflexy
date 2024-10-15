@@ -170,6 +170,9 @@ class _HomeViewState extends State<HomeView> {
                     'Tiket',
                     const Color(0xffD8F4FC),
                     const Color(0xff64B3CA),
+                    onTap: () {
+                      Get.offAllNamed(Routes.MANAJEMEN_TIKET);
+                    }
                   ),
                   _buildCircularIconButton(
                     Icons.bar_chart,
@@ -177,6 +180,9 @@ class _HomeViewState extends State<HomeView> {
                     'Penjualan',
                     const Color(0xffA8B4D1),
                     const Color(0xff213F84),
+                    onTap: () {
+                      Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama 
+                    }
                   ),
                   _buildCircularIconButton(
                     CupertinoIcons.cube_box,
@@ -184,6 +190,9 @@ class _HomeViewState extends State<HomeView> {
                     'Barang',
                     const Color(0xffE2F7FD),
                     const Color(0xff96C0CC),
+                    onTap: () {
+                      Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama 
+                    }
                   ),
                 ],
               ),
@@ -245,13 +254,16 @@ class _HomeViewState extends State<HomeView> {
 
   // Widget untuk tombol dengan ikon lingkaran
   Widget _buildCircularIconButton(
-    IconData icon,
-    String label1,
-    String label2,
-    Color circleColor,
-    Color iconColor,
-  ) {
-    return Column(
+  IconData icon,
+  String label1,
+  String label2,
+  Color circleColor,
+  Color iconColor, {
+  VoidCallback? onTap, // Parameter opsional untuk fungsi onTap
+}) {
+  return GestureDetector(
+    onTap: onTap, // Menangani event klik
+    child: Column(
       mainAxisSize: MainAxisSize.min, // Ukuran minimum kolom
       children: [
         Container(
@@ -269,11 +281,19 @@ class _HomeViewState extends State<HomeView> {
         const SizedBox(height: 4), // Jarak dengan teks
         Column(
           children: [
-            Text(label1, style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text(label2, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              label1,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              label2,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ],
-    );
-  }
+    ),
+  );
+}
+
 }

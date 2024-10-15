@@ -8,6 +8,8 @@ import '../modules/kasir/bindings/kasir_binding.dart';
 import '../modules/kasir/views/kasir_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/manajemen_tiket/bindings/manajemen_tiket_binding.dart';
+import '../modules/manajemen_tiket/views/manajemen_tiket_view.dart';
 import '../modules/penjualan/bindings/penjualan_binding.dart';
 import '../modules/penjualan/views/penjualan_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
@@ -64,6 +66,11 @@ class AppPages {
       name: _Paths.SETTINGS,
       page: () => const SettingsView(),
       binding: SettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.MANAJEMEN_TIKET,
+      page: () => const ManajemenTiketView(),
+      binding: ManajemenTiketBinding(),
     ),
   ];
 }
