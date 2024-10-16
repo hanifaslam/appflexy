@@ -164,35 +164,31 @@ class _HomeViewState extends State<HomeView> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildCircularIconButton(
-                    Icons.confirmation_num_outlined,
-                    'Data',
-                    'Tiket',
-                    const Color(0xffFFAF00),
-                    Colors.white,
-                    onTap: () {
-                      Get.offAllNamed(Routes.MANAJEMEN_TIKET);
-                    }
-                  ),
+                      Icons.confirmation_num_outlined,
+                      'Data',
+                      'Tiket',
+                      const Color(0xffFFAF00),
+                      Colors.white, onTap: () {
+                    Get.offAllNamed(Routes.MANAJEMEN_TIKET);
+                  }),
                   _buildCircularIconButton(
-                    Icons.bar_chart,
-                    'Riwayat',
-                    'Penjualan',
-                    const Color(0xff5475F9),
-                    Colors.white,
-                    onTap: () {
-                      Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama 
-                    }
-                  ),
+                      Icons.bar_chart,
+                      'Riwayat',
+                      'Penjualan',
+                      const Color(0xff5475F9),
+                      Colors.white, onTap: () {
+                    Get.offAllNamed(Routes
+                        .MANAJEMEN_TIKET); // sementara masih manggil pages yg sama
+                  }),
                   _buildCircularIconButton(
-                    CupertinoIcons.cube_box,
-                    'Data',
-                    'Barang',
-                    const Color(0xffF95454),
-                    Colors.white,
-                    onTap: () {
-                      Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama 
-                    }
-                  ),
+                      CupertinoIcons.cube_box,
+                      'Data',
+                      'Barang',
+                      const Color(0xffF95454),
+                      Colors.white, onTap: () {
+                    Get.offAllNamed(Routes
+                        .DAFTAR_PRODUK); // sementara masih manggil pages yg sama
+                  }),
                 ],
               ),
             ),
@@ -253,46 +249,45 @@ class _HomeViewState extends State<HomeView> {
 
   // Widget untuk tombol dengan ikon lingkaran
   Widget _buildCircularIconButton(
-  IconData icon,
-  String label1,
-  String label2,
-  Color circleColor,
-  Color iconColor, {
-  VoidCallback? onTap, // Parameter opsional untuk fungsi onTap
-}) {
-  return GestureDetector(
-    onTap: onTap, // Menangani event klik
-    child: Column(
-      mainAxisSize: MainAxisSize.min, // Ukuran minimum kolom
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle, // Bentuk lingkaran
-            color: circleColor, // Warna latar
-          ),
-          padding: const EdgeInsets.all(10.0),
-          child: Icon(
-            icon, // Ikon yang diterima
-            size: 35,
-            color: iconColor, // Warna ikon
-          ),
-        ),
-        const SizedBox(height: 4), // Jarak dengan teks
-        Column(
-          children: [
-            Text(
-              label1,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+    IconData icon,
+    String label1,
+    String label2,
+    Color circleColor,
+    Color iconColor, {
+    VoidCallback? onTap, // Parameter opsional untuk fungsi onTap
+  }) {
+    return GestureDetector(
+      onTap: onTap, // Menangani event klik
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Ukuran minimum kolom
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle, // Bentuk lingkaran
+              color: circleColor, // Warna latar
             ),
-            Text(
-              label2,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            padding: const EdgeInsets.all(10.0),
+            child: Icon(
+              icon, // Ikon yang diterima
+              size: 35,
+              color: iconColor, // Warna ikon
             ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
+          ),
+          const SizedBox(height: 4), // Jarak dengan teks
+          Column(
+            children: [
+              Text(
+                label1,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                label2,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

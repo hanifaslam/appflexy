@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
-
+import '../modules/daftar_produk/bindings/daftar_produk_binding.dart';
+import '../modules/daftar_produk/views/daftar_produk_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/kasir/bindings/kasir_binding.dart';
@@ -65,6 +66,11 @@ class AppPages {
       name: _Paths.KASIR,
       page: () => const KasirView(),
       binding: KasirBinding(),
+    ),
+    GetPage(
+      name: _Paths.DAFTAR_PRODUK,
+      page: () => DaftarProdukView(),
+      binding: DaftarProdukBinding(),
     ),
   ];
 }
