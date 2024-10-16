@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
 import '../controllers/sales_history_controller.dart';
+import '../../../routes/app_pages.dart'; // Import untuk route
 
 class SalesHistoryPage extends StatelessWidget {
   @override
@@ -13,6 +12,12 @@ class SalesHistoryPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFFFFFCF7),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () =>
+              Get.offAllNamed(Routes.HOME), // Menghapus history saat ke home
+        ),
         title: Text(
           'Riwayat Penjualan',
           style: TextStyle(
@@ -24,7 +29,8 @@ class SalesHistoryPage extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
       ),
-      body: Obx(() { // Memantau perubahan data
+      body: Obx(() {
+        // Memantau perubahan data
         return ListView.builder(
           itemCount: controller.salesData.length,
           itemBuilder: (context, index) {
@@ -52,7 +58,8 @@ class SalesHistoryPage extends StatelessWidget {
                 ),
                 children: [
                   Divider(color: Color(0xFF213F84)),
-                  _buildSaleDetails(sale, controller), // Ngambil data lewat controller
+                  _buildSaleDetails(
+                      sale, controller), // Ngambil data lewat controller
                 ],
               ),
             );
@@ -62,7 +69,8 @@ class SalesHistoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSaleDetails(Map<String, dynamic> sale, SalesHistoryController controller) {
+  Widget _buildSaleDetails(
+      Map<String, dynamic> sale, SalesHistoryController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
@@ -88,6 +96,12 @@ class SalesHistoryPage extends StatelessWidget {
                     ),
                   ),
                 ),
+              // Widget ganti gambar QR Code (optional, jadikan ini komentar dulu)
+              // Image.network(
+              //   'https://link-ke-gambar-qr-code',
+              //   width: 50,
+              //   height: 50,
+              // ),
 
               if (sale['paymentMethod'] == 'Tunai')
                 Icon(Icons.attach_money, color: Colors.grey),

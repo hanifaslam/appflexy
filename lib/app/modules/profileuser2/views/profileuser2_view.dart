@@ -111,13 +111,32 @@ class Profileuser2View extends StatelessWidget {
                             SizedBox(height: 20),
                             // List Menu
                             menuItem('Grafik Penjualan', Icons.arrow_forward),
-                            // Commented out navigation for "Pengaturan Profil Toko"
+                            // Kode untuk pindah ke halaman "Grafik Penjualan"
+                            // onTap: () {
+                            //   Get.toNamed('/grafikPenjualan');
+                            // },
+
                             menuItem('Pengaturan Profil Toko', Icons.arrow_forward),
                             // TODO: Uncomment below line to enable navigation
                             // onTap: () { Get.toNamed('/pengaturan-profil'); },
+                            
                             menuItem('Ganti Password', Icons.arrow_forward),
+                            // Kode untuk pindah ke halaman "Ganti Password"
+                            // onTap: () {
+                            //   Get.toNamed('/gantiPassword');
+                            // },
+
                             menuItem('Notifikasi', Icons.arrow_forward),
+                            // Kode untuk pindah ke halaman "Notifikasi"
+                            // onTap: () {
+                            //   Get.toNamed('/notifikasi');
+                            // },
+
                             menuItem('Hapus Akun', Icons.arrow_forward, Colors.red),
+                            // Kode untuk pindah ke halaman "Hapus Akun"
+                            // onTap: () {
+                            //   Get.toNamed('/hapusAkun');
+                            // },
                           ],
                         ),
                       ),
