@@ -8,15 +8,32 @@ class DaftarProdukView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Get.back();
-          },
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
         ),
-        title: TextField(
-          decoration: InputDecoration(
-            hintText: 'Cari Nama Produk',
-            border: InputBorder.none,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Cari Nama Produk',
+              border: InputBorder.none,
+              filled: true, // Mengaktifkan pengisian
+              fillColor:
+                  Colors.grey[200], // Warna latar belakang sebelum disentuh
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.transparent), // Menghilangkan garis batas
+                borderRadius:
+                    BorderRadius.circular(50), // Mengatur radius sudut
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors
+                        .transparent), // Menghilangkan garis batas saat fokus
+                borderRadius:
+                    BorderRadius.circular(50), // Mengatur radius sudut
+              ),
+            ),
           ),
         ),
         actions: [
