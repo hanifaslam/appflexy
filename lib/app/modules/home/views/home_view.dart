@@ -186,7 +186,7 @@ class _HomeViewState extends State<HomeView> {
                       'Barang',
                       const Color(0xffF95454),
                       Colors.white, onTap: () {
-                    Get.offAllNamed(Routes
+                    Get.toNamed(Routes
                         .DAFTAR_PRODUK); // sementara masih manggil pages yg sama
                   }),
                 ],
