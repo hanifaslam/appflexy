@@ -2,6 +2,8 @@ import 'dart:io'; // Ini tetap diimport untuk antisipasi penggunaan FileImage di
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../profileuser2/controllers/profileuser2_controller.dart';
+import 'package:apptiket/app/widgets/navbar.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
 
 class Profileuser2View extends StatelessWidget {
   @override
@@ -13,12 +15,6 @@ class Profileuser2View extends StatelessWidget {
         title: Text(
           'Profil',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Get.back();
-          },
         ),
         backgroundColor: Color(0xFF213F84),
       ),
@@ -109,34 +105,27 @@ class Profileuser2View extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 20),
-                            // List Menu
-                            menuItem('Grafik Penjualan', Icons.arrow_forward),
-                            // Kode untuk pindah ke halaman "Grafik Penjualan"
-                            // onTap: () {
-                            //   Get.toNamed('/grafikPenjualan');
-                            // },
-
-                            menuItem('Pengaturan Profil Toko', Icons.arrow_forward),
-                            // TODO: Uncomment below line to enable navigation
-                            // onTap: () { Get.toNamed('/pengaturan-profil'); },
-                            
-                            menuItem('Ganti Password', Icons.arrow_forward),
-                            // Kode untuk pindah ke halaman "Ganti Password"
-                            // onTap: () {
-                            //   Get.toNamed('/gantiPassword');
-                            // },
-
-                            menuItem('Notifikasi', Icons.arrow_forward),
-                            // Kode untuk pindah ke halaman "Notifikasi"
-                            // onTap: () {
-                            //   Get.toNamed('/notifikasi');
-                            // },
-
-                            menuItem('Hapus Akun', Icons.arrow_forward, Colors.red),
-                            // Kode untuk pindah ke halaman "Hapus Akun"
-                            // onTap: () {
-                            //   Get.toNamed('/hapusAkun');
-                            // },
+                            // List Menu dengan navigasi
+                            menuItem('Grafik Penjualan', Icons.arrow_forward, () {
+                              // Navigasi ke halaman Grafik Penjualan
+                              //Get.toNamed(Routes.GRAFIK_PENJUALAN);
+                            }),
+                            menuItem('Pengaturan Profil Toko', Icons.arrow_forward, () {
+                              // Navigasi ke halaman Pengaturan Profil Toko
+                             // Get.toNamed(Routes.PENGATURAN_PROFIL_TOKO);
+                            }),
+                            menuItem('Ganti Password', Icons.arrow_forward, () {
+                              // Navigasi ke halaman Ganti Password
+                              //Get.toNamed(Routes.GANTI_PASSWORD);
+                            }),
+                            menuItem('Notifikasi', Icons.arrow_forward, () {
+                              // Navigasi ke halaman Notifikasi
+                              //Get.toNamed(Routes.NOTIFIKASI);
+                            }),
+                            menuItem('Hapus Akun', Icons.arrow_forward, () {
+                              // Navigasi ke halaman Hapus Akun
+                              //Get.toNamed(Routes.HAPUS_AKUN);
+                            }, Colors.red),
                           ],
                         ),
                       ),
@@ -169,7 +158,7 @@ class Profileuser2View extends StatelessWidget {
                               radius: 55,
                               backgroundImage: controller.selectedImagePath.value.isNotEmpty
                                   ? FileImage(File(controller.selectedImagePath.value))
-                                  : AssetImage('assets/amaba_tokamu.jpg'),
+                                  : AssetImage('assets/logo/logoflex.png'),
                             ),
                           ),
                         ),
@@ -181,6 +170,19 @@ class Profileuser2View extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: CustomNavigationBar( // Tambahkan CustomNavigationBar di sini
+        currentIndex: 2, // misalnya, tab profil (indeks 2)
+        onTap: (index) {
+          // Navigasi berdasarkan tab yang ditekan
+          if (index == 0) {
+            Get.offAllNamed(Routes.HOME); // Navigasi ke halaman Home
+          } else if (index == 1) {
+            Get.offAllNamed(Routes.KASIR); // Navigasi ke halaman Kasir
+          } else if (index == 2) {
+            // Tetap di halaman profil
+          }
+        },
       ),
     );
   }
@@ -197,36 +199,39 @@ class Profileuser2View extends StatelessWidget {
     );
   }
 
-  // Widget untuk menu item
-  Widget menuItem(String title, IconData icon, [Color? textColor]) {
+  // Widget untuk menu item dengan onTap untuk navigasi
+  Widget menuItem(String title, IconData icon, Function onTap, [Color? textColor]) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade300,
-              blurRadius: 5,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                color: textColor ?? Colors.black,
-                fontWeight: FontWeight.bold,
+      child: GestureDetector(
+        onTap: () => onTap(),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade300,
+                blurRadius: 5,
+                spreadRadius: 2,
               ),
-            ),
-            Icon(icon, color: textColor ?? Colors.black),
-          ],
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: textColor ?? Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Icon(icon, color: textColor ?? Colors.black),
+            ],
+          ),
         ),
       ),
     );
