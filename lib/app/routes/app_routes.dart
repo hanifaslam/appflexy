@@ -13,6 +13,8 @@ abstract class Routes {
   static const SETTINGS = _Paths.SETTINGS;
   static const MANAJEMEN_TIKET = _Paths.MANAJEMEN_TIKET;
   static const DAFTAR_PRODUK = _Paths.DAFTAR_PRODUK;
+  static const PROFILEUSER2 = _Paths.PROFILEUSER2;
+  static const SALES_HISTORY = _Paths.SALES_HISTORY;
 }
 
 abstract class _Paths {
@@ -27,4 +29,6 @@ abstract class _Paths {
   static const SETTINGS = '/settings';
   static const MANAJEMEN_TIKET = '/manajemen-tiket';
   static const DAFTAR_PRODUK = '/daftar-produk';
+  static const PROFILEUSER2 = '/profileuser2';
+  static const SALES_HISTORY = '/sales-history';
 }
