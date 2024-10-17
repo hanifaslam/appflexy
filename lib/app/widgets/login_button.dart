@@ -25,15 +25,15 @@ class _ProfileBtnState extends State<ProfileBtn> {
         Get.offAllNamed(Routes.PROFILE); // Navigate after changing color
       },
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-        backgroundColor: _buttonColor, // Use dynamic color
+        padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+        backgroundColor: Color(0xff181681),// Use dynamic color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
-        ),
+        ), 
       ),
       child: const Text(
         'Simpan',
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white, fontSize: 16),
       ),
     );
   }
