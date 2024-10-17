@@ -12,6 +12,7 @@ abstract class Routes {
   static const KASIR = _Paths.KASIR;
   static const SETTINGS = _Paths.SETTINGS;
   static const MANAJEMEN_TIKET = _Paths.MANAJEMEN_TIKET;
+  static const DAFTAR_PRODUK = _Paths.DAFTAR_PRODUK;
 }
 
 abstract class _Paths {
@@ -25,5 +26,5 @@ abstract class _Paths {
   static const KASIR = '/kasir';
   static const SETTINGS = '/settings';
   static const MANAJEMEN_TIKET = '/manajemen-tiket';
-
+  static const DAFTAR_PRODUK = '/daftar-produk';
 }

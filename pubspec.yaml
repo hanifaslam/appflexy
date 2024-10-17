@@ -10,9 +10,13 @@ dependencies:
   flutter:
     sdk: flutter
     
+    
   cupertino_icons: ^1.0.8
   get: ^4.6.6
   curved_navigation_bar: ^1.0.3
+  image_picker: ^1.1.2
+  get_storage: ^2.1.1
+  gap: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -30,3 +34,4 @@ flutter:
     - family: Pacifico
       fonts:
         - asset: assets/fonts/Pacifico.ttf
+        - asset: assets/fonts/Montserrat-VariableFont_wght.ttf

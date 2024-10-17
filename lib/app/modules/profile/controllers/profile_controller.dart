@@ -4,22 +4,21 @@ class ProfileController extends GetxController {
   var companyName = ''.obs;
   var companyType = ''.obs;
   var companyAddress = ''.obs;
+  var companyLogoPath = ''.obs; // Untuk menyimpan path logo toko
 
-  void setCompanyName(String value) {
-    companyName.value = value;
+  void setCompanyName(String name) {
+    companyName.value = name;
   }
 
-  void setCompanyType(String value) {
-    companyType.value = value;
+  void setcompanyType(String type) {
+    companyType.value = type;
   }
 
-  void setCompanyAddress(String value) {
-    companyType.value = value;
+  void setcompanyAddress(String address) {
+    companyAddress.value = address;
   }
 
-  void clearInput() {
-    companyName.value = '';
-    companyType.value = '';
-    companyAddress.value = '';
+  void setCompanyLogo(String path) {
+    companyLogoPath.value = path; // Path gambar yang dipilih
   }
 }
