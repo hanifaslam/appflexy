@@ -85,6 +85,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 80,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),

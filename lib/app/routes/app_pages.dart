@@ -16,6 +16,10 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
+import '../modules/profileuser2/bindings/profileuser2_binding.dart';
+import '../modules/profileuser2/views/profileuser2_view.dart';
+import '../modules/sales_history/bindings/sales_history_binding.dart';
+import '../modules/sales_history/views/sales_history_view.dart';
 import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
 import '../modules/tambah_produk/views/tambah_produk_view.dart';
 
@@ -71,6 +75,16 @@ class AppPages {
       name: _Paths.DAFTAR_PRODUK,
       page: () => DaftarProdukView(),
       binding: DaftarProdukBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILEUSER2,
+      page: () => Profileuser2View(),
+      binding: Profileuser2Binding(),
+    ),
+    GetPage(
+      name: _Paths.SALES_HISTORY,
+      page: () => SalesHistoryPage(),
+      binding: SalesHistoryBinding(),
     ),
   ];
 }
