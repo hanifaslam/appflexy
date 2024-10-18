@@ -150,7 +150,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ],
             ),
-            const SizedBox(height: 10), // Jarak antar elemen
+            const SizedBox(height: 10), // Jarak elemen
 
             // Kontainer putih dengan ikon di dalamnya
             Container(
