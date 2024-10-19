@@ -1,4 +1,4 @@
-import 'dart:io'; // Ini tetap diimport untuk antisipasi penggunaan FileImage di kemudian hari
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../profileuser2/controllers/profileuser2_controller.dart';
@@ -21,7 +21,7 @@ class Profileuser2View extends StatelessWidget {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            // Background warna dengan lingkaran dekorasi
+            // Background decoration
             Container(
               height: 400,
               color: Color(0xFF213F84),
@@ -37,7 +37,7 @@ class Profileuser2View extends StatelessWidget {
                 ],
               ),
             ),
-            // Kotak melengkung dan isi profil
+            // Profile container
             Padding(
               padding: const EdgeInsets.only(top: 120.0),
               child: Column(
@@ -57,12 +57,12 @@ class Profileuser2View extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              'Aqua Bliss Pool',
+                            Obx(() => Text(
+                              controller.companyName.value,
                               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
+                            )),
                             SizedBox(height: 30),
-                            // Penjualan (pengeluaran dihapus dan penjualan di tengah)
+                            // Sales Info
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Container(
@@ -105,59 +105,41 @@ class Profileuser2View extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 20),
-                            // List Menu dengan navigasi
+                            // Menu Items
                             menuItem('Grafik Penjualan', Icons.arrow_forward, () {
-                              // Navigasi ke halaman Grafik Penjualan
+                              // Navigate to sales graph
                               //Get.toNamed(Routes.GRAFIK_PENJUALAN);
                             }),
                             menuItem('Pengaturan Profil Toko', Icons.arrow_forward, () {
-                              // Navigasi ke halaman Pengaturan Profil Toko
-                             // Get.toNamed(Routes.PENGATURAN_PROFIL_TOKO);
+                              // Navigate to profile settings
+                              // Get.toNamed(Routes.PENGATURAN_PROFIL_TOKO);
                             }),
                             menuItem('Ganti Password', Icons.arrow_forward, () {
-                              // Navigasi ke halaman Ganti Password
+                              // Navigate to change password
                               //Get.toNamed(Routes.GANTI_PASSWORD);
                             }),
                             menuItem('Notifikasi', Icons.arrow_forward, () {
-                              // Navigasi ke halaman Notifikasi
+                              // Navigate to notifications
                               //Get.toNamed(Routes.NOTIFIKASI);
                             }),
                             menuItem('Hapus Akun', Icons.arrow_forward, () {
-                              // Navigasi ke halaman Hapus Akun
+                              // Navigate to delete account
                               //Get.toNamed(Routes.HAPUS_AKUN);
                             }, Colors.red),
                           ],
                         ),
                       ),
-                      // Setengah lingkaran di atas kotakan
+                      // Circle avatar above the box (now with synced image from profile)
                       Positioned(
-                        top: -58, // Posisi setengah lingkaran
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Container(
-                            width: 125,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFEDEDED),
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(100),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Foto Profil di atas setengah lingkaran
-                      Positioned(
-                        top: -50, // Naikin foto profil biar di atas setengah lingkaran
+                        top: -50,
                         left: 0,
                         right: 0,
                         child: Center(
                           child: Obx(
                             () => CircleAvatar(
                               radius: 55,
-                              backgroundImage: controller.selectedImagePath.value.isNotEmpty
-                                  ? FileImage(File(controller.selectedImagePath.value))
+                              backgroundImage: controller.companyLogo.value.isNotEmpty
+                                  ? FileImage(File(controller.companyLogo.value))
                                   : AssetImage('assets/logo/logoflex.png'),
                             ),
                           ),
@@ -171,23 +153,23 @@ class Profileuser2View extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: CustomNavigationBar( // Tambahkan CustomNavigationBar di sini
-        currentIndex: 2, // misalnya, tab profil (indeks 2)
+      bottomNavigationBar: CustomNavigationBar(
+        currentIndex: 2, // Tab index
         onTap: (index) {
-          // Navigasi berdasarkan tab yang ditekan
+          // Navigation based on tab
           if (index == 0) {
-            Get.offAllNamed(Routes.HOME); // Navigasi ke halaman Home
+            Get.offAllNamed(Routes.HOME); // Go to Home
           } else if (index == 1) {
-            Get.offAllNamed(Routes.KASIR); // Navigasi ke halaman Kasir
+            Get.offAllNamed(Routes.KASIR); // Go to Kasir
           } else if (index == 2) {
-            // Tetap di halaman profil
+            // Stay on profile
           }
         },
       ),
     );
   }
 
-  // Widget lingkaran untuk dekorasi background
+  // Background circle decoration
   Widget circleDecoration(double size, double opacity) {
     return Container(
       width: size,
@@ -199,7 +181,7 @@ class Profileuser2View extends StatelessWidget {
     );
   }
 
-  // Widget untuk menu item dengan onTap untuk navigasi
+  // Menu item widget
   Widget menuItem(String title, IconData icon, Function onTap, [Color? textColor]) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
