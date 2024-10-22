@@ -38,7 +38,7 @@ class _ProfileBtnState extends State<ProfileBtn> {
               .PROFILE); // Navigasi ke halaman profil setelah login berhasil
         } else {
           Get.snackbar('Kesalahan', 'Masukkan email dan kata sandi',
-              snackPosition: SnackPosition.BOTTOM,
+              snackPosition: SnackPosition.TOP,
               duration: const Duration(seconds: 3));
         }
       },
