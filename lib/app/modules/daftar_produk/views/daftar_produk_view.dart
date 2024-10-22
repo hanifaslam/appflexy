@@ -3,6 +3,7 @@ import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 
 class DaftarProdukView extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class DaftarProdukView extends StatefulWidget {
 }
 
 class _DaftarProdukViewState extends State<DaftarProdukView> {
+  final NumberFormat currencyFormat =
+      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
   final box = GetStorage(); // Inisialisasi GetStorage
   List<Map<String, dynamic>> produkList = [];
   List<Map<String, dynamic>> filteredProdukList = [];
@@ -156,6 +159,10 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
                   itemCount: filteredProdukList.length,
                   itemBuilder: (context, index) {
                     final produk = filteredProdukList[index];
+                    double hargaJual =
+                        double.tryParse(produk['hargaJual'].toString()) ??
+                            0.0; // Konversi hargaJual ke double
+
                     return Card(
                       color: Colors.grey[300],
                       elevation: 4,
@@ -177,7 +184,8 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
                         title: Text(produk['namaProduk'],
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: Text(
-                            'Stok: ${produk['stok']} | Harga: ${produk['hargaJual']}'),
+                          'Stok: ${produk['stok']} | ${currencyFormat.format(hargaJual)}', // Tampilkan harga yang diformat
+                        ),
                         trailing: PopupMenuButton<String>(
                           onSelected: (value) {
                             if (value == 'edit') {
