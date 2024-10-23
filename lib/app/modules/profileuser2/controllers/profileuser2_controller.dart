@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
 import 'dart:io';
+import 'package:get_storage/get_storage.dart';
+
+ final box = GetStorage();
 
 class Profileuser2Controller extends GetxController {
   var penjualan = 4000000.obs;
@@ -10,18 +13,16 @@ class Profileuser2Controller extends GetxController {
   var companyLogo = ''.obs;  // Path untuk logo
 
   @override
-  void onInit() {
-    super.onInit();
-    var args = Get.arguments; // Mengambil argumen yang diteruskan
-    if (args != null) {
-      // Set nama dan logo perusahaan berdasarkan argumen
-      setCompanyDetails(args['companyName'] ?? '', args['companyLogo'] ?? '');
-    }
-  }
+void onInit() {
+  super.onInit();
+  var storedName = box.read('companyName') ?? 'Aqua Bliss Pool';
+  var storedLogo = box.read('companyLogo') ?? '';
 
-  // Function to set company name and logo from profile page
-  void setCompanyDetails(String name, String logoPath) {
-    companyName.value = name.isNotEmpty ? name : 'Aqua Bliss Pool';
-    companyLogo.value = logoPath.isNotEmpty ? logoPath : '';  // Default to empty if no logo
-  }
+  setCompanyDetails(storedName, storedLogo);
+}
+
+void setCompanyDetails(String name, String logoPath) {
+  companyName.value = name;
+  companyLogo.value = logoPath;
+}
 }

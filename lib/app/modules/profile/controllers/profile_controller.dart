@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
+ final box = GetStorage();
 class ProfileController extends GetxController {
   var companyName = ''.obs;
   var companyType = ''.obs;
@@ -20,5 +22,10 @@ class ProfileController extends GetxController {
 
   void setCompanyLogo(String path) {
     companyLogoPath.value = path; // Path gambar yang dipilih
+  }
+  void saveToStorage() {
+    // Simpan ke GetStorage
+    box.write('companyName', companyName.value);
+    box.write('companyLogo', companyLogoPath.value);
   }
 }
