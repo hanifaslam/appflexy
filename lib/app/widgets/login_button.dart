@@ -16,7 +16,7 @@ class _ProfileBtnState extends State<ProfileBtn> {
 
   void _changeColor() {
     setState(() {
-      _buttonColor = Color(0xFF5C8FDA)
+      _buttonColor = const Color(0xFF5C8FDA)
           .withOpacity(0.2); // Mengubah warna ketika tombol ditekan
     });
   }
@@ -33,13 +33,31 @@ class _ProfileBtnState extends State<ProfileBtn> {
 
         // Memastikan email dan password tidak kosong
         if (email.isNotEmpty && password.isNotEmpty) {
-          await controller.login(email, password);
-          Get.offAllNamed(Routes
-              .PROFILE); // Navigasi ke halaman profil setelah login berhasil
-        } else {
-          Get.snackbar('Kesalahan', 'Masukkan email dan kata sandi',
+          // Panggil API login melalui controller dan tunggu hasilnya
+          var response = await controller.login(email, password);
+
+          if (response['status'] == 'success') {
+            // Jika login berhasil, pindah ke halaman profil
+            Get.offAllNamed(Routes.PROFILE);
+          } else {
+            // Jika login gagal, tampilkan pesan kesalahan
+            Get.snackbar(
+              'Login Gagal',
+              response['message'] ?? 'Email atau kata sandi salah',
               snackPosition: SnackPosition.TOP,
-              duration: const Duration(seconds: 3));
+              duration: const Duration(seconds: 3),
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+          }
+        } else {
+          // Jika email atau password kosong, tampilkan pesan kesalahan
+          Get.snackbar(
+            'Kesalahan',
+            'Masukkan email dan kata sandi',
+            snackPosition: SnackPosition.TOP,
+            duration: const Duration(seconds: 3),
+          );
         }
       },
       style: ElevatedButton.styleFrom(

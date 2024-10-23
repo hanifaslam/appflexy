@@ -6,84 +6,89 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
   var isPasswordHidden = true.obs;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  var users = <Map<String, dynamic>>[].obs; // Observable list to hold users
-  var currentUser =
-      <String, dynamic>{}.obs; // Observable map to hold current user data
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  var users = <Map<String, dynamic>>[].obs;
+  var currentUser = <String, dynamic>{}.obs;
 
-  // Function to toggle password visibility
+  // Toggle password visibility
   void togglePasswordVisibility() {
     isPasswordHidden.value = !isPasswordHidden.value;
   }
 
-  // Function to save token in shared preferences
+  // Save token in shared preferences
   Future<void> saveToken(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
   }
 
-  // Function to handle login API request
-  Future<void> login(String email, String password) async {
-    var url = Uri.parse('http://127.0.0.1:8000/api/login');
+  // Handle login API request
+  Future<Map<String, dynamic>> login(String email, String password) async {
+    final url = Uri.parse('http://127.0.0.1:8000/api/login');
+
+    if (email.isEmpty || password.isEmpty) {
+      return {
+        'status': 'error',
+        'message': 'Email dan password tidak boleh kosong.'
+      };
+    }
 
     try {
-      var response = await http.post(
+      final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
 
       print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}'); // Debugging response body
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        if (response.headers['content-type']?.contains('application/json') ??
-            false) {
-          var data = json.decode(response.body);
-          String token = data['access_token']; // Ensure you use 'access_token'
-
-          await saveToken(token);
-          await fetchCurrentUser(token);
-          Get.offAllNamed('/profile');
-        } else {
-          Get.snackbar('Error', 'Expected JSON, but received something else.',
-              snackPosition: SnackPosition.BOTTOM,
-              duration: const Duration(seconds: 3));
-        }
+        return await _handleLoginSuccess(response);
       } else {
-        handleErrorResponse(response);
+        return _handleErrorResponse(response);
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e',
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 3));
+      return {'status': 'error', 'message': 'Password atau email salah.'};
     }
   }
 
-  // Function to handle error response from API
-  void handleErrorResponse(http.Response response) {
+  // Handle successful login
+  Future<Map<String, dynamic>> _handleLoginSuccess(
+      http.Response response) async {
+    final data = json.decode(response.body);
+    if (data['access_token'] != null) {
+      final token = data['access_token'];
+      await saveToken(token);
+      await fetchCurrentUser(token);
+      Get.offAllNamed('/profile');
+      return {'status': 'success', 'message': 'Login successful'};
+    } else {
+      return {'status': 'error', 'message': 'Respons server tidak valid.'};
+    }
+  }
+
+  // Handle error response from API
+  Map<String, dynamic> _handleErrorResponse(http.Response response) {
     if (response.headers['content-type']?.contains('application/json') ??
         false) {
-      var errorData = json.decode(response.body);
-      String errorMessage =
-          errorData['error'] ?? 'Login failed. Please try again.';
-      Get.snackbar('Error', errorMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 3));
+      final errorData = json.decode(response.body);
+      final errorMessage = errorData['message'] ?? 'Email atau password salah.';
+      return {'status': 'error', 'message': errorMessage};
     } else {
-      Get.snackbar('Error', 'Unexpected response format: ${response.body}',
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 3));
+      return {
+        'status': 'error',
+        'message': 'Format respons tidak terduga dari server.'
+      };
     }
   }
 
-  // Function to fetch current user data from the API
+  // Fetch current user data from the API
   Future<void> fetchCurrentUser(String token) async {
-    var url = Uri.parse('http://127.0.0.1:8000/api/user');
+    final url = Uri.parse('http://127.0.0.1:8000/api/user');
 
     try {
-      var response = await http.get(
+      final response = await http.get(
         url,
         headers: {
           'Authorization': 'Bearer $token',
@@ -91,48 +96,46 @@ class LoginController extends GetxController {
         },
       );
 
-      // Check response status from the API
       if (response.statusCode == 200) {
-        var userData = json.decode(response.body);
+        final userData = json.decode(response.body);
         if (userData != null) {
-          currentUser.value = userData; // Pastikan userData tidak null
+          currentUser.value = userData;
         } else {
-          Get.snackbar('Error', 'User data is null.',
+          Get.snackbar('Error', 'Data pengguna kosong.',
               snackPosition: SnackPosition.BOTTOM,
               duration: const Duration(seconds: 3));
         }
       } else {
         Get.snackbar('Error',
-            'Failed to fetch user data. Status code: ${response.statusCode}',
+            'Gagal mengambil data pengguna. Kode status: ${response.statusCode}',
             snackPosition: SnackPosition.BOTTOM,
             duration: const Duration(seconds: 3));
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e',
+      Get.snackbar('Error', 'Terjadi kesalahan: $e',
           snackPosition: SnackPosition.BOTTOM,
           duration: const Duration(seconds: 3));
     }
   }
 
-  // Function to fetch users from the API
+  // Fetch users from the API
   Future<void> fetchUsers() async {
-    var url = Uri.parse('http://127.0.0.1:8000/api/users');
+    final url = Uri.parse('http://127.0.0.1:8000/api/users');
 
     try {
-      var response = await http.get(url);
+      final response = await http.get(url);
 
-      // Check response status from the API
       if (response.statusCode == 200) {
         users.value =
             List<Map<String, dynamic>>.from(json.decode(response.body));
       } else {
         Get.snackbar('Error',
-            'Failed to fetch users. Status code: ${response.statusCode}',
+            'Gagal mengambil pengguna. Kode status: ${response.statusCode}',
             snackPosition: SnackPosition.BOTTOM,
             duration: const Duration(seconds: 3));
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e',
+      Get.snackbar('Error', 'Terjadi kesalahan: $e',
           snackPosition: SnackPosition.BOTTOM,
           duration: const Duration(seconds: 3));
     }
