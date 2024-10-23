@@ -75,7 +75,7 @@ class KasirView extends GetView<KasirController> {
           } else if (index == 1) {
             Get.offNamed(Routes.KASIR); // Navigasi ke halaman KASIR
           } else if (index == 2) {
-            Get.offNamed(Routes.SETTINGS); // Navigasi ke halaman SETTINGS
+            Get.offNamed(Routes.PROFILEUSER2); // Navigasi ke halaman SETTINGS
           } else if (index == 3) {
             // Tab SettingsView sudah aktif, tidak melakukan apa-apa
             print('Tab SettingsView sudah aktif');
