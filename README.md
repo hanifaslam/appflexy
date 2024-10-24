@@ -63,6 +63,6 @@ Ini adalah aplikasi tiketing sederhana
    ```
 4. Push perubahan:
    ```bash
-   git push -u origin nama_branch
+   git push origin nama_branch
    ```
 
