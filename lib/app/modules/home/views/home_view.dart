@@ -46,8 +46,8 @@ class _HomeViewState extends State<HomeView> {
               Get.offAllNamed(
                   Routes.HOME); // Ganti dengan nama rute yang sesuai
             } else if (index == 1) {
-              Get.offAllNamed(
-                  Routes.KASIR); // Ganti dengan nama rute yang sesuai
+              Get.toNamed(
+                  Routes.DAFTAR_KASIR); // Ganti dengan nama rute yang sesuai
             } else if (index == 2) {
               Get.offAllNamed(
                   Routes.PROFILEUSER2); // Ganti dengan nama rute yang sesuai

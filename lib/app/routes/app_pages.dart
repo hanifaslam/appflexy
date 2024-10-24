@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/daftar_kasir/bindings/daftar_kasir_binding.dart';
+import '../modules/daftar_kasir/views/daftar_kasir_view.dart';
 import '../modules/daftar_produk/bindings/daftar_produk_binding.dart';
 import '../modules/daftar_produk/views/daftar_produk_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -14,12 +16,12 @@ import '../modules/penjualan/bindings/penjualan_binding.dart';
 import '../modules/penjualan/views/penjualan_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
-import '../modules/settings/bindings/settings_binding.dart';
-import '../modules/settings/views/settings_view.dart';
 import '../modules/profileuser2/bindings/profileuser2_binding.dart';
 import '../modules/profileuser2/views/profileuser2_view.dart';
 import '../modules/sales_history/bindings/sales_history_binding.dart';
 import '../modules/sales_history/views/sales_history_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
 import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
 import '../modules/tambah_produk/views/tambah_produk_view.dart';
 
@@ -68,7 +70,9 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.KASIR,
-      page: () => const KasirView(),
+      page: () => KasirView(
+        pesananList: [],
+      ),
       binding: KasirBinding(),
     ),
     GetPage(
@@ -85,6 +89,11 @@ class AppPages {
       name: _Paths.SALES_HISTORY,
       page: () => SalesHistoryPage(),
       binding: SalesHistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.DAFTAR_KASIR,
+      page: () => DaftarKasirView(),
+      binding: DaftarKasirBinding(),
     ),
   ];
 }
