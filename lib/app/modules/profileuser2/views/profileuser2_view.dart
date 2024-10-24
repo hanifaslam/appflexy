@@ -108,23 +108,23 @@ class Profileuser2View extends StatelessWidget {
                             // Menu Items
                             menuItem('Grafik Penjualan', Icons.arrow_forward, () {
                               // Navigate to sales graph
-                              //Get.toNamed(Routes.GRAFIK_PENJUALAN);
+                              // Get.toNamed(Routes.GRAFIK_PENJUALAN);
                             }),
                             menuItem('Pengaturan Profil Toko', Icons.arrow_forward, () {
                               // Navigate to profile settings
-                              // Get.toNamed(Routes.PENGATURAN_PROFIL_TOKO);
+                              Get.toNamed(Routes.PENGATURAN_PROFILE); // Navigasi ke halaman pengaturan profil
                             }),
                             menuItem('Ganti Password', Icons.arrow_forward, () {
                               // Navigate to change password
-                              //Get.toNamed(Routes.GANTI_PASSWORD);
+                              // Get.toNamed(Routes.GANTI_PASSWORD);
                             }),
                             menuItem('Notifikasi', Icons.arrow_forward, () {
                               // Navigate to notifications
-                              //Get.toNamed(Routes.NOTIFIKASI);
+                              // Get.toNamed(Routes.NOTIFIKASI);
                             }),
                             menuItem('Hapus Akun', Icons.arrow_forward, () {
                               // Navigate to delete account
-                              //Get.toNamed(Routes.HAPUS_AKUN);
+                              // Get.toNamed(Routes.HAPUS_AKUN);
                             }, Colors.red),
                           ],
                         ),
