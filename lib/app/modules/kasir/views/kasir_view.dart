@@ -1,87 +1,56 @@
-import 'package:apptiket/app/widgets/ticket_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../routes/app_pages.dart';
-import '../../../widgets/navbar.dart';
-import '../../../widgets/summary_card.dart';
-import '../controllers/kasir_controller.dart';
+import 'package:intl/intl.dart';
 
+class KasirView extends StatelessWidget {
+  final List<Map<String, dynamic>> pesananList;
 
-class KasirView extends GetView<KasirController> {
-  const KasirView({super.key});
+  KasirView({required this.pesananList});
 
   @override
   Widget build(BuildContext context) {
-    int _pageIndex = 1; // Indeks halaman aktif untuk KasirView
+    final NumberFormat currencyFormat =
+        NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kasir'),
+        title: Text('Daftar Pesanan'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Tiket',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            TicketCard(
-              ticketName: 'Tiket Dewasa',
-              price: 50000,
-              quantity: controller.adultTicketQuantity,
-              onIncrease: controller.increaseAdultTicket,
-              onDecrease: controller.decreaseAdultTicket,
-            ),
-            const SizedBox(height: 8),
-            TicketCard(
-              ticketName: 'Tiket Anak',
-              price: 35000,
-              quantity: controller.childTicketQuantity,
-              onIncrease: controller.increaseChildTicket,
-              onDecrease: controller.decreaseChildTicket,
-            ),
-            const SizedBox(height: 16),
-            SummaryCard(),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Aksi pemesanan di sini
+      body: pesananList.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.inbox, size: 100, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text('Tidak ada pesanan.',
+                      style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            )
+          : ListView.builder(
+              itemCount: pesananList.length,
+              itemBuilder: (context, index) {
+                final produk = pesananList[index];
+                final hargaJual = produk['hargaJual'];
+
+                // Memeriksa apakah hargaJual adalah angka dan tidak null
+                final formattedPrice = (hargaJual != null && hargaJual is num)
+                    ? currencyFormat.format(hargaJual)
+                    : 'Harga tidak tersedia';
+
+                return ListTile(
+                  leading: Icon(Icons.shopping_bag, size: 40),
+                  title: Text(produk['namaProduk']),
+                  subtitle: Text('Harga: $formattedPrice'),
+                  trailing: Text('Qty: 1'), // Asumsi 1 pesanan per produk
+                );
               },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-                backgroundColor: Colors.blue,
-              ),
-              child: const Text(
-                'Lakukan Pemesanan',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: CustomNavigationBar(
-        currentIndex: _pageIndex, // Set indeks halaman saat ini
-        onTap: (index) {
-          // Navigasi berdasarkan tab yang dipilih
-          if (index == 0) {
-            Get.offNamed(Routes.HOME); // Navigasi ke halaman HOME
-          } else if (index == 1) {
-            Get.offNamed(Routes.KASIR); // Navigasi ke halaman KASIR
-          } else if (index == 2) {
-            Get.offNamed(Routes.PROFILEUSER2); // Navigasi ke halaman SETTINGS
-          } else if (index == 3) {
-            // Tab SettingsView sudah aktif, tidak melakukan apa-apa
-            print('Tab SettingsView sudah aktif');
-          }
-        },
-      ),
     );
   }
 }

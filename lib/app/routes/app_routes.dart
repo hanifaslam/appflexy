@@ -15,6 +15,7 @@ abstract class Routes {
   static const DAFTAR_PRODUK = _Paths.DAFTAR_PRODUK;
   static const PROFILEUSER2 = _Paths.PROFILEUSER2;
   static const SALES_HISTORY = _Paths.SALES_HISTORY;
+  static const DAFTAR_KASIR = _Paths.DAFTAR_KASIR;
 }
 
 abstract class _Paths {
@@ -31,4 +32,5 @@ abstract class _Paths {
   static const DAFTAR_PRODUK = '/daftar-produk';
   static const PROFILEUSER2 = '/profileuser2';
   static const SALES_HISTORY = '/sales-history';
+  static const DAFTAR_KASIR = '/daftar-kasir';
 }
