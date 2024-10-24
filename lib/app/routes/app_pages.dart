@@ -12,6 +12,8 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/manajemen_tiket/bindings/manajemen_tiket_binding.dart';
 import '../modules/manajemen_tiket/views/manajemen_tiket_view.dart';
+import '../modules/pengaturan_profile/bindings/pengaturan_profile_binding.dart';
+import '../modules/pengaturan_profile/views/pengaturan_profile_view.dart';
 import '../modules/penjualan/bindings/penjualan_binding.dart';
 import '../modules/penjualan/views/penjualan_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
@@ -94,6 +96,11 @@ class AppPages {
       name: _Paths.DAFTAR_KASIR,
       page: () => DaftarKasirView(),
       binding: DaftarKasirBinding(),
+    ),
+    GetPage(
+      name: _Paths.PENGATURAN_PROFILE,
+      page: () => PengaturanProfileView(),
+      binding: PengaturanProfileBinding(),
     ),
   ];
 }
