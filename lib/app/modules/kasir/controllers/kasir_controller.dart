@@ -1,39 +1,39 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class KasirController extends GetxController {
-  var adultTicketQuantity = 0.obs;
-  var childTicketQuantity = 0.obs;
+  final NumberFormat currencyFormat =
+      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
+  RxList<Map<String, dynamic>> pesananList = <Map<String, dynamic>>[].obs;
 
-  var subtotal = 0.obs;
-  var memberDiscount = 20000.obs;
-  var totalPrice = 0.obs;
-
-  void increaseAdultTicket() {
-    adultTicketQuantity.value++;
-    _updatePrices();
+  @override
+  void onInit() {
+    super.onInit();
   }
 
-  void decreaseAdultTicket() {
-    if (adultTicketQuantity.value > 0) {
-      adultTicketQuantity.value--;
-      _updatePrices();
+  // Calculate subtotal
+  double get subtotal => pesananList.fold(0.0, (sum, item) {
+        final price = double.tryParse(item['hargaJual'].toString()) ?? 0;
+        final quantity = item['quantity'] ?? 1;
+        return sum + (price * quantity);
+      });
+
+  // Calculate total (same as subtotal now that discount is removed)
+  double get total => subtotal;
+
+  // Update quantity of a specific item in pesananList
+  void updateQuantity(int index, int change) {
+    final currentQuantity = pesananList[index]['quantity'] ?? 1;
+    final newQuantity = currentQuantity + change;
+
+    if (newQuantity > 0) {
+      pesananList[index]['quantity'] = newQuantity;
+      pesananList.refresh(); // Notify the view to update
     }
   }
 
-  void increaseChildTicket() {
-    childTicketQuantity.value++;
-    _updatePrices();
-  }
-
-  void decreaseChildTicket() {
-    if (childTicketQuantity.value > 0) {
-      childTicketQuantity.value--;
-      _updatePrices();
-    }
-  }
-
-  void _updatePrices() {
-    subtotal.value = (adultTicketQuantity.value * 50000) + (childTicketQuantity.value * 35000);
-    totalPrice.value = subtotal.value - memberDiscount.value;
+  // Format currency
+  String formatCurrency(double value) {
+    return currencyFormat.format(value);
   }
 }

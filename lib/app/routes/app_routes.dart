@@ -18,6 +18,8 @@ abstract class Routes {
   static const TAMBAH_TIKET = _Paths.TAMBAH_TIKET;
   static const DAFTAR_KASIR = _Paths.DAFTAR_KASIR;
   static const PENGATURAN_PROFILE = _Paths.PENGATURAN_PROFILE;
+  static const PEMBAYARAN_CASH = _Paths.PEMBAYARAN_CASH;
+  static const STRUK = _Paths.STRUK;
 }
 
 abstract class _Paths {
@@ -37,4 +39,6 @@ abstract class _Paths {
   static const TAMBAH_TIKET = '/tambah-tiket';
   static const DAFTAR_KASIR = '/daftar-kasir';
   static const PENGATURAN_PROFILE = '/pengaturan-profile';
+  static const PEMBAYARAN_CASH = '/pembayaran-cash';
+  static const STRUK = '/struk';
 }
