@@ -43,14 +43,11 @@ class _HomeViewState extends State<HomeView> {
 
             // Navigasi ke halaman yang sesuai
             if (index == 0) {
-              Get.offAllNamed(
-                  Routes.HOME); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(Routes.HOME); // Ganti dengan nama rute yang sesuai
             } else if (index == 1) {
-              Get.toNamed(
-                  Routes.DAFTAR_KASIR); // Ganti dengan nama rute yang sesuai
+              Get.toNamed(Routes.DAFTAR_KASIR); // Ganti dengan nama rute yang sesuai
             } else if (index == 2) {
-              Get.offAllNamed(
-                  Routes.PROFILEUSER2); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(Routes.PROFILEUSER2); // Ganti dengan nama rute yang sesuai
             }
           });
         },
@@ -128,14 +125,19 @@ class _HomeViewState extends State<HomeView> {
                     Text(
                       "AmbatuJawir", // Nama pengguna
                       style: TextStyle(
-                        color: Colors.white, // Teks putih
-                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
                         fontSize: 18,
                       ),
                     ),
                     Text(
                       "Farhan Kebab", // Deskripsi pengguna
-                      style: TextStyle(color: Colors.white70),
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ],
                 ),
@@ -164,31 +166,35 @@ class _HomeViewState extends State<HomeView> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildCircularIconButton(
-                      Icons.confirmation_num_outlined,
-                      'Data',
-                      'Tiket',
-                      const Color(0xffFFAF00),
-                      Colors.white, onTap: () {
-                    Get.offAllNamed(Routes.MANAJEMEN_TIKET);
-                  }),
+                    Icons.confirmation_num_outlined,
+                    'Data', // Menggunakan Inter font
+                    'Tiket',
+                    const Color(0xffFFAF00),
+                    Colors.white,
+                    onTap: () {
+                      Get.offAllNamed(Routes.MANAJEMEN_TIKET);
+                    },
+                  ),
                   _buildCircularIconButton(
-                      Icons.bar_chart,
-                      'Riwayat',
-                      'Penjualan',
-                      const Color(0xff5475F9),
-                      Colors.white, onTap: () {
-                    Get.offAllNamed(Routes
-                        .MANAJEMEN_TIKET); // sementara masih manggil pages yg sama
-                  }),
+                    Icons.bar_chart,
+                    'Riwayat', // Menggunakan Inter font
+                    'Penjualan',
+                    const Color(0xff5475F9),
+                    Colors.white,
+                    onTap: () {
+                      Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama
+                    },
+                  ),
                   _buildCircularIconButton(
-                      CupertinoIcons.cube_box,
-                      'Data',
-                      'Barang',
-                      const Color(0xffF95454),
-                      Colors.white, onTap: () {
-                    Get.toNamed(Routes
-                        .DAFTAR_PRODUK); // sementara masih manggil pages yg sama
-                  }),
+                    CupertinoIcons.cube_box,
+                    'Data',
+                    'Barang', // Menggunakan Inter font
+                    const Color(0xffF95454),
+                    Colors.white,
+                    onTap: () {
+                      Get.toNamed(Routes.DAFTAR_PRODUK); // sementara masih manggil pages yg sama
+                    },
+                  ),
                 ],
               ),
             ),
@@ -238,6 +244,8 @@ class _HomeViewState extends State<HomeView> {
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.italic,
                 ),
               ),
             ),
@@ -262,11 +270,13 @@ class _HomeViewState extends State<HomeView> {
         mainAxisSize: MainAxisSize.min, // Ukuran minimum kolom
         children: [
           Container(
+            width: 70, // Lebar kontainer
+            height: 70, // Tinggi kontainer
             decoration: BoxDecoration(
               shape: BoxShape.circle, // Bentuk lingkaran
               color: circleColor, // Warna latar
             ),
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0), // Padding dalam
             child: Icon(
               icon, // Ikon yang diterima
               size: 35,
@@ -278,11 +288,19 @@ class _HomeViewState extends State<HomeView> {
             children: [
               Text(
                 label1,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Inter', // Menggunakan Inter font
+                  fontStyle: FontStyle.normal, // Menggunakan normal style
+                ),
               ),
               Text(
                 label2,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Inter', // Menggunakan Inter font
+                  fontStyle: FontStyle.normal, // Menggunakan normal style
+                ),
               ),
             ],
           ),

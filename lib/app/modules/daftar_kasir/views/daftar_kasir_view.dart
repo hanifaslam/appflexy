@@ -105,7 +105,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  leading: item['image'] != null
+                  leading: type == 'produk' && item['image'] != null
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(15),
                           child: Image.file(
@@ -115,7 +115,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                             fit: BoxFit.cover,
                           ),
                         )
-                      : Icon(Icons.image, size: 50),
+                      : Icon(Icons.image, size: 50), // Placeholder icon for Tiket
                   title: Text(title,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(currencyFormat.format(price)),
@@ -132,7 +132,11 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Daftar Produk dan Tiket'),
+          title: Text(
+            'Daftar Produk dan Tiket',
+            style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+          ),
+          titleSpacing: 45,
           bottom: TabBar(
             controller: _tabController,
             tabs: [

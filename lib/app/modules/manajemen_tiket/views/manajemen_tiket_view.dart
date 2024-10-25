@@ -1,4 +1,3 @@
-import 'dart:io'; // Untuk menggunakan File
 import 'package:apptiket/app/modules/tambah_tiket/views/tambah_tiket_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -164,9 +163,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                   itemBuilder: (context, index) {
                     final tiket = filteredTiketList[index];
                     double hargaJual =
-                        double.tryParse(tiket['hargaJual'].toString()) ??
-                            0.0; // Ensure hargaJual is parsed correctly
-                    // Konversi hargaJual ke double
+                        double.tryParse(tiket['hargaJual'].toString()) ?? 0.0; // Ensure hargaJual is parsed correctly
 
                     return Card(
                       color: Colors.grey[300],
@@ -175,17 +172,6 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListTile(
-                        leading: tiket['image'] != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Image.file(
-                                  File(tiket['image']), // Tampilkan gambar
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Icon(Icons.image, size: 50),
                         title: Text(tiket['namaTiket'],
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: Text(

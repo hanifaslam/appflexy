@@ -61,7 +61,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
         ),
         title: Text(
           widget.produk == null ? 'Tambah Produk' : 'Edit Produk',
-          style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+          style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontFamily: 'Inter', fontStyle: FontStyle.normal, fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
@@ -77,24 +77,28 @@ class _TambahProdukViewState extends State<TambahProdukView> {
               children: [
                 TextField(
                   controller: namaProdukController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Nama Produk',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(11)
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: kodeProdukController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Kode Produk',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(11)
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Kategori',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
                   ),
                   value: kategoriValue,
                   items: kategori.map((String value) {
@@ -112,9 +116,9 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                 const Gap(30),
                 TextField(
                   controller: stokController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Stok',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
                   ),
                   keyboardType: TextInputType.number,
                 ),
@@ -142,18 +146,18 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                 const SizedBox(height: 16),
                 TextField(
                   controller: hargaJualController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Harga Jual',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
                   ),
                   keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: keteranganController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Keterangan Produk',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
                   ),
                   maxLines: 4,
                 ),
@@ -176,7 +180,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                     backgroundColor: const Color(0xff181681), // Gunakan warna yang sesuai
                     minimumSize: const Size(double.infinity, 50), // Sesuaikan lebar dan tinggi
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30), // Bentuk tombol rounded
+                      borderRadius: BorderRadius.circular(20), // Bentuk tombol rounded
                     ),
                   ),
                   child: const Text(

@@ -10,14 +10,14 @@ class ProfileBtn extends StatefulWidget {
 }
 
 class _ProfileBtnState extends State<ProfileBtn> {
-  Color _buttonColor = const Color(0xFF2B47C4); // Warna awal tombol
+  Color _buttonColor = const Color(0xff181681); // Initial button color
   final LoginController controller =
-      Get.find<LoginController>(); // Mendapatkan controller
+      Get.find<LoginController>(); // Retrieve the controller
 
   void _changeColor() {
     setState(() {
-      _buttonColor = const Color(0xFF5C8FDA)
-          .withOpacity(0.2); // Mengubah warna ketika tombol ditekan
+      _buttonColor = const Color(0xff181681)
+          .withOpacity(0.2); // Change color when button is pressed
     });
   }
 
@@ -27,23 +27,23 @@ class _ProfileBtnState extends State<ProfileBtn> {
       onPressed: () async {
         _changeColor();
 
-        // Mengambil email dan password dari controller
+        // Get email and password from the controller
         String email = controller.emailController.text.trim();
         String password = controller.passwordController.text.trim();
 
-        // Memastikan email dan password tidak kosong
+        // Ensure email and password are not empty
         if (email.isNotEmpty && password.isNotEmpty) {
-          // Panggil API login melalui controller dan tunggu hasilnya
+          // Call the login API via the controller and wait for the result
           var response = await controller.login(email, password);
 
           if (response['status'] == 'success') {
-            // Jika login berhasil, pindah ke halaman profil
+            // If login is successful, navigate to the profile page
             Get.offAllNamed(Routes.PROFILE);
           } else {
-            // Jika login gagal, tampilkan pesan kesalahan
+            // If login fails, show an error message
             Get.snackbar(
-              'Login Gagal',
-              response['message'] ?? 'Email atau kata sandi salah',
+              'Login Failed',
+              response['message'] ?? 'Incorrect email or password',
               snackPosition: SnackPosition.TOP,
               duration: const Duration(seconds: 3),
               backgroundColor: Colors.red,
@@ -51,10 +51,10 @@ class _ProfileBtnState extends State<ProfileBtn> {
             );
           }
         } else {
-          // Jika email atau password kosong, tampilkan pesan kesalahan
+          // If email or password is empty, show an error message
           Get.snackbar(
-            'Kesalahan',
-            'Masukkan email dan kata sandi',
+            'Error',
+            'Please enter email and password',
             snackPosition: SnackPosition.TOP,
             duration: const Duration(seconds: 3),
           );
@@ -62,14 +62,20 @@ class _ProfileBtnState extends State<ProfileBtn> {
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-        backgroundColor: _buttonColor, // Menggunakan warna tombol yang dinamis
+        backgroundColor: _buttonColor, // Use dynamic button color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
       ),
       child: const Text(
-        'Simpan',
-        style: TextStyle(color: Colors.white, fontSize: 16),
+        'Login',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 16,
+          fontStyle: FontStyle.normal,
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // Use Colors.white instead of Color.white
+        ),
       ),
     );
   }

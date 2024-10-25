@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Import image_picker
+import 'package:get/get.dart';
 import 'package:gap/gap.dart';
-import 'package:image_picker/image_picker.dart';
 
 class TambahTiketView extends StatefulWidget {
   final Map<String, dynamic>? tiket; // Data tiket yang akan diedit
@@ -20,9 +18,6 @@ class _TambahTiketViewState extends State<TambahTiketView> {
   final TextEditingController hargaJualController = TextEditingController();
   final TextEditingController keteranganController = TextEditingController();
 
-  File? _selectedImage;
-  final ImagePicker _picker = ImagePicker();
-
   @override
   void initState() {
     super.initState();
@@ -33,16 +28,6 @@ class _TambahTiketViewState extends State<TambahTiketView> {
       keteranganController.text = widget.tiket!['keterangan'];
     }
   }
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path); // Simpan gambar yang dipilih
-      });
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -74,56 +59,47 @@ class _TambahTiketViewState extends State<TambahTiketView> {
               children: [
                 TextField(
                   controller: namaTiketController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Nama Tiket',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(13), // Set border radius to 25
+                    ),
                   ),
                 ),
                 const Gap(30),
                 TextField(
                   controller: stokController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Stok',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(13), // Set border radius to 25
+                    ),
                   ),
                   keyboardType: TextInputType.number,
                 ),
                 const Gap(30),
-                GestureDetector(
-                  onTap: _pickImage, // Buka galeri saat ditekan
-                  child: Row(
-                    children: [
-                      _selectedImage != null
-                          ? Image.file(
-                              _selectedImage!,
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            )
-                          : const Icon(Icons.image, size: 100),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Masukan Foto Tiket',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
                 TextField(
                   controller: hargaJualController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Harga Jual',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(13), // Set border radius to 25
+                    ),
                   ),
                   keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: keteranganController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Keterangan Tiket',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(13), // Set border radius to 25
+                    ),
                   ),
                   maxLines: 4,
                 ),
@@ -136,7 +112,6 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                       'stok': stokController.text,
                       'hargaJual': hargaJualController.text,
                       'keterangan': keteranganController.text,
-                      'image': _selectedImage?.path, // Simpan path dari gambar
                     };
                     Get.back(result: newTiket); // Kirim data tiket
                   },
@@ -147,7 +122,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                         double.infinity, 50), // Sesuaikan lebar dan tinggi
                     shape: RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(30), // Bentuk tombol rounded
+                          BorderRadius.circular(20), // Bentuk tombol rounded
                     ),
                   ),
                   child: const Text(

@@ -14,7 +14,7 @@ class Profileuser2View extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Profil',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontFamily: 'Inter', fontStyle: FontStyle.italic,fontWeight:  FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Color(0xFF213F84),
       ),
@@ -59,7 +59,7 @@ class Profileuser2View extends StatelessWidget {
                           children: [
                             Obx(() => Text(
                               controller.companyName.value,
-                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 24, fontFamily: 'Inter', fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
                             )),
                             SizedBox(height: 30),
                             // Sales Info
@@ -89,6 +89,8 @@ class Profileuser2View extends StatelessWidget {
                                           color: Colors.green,
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
+                                          fontFamily: 'Inter',
+                                          fontStyle: FontStyle.italic
                                         ),
                                       ),
                                       SizedBox(height: 5),
@@ -97,6 +99,8 @@ class Profileuser2View extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
+                                          fontFamily: 'Inter',
+                                          fontStyle: FontStyle.italic
                                         ),
                                       ),
                                     ],
