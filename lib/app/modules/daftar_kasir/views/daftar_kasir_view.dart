@@ -44,35 +44,49 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
     List<dynamic>? storedProdukList = box.read<List<dynamic>>('produkList');
     if (storedProdukList != null) {
       produkList = List<Map<String, dynamic>>.from(storedProdukList);
-      filteredProdukList = produkList;
+    } else {
+      produkList = []; // Provide default empty list
     }
+    filteredProdukList = produkList; // Avoid null references
   }
 
   void _loadTiketList() {
     List<dynamic>? storedTiketList = box.read<List<dynamic>>('tiketList');
     if (storedTiketList != null) {
       tiketList = List<Map<String, dynamic>>.from(storedTiketList);
-      filteredTiketList = tiketList;
+    } else {
+      tiketList = []; // Provide default empty list
     }
+    filteredTiketList = tiketList; // Avoid null references
   }
 
   void updateSearchQuery(String query) {
     setState(() {
       searchQuery = query;
-      filteredProdukList = produkList
-          .where((produk) =>
-              produk['namaProduk'].toLowerCase().contains(query.toLowerCase()))
-          .toList();
-      filteredTiketList = tiketList
-          .where((tiket) =>
-              tiket['namaTiket'].toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      if (query.isEmpty) {
+        filteredProdukList = produkList; // No need to filter if query is empty
+        filteredTiketList = tiketList;
+      } else {
+        filteredProdukList = produkList
+            .where((produk) => produk['namaProduk']
+                .toLowerCase()
+                .contains(query.toLowerCase()))
+            .toList();
+        filteredTiketList = tiketList
+            .where((tiket) =>
+                tiket['namaTiket'].toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
     });
   }
 
   void addToPesanan(Map<String, dynamic> item) {
     setState(() {
-      pesananList.add(item);
+      pesananList.add({
+        'nama': item['namaProduk'] ?? item['namaTiket'],
+        'harga': item['hargaJual'] ?? item['hargaTiket'],
+        'image': item['image'],
+      });
       pesananCount++;
     });
   }
@@ -97,8 +111,9 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
               String title =
                   type == 'produk' ? item['namaProduk'] : item['namaTiket'];
               double price = type == 'produk'
-                  ? double.tryParse(item['hargaJual'].toString()) ?? 0.0
-                  : double.tryParse(item['hargaTiket'].toString()) ?? 0.0;
+                  ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
+                  : double.tryParse(item['hargaTiket']?.toString() ?? '0') ??
+                      0.0;
 
               return Card(
                 elevation: 4,
@@ -106,17 +121,18 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  leading: item['image'] != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.file(
-                            File(item['image']),
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : Icon(Icons.image, size: 50),
+                  leading:
+                      item['image'] != null && File(item['image']).existsSync()
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.file(
+                                File(item['image']),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Icon(Icons.image, size: 50),
                   title: Text(title,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(currencyFormat.format(price)),
@@ -164,7 +180,27 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
           onPressed: () {
             Get.to(() => KasirView(pesananList: pesananList));
           },
-          child: Icon(Icons.shopping_cart),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(Icons.shopping_cart),
+              if (pesananCount > 0)
+                Positioned(
+                  right: 0,
+                  child: CircleAvatar(
+                    radius: 8.0,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      pesananCount.toString(),
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

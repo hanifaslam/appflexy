@@ -26,7 +26,6 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
   }
 
   void _loadTiketList() {
-    
     List<dynamic>? storedTiketList = box.read<List<dynamic>>('tiketList');
     if (storedTiketList != null) {
       tiketList = List<Map<String, dynamic>>.from(storedTiketList);
@@ -35,7 +34,6 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
   }
 
   void _saveTiketList() {
-    
     box.write('tiketList', tiketList);
   }
 
@@ -91,9 +89,8 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
       appBar: AppBar(
         toolbarHeight: 80,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.offAllNamed(Routes.HOME)
-        ),
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Get.offAllNamed(Routes.HOME)),
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
           child: TextField(
@@ -230,7 +227,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
           if (result != null) {
             setState(() {
               tiketList.add(result);
-              _saveTiketList(); 
+              _saveTiketList();
               updateSearchQuery(searchQuery);
             });
           }
@@ -259,7 +256,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
               onPressed: () {
                 setState(() {
                   tiketList.removeAt(index);
-                  _saveTiketList(); 
+                  _saveTiketList();
                   updateSearchQuery(searchQuery);
                 });
                 Navigator.of(context).pop();
@@ -279,7 +276,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
     if (result != null) {
       setState(() {
         tiketList[index] = result;
-        _saveTiketList(); 
+        _saveTiketList();
         updateSearchQuery(searchQuery);
       });
     }
