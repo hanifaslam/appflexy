@@ -17,9 +17,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
       NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
   final box = GetStorage();
   List<Map<String, dynamic>> produkList = [];
-  List<Map<String, dynamic>> filteredProdukList = [];
   List<Map<String, dynamic>> tiketList = [];
-  List<Map<String, dynamic>> filteredTiketList = [];
   List<Map<String, dynamic>> pesananList = [];
   String searchQuery = '';
   int pesananCount = 0;
@@ -29,9 +27,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   void initState() {
     super.initState();
     _tabController =
-        TabController(length: 2, vsync: this); // 2 tab: produk & tiket
-    _loadProdukList();
-    _loadTiketList();
+        TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
+    _loadData();
   }
 
   @override
@@ -40,43 +37,22 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
     super.dispose();
   }
 
-  void _loadProdukList() {
-    List<dynamic>? storedProdukList = box.read<List<dynamic>>('produkList');
-    if (storedProdukList != null) {
-      produkList = List<Map<String, dynamic>>.from(storedProdukList);
-    } else {
-      produkList = []; // Provide default empty list
-    }
-    filteredProdukList = produkList; // Avoid null references
-  }
-
-  void _loadTiketList() {
-    List<dynamic>? storedTiketList = box.read<List<dynamic>>('tiketList');
-    if (storedTiketList != null) {
-      tiketList = List<Map<String, dynamic>>.from(storedTiketList);
-    } else {
-      tiketList = []; // Provide default empty list
-    }
-    filteredTiketList = tiketList; // Avoid null references
+  void _loadData() {
+    // Load produk and tiket list from storage
+    produkList = List<Map<String, dynamic>>.from(
+        box.read<List<dynamic>>('produkList') ?? []);
+    tiketList = List<Map<String, dynamic>>.from(
+        (box.read<List<dynamic>>('tiketList') ?? []).map((tiket) {
+      tiket['namaTiket'] = tiket['namaTiket'] ?? ''; // Fallback for null values
+      tiket['hargaJual'] =
+          double.tryParse(tiket['hargaJual']?.toString() ?? '0') ?? 0.0;
+      return tiket;
+    }));
   }
 
   void updateSearchQuery(String query) {
     setState(() {
-      searchQuery = query;
-      if (query.isEmpty) {
-        filteredProdukList = produkList; // No need to filter if query is empty
-        filteredTiketList = tiketList;
-      } else {
-        filteredProdukList = produkList
-            .where((produk) => produk['namaProduk']
-                .toLowerCase()
-                .contains(query.toLowerCase()))
-            .toList();
-        filteredTiketList = tiketList
-            .where((tiket) =>
-                tiket['namaTiket'].toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
+      searchQuery = query.toLowerCase();
     });
   }
 
@@ -89,10 +65,25 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
       });
       pesananCount++;
     });
+    Get.snackbar('Pesanan',
+        '${item['namaProduk'] ?? item['namaTiket']} ditambahkan ke pesanan.');
+  }
+
+  List<Map<String, dynamic>> _filterList(
+      List<Map<String, dynamic>> list, String nameKey) {
+    if (searchQuery.isEmpty) return list;
+    return list
+        .where((item) => (item[nameKey]?.toString().toLowerCase() ?? '')
+            .contains(searchQuery))
+        .toList();
   }
 
   Widget _buildList(List<Map<String, dynamic>> list, String type) {
-    return list.isEmpty
+    String nameKey = type == 'produk' ? 'namaProduk' : 'namaTiket';
+
+    List<Map<String, dynamic>> filteredList = _filterList(list, nameKey);
+
+    return filteredList.isEmpty
         ? Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -105,11 +96,10 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
             ),
           )
         : ListView.builder(
-            itemCount: list.length,
+            itemCount: filteredList.length,
             itemBuilder: (context, index) {
-              final item = list[index];
-              String title =
-                  type == 'produk' ? item['namaProduk'] : item['namaTiket'];
+              final item = filteredList[index];
+              String title = item[nameKey] ?? '';
               double price = type == 'produk'
                   ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
                   : double.tryParse(item['hargaTiket']?.toString() ?? '0') ??
@@ -136,10 +126,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                   title: Text(title,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(currencyFormat.format(price)),
-                  onTap: () {
-                    addToPesanan(item);
-                    Get.snackbar('Pesanan', '$title ditambahkan ke pesanan.');
-                  },
+                  onTap: () => addToPesanan(item),
                 ),
               );
             },
@@ -149,11 +136,12 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2, // Jumlah tab
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Daftar Produk dan Tiket'),
           bottom: TabBar(
+            controller: _tabController,
             tabs: [
               Tab(text: 'Produk'),
               Tab(text: 'Tiket'),
@@ -165,20 +153,22 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
           ),
         ),
         body: TabBarView(
+          controller: _tabController,
           children: [
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: _buildList(filteredProdukList, 'produk'),
+              child: _buildList(produkList, 'produk'),
             ),
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: _buildList(filteredTiketList, 'tiket'),
+              child: _buildList(tiketList, 'tiket'),
             ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(() => KasirView(pesananList: pesananList));
+            Get.to(() =>
+                KasirView(pesananList: pesananList)); // Pass pesananList here
           },
           child: Stack(
             alignment: Alignment.center,

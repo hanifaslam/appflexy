@@ -28,7 +28,13 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
   void _loadTiketList() {
     List<dynamic>? storedTiketList = box.read<List<dynamic>>('tiketList');
     if (storedTiketList != null) {
-      tiketList = List<Map<String, dynamic>>.from(storedTiketList);
+      tiketList = List<Map<String, dynamic>>.from(storedTiketList.map((tiket) {
+        // Provide fallback values if any field is null
+        tiket['namaTiket'] = tiket['namaTiket'] ?? '';
+        tiket['hargaJual'] =
+            double.tryParse(tiket['hargaJual']?.toString() ?? '0') ?? 0.0;
+        return tiket;
+      }));
       filteredTiketList = tiketList;
     }
   }
@@ -159,7 +165,8 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                     final tiket = filteredTiketList[index];
                     double hargaJual =
                         double.tryParse(tiket['hargaJual'].toString()) ??
-                            0.0; // Konversi hargaJual ke double
+                            0.0; // Ensure hargaJual is parsed correctly
+                    // Konversi hargaJual ke double
 
                     return Card(
                       color: Colors.grey[300],
