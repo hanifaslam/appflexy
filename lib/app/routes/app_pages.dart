@@ -14,14 +14,16 @@ import '../modules/penjualan/bindings/penjualan_binding.dart';
 import '../modules/penjualan/views/penjualan_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
-import '../modules/settings/bindings/settings_binding.dart';
-import '../modules/settings/views/settings_view.dart';
 import '../modules/profileuser2/bindings/profileuser2_binding.dart';
 import '../modules/profileuser2/views/profileuser2_view.dart';
 import '../modules/sales_history/bindings/sales_history_binding.dart';
 import '../modules/sales_history/views/sales_history_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
 import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
 import '../modules/tambah_produk/views/tambah_produk_view.dart';
+import '../modules/tambah_tiket/bindings/tambah_tiket_binding.dart';
+import '../modules/tambah_tiket/views/tambah_tiket_view.dart';
 
 part 'app_routes.dart';
 
@@ -63,7 +65,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.MANAJEMEN_TIKET,
-      page: () => const ManajemenTiketView(),
+      page: () => ManajemenTiketView(),
       binding: ManajemenTiketBinding(),
     ),
     GetPage(
@@ -85,6 +87,11 @@ class AppPages {
       name: _Paths.SALES_HISTORY,
       page: () => SalesHistoryPage(),
       binding: SalesHistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.TAMBAH_TIKET,
+      page: () => TambahTiketView(),
+      binding: TambahTiketBinding(),
     ),
   ];
 }
