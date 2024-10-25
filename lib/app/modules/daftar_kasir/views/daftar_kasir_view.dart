@@ -26,8 +26,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   @override
   void initState() {
     super.initState();
-    _tabController =
-        TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
+    _tabController = TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
     _loadData();
   }
 
@@ -58,7 +57,11 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
 
   void addToPesanan(Map<String, dynamic> item) {
     setState(() {
-      pesananList.add(item);
+      pesananList.add({
+        'nama': item['namaProduk'] ?? item['namaTiket'],
+        'harga': item['hargaJual'] ?? item['hargaTiket'],
+        'image': item['image'],
+      });
       pesananCount++;
     });
     Get.snackbar('Pesanan',
@@ -76,7 +79,6 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
 
   Widget _buildList(List<Map<String, dynamic>> list, String type) {
     String nameKey = type == 'produk' ? 'namaProduk' : 'namaTiket';
-
     List<Map<String, dynamic>> filteredList = _filterList(list, nameKey);
 
     return filteredList.isEmpty
@@ -96,8 +98,9 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
             itemBuilder: (context, index) {
               final item = filteredList[index];
               String title = item[nameKey] ?? '';
-              double price =
-                  double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0;
+              double price = type == 'produk'
+                  ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
+                  : double.tryParse(item['hargaTiket']?.toString() ?? '0') ?? 0.0;
 
               return Card(
                 elevation: 4,
@@ -105,7 +108,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  leading: type == 'produk' && item['image'] != null
+                  leading: item['image'] != null && File(item['image']).existsSync()
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(15),
                           child: Image.file(
@@ -115,9 +118,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                             fit: BoxFit.cover,
                           ),
                         )
-                      : Icon(Icons.image, size: 50), // Placeholder icon for Tiket
-                  title: Text(title,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      : Icon(Icons.image, size: 50),
+                  title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(currencyFormat.format(price)),
                   onTap: () => addToPesanan(item),
                 ),
@@ -164,10 +166,29 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(() =>
-                KasirView(pesananList: pesananList)); // Pass pesananList here
+            Get.to(() => KasirView(pesananList: pesananList)); // Pass pesananList here
           },
-          child: Icon(Icons.shopping_cart),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(Icons.shopping_cart),
+              if (pesananCount > 0)
+                Positioned(
+                  right: 0,
+                  child: CircleAvatar(
+                    radius: 8.0,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      pesananCount.toString(),
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
