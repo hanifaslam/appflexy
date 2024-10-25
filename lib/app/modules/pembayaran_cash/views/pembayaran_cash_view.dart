@@ -14,7 +14,11 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pembayaran Cash'),
+        title: Text(
+          'Pembayaran Cash',
+          style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+        ),
+        titleSpacing: 80,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,7 +34,7 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
               controller: _controller,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
                 hintText: 'Rp 0',
               ),
             ),
@@ -47,7 +51,8 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                   builder: (context) => AlertDialog(
                     title: Text('Kembalian'),
                     content: Text(
-                        'Kembalian: Rp ${NumberFormat.currency(locale: 'id', symbol: 'Rp').format(change)}'),
+                      'Kembalian: Rp ${NumberFormat.currency(locale: 'id', symbol: 'Rp').format(change)}',
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
@@ -57,7 +62,13 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                   ),
                 );
               },
-              child: Text('Proses Pembayaran'),
+              child: Text('Proses Pembayaran',style: TextStyle(color: Colors.white),),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xff181681), // Button color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // Adjust the radius here
+                ),
+              ),
             ),
           ],
         ),

@@ -26,8 +26,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   @override
   void initState() {
     super.initState();
-    _tabController =
-        TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
+    _tabController = TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
     _loadData();
   }
 
@@ -80,7 +79,6 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
 
   Widget _buildList(List<Map<String, dynamic>> list, String type) {
     String nameKey = type == 'produk' ? 'namaProduk' : 'namaTiket';
-
     List<Map<String, dynamic>> filteredList = _filterList(list, nameKey);
 
     return filteredList.isEmpty
@@ -102,8 +100,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
               String title = item[nameKey] ?? '';
               double price = type == 'produk'
                   ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
-                  : double.tryParse(item['hargaTiket']?.toString() ?? '0') ??
-                      0.0;
+                  : double.tryParse(item['hargaTiket']?.toString() ?? '0') ?? 0.0;
 
               return Card(
                 elevation: 4,
@@ -111,20 +108,18 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  leading:
-                      item['image'] != null && File(item['image']).existsSync()
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: Image.file(
-                                File(item['image']),
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Icon(Icons.image, size: 50),
-                  title: Text(title,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  leading: item['image'] != null && File(item['image']).existsSync()
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.file(
+                            File(item['image']),
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Icon(Icons.image, size: 50),
+                  title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(currencyFormat.format(price)),
                   onTap: () => addToPesanan(item),
                 ),
@@ -139,7 +134,11 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Daftar Produk dan Tiket'),
+          title: Text(
+            'Daftar Produk dan Tiket',
+            style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+          ),
+          titleSpacing: 45,
           bottom: TabBar(
             controller: _tabController,
             tabs: [
@@ -167,8 +166,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(() =>
-                KasirView(pesananList: pesananList)); // Pass pesananList here
+            Get.to(() => KasirView(pesananList: pesananList)); // Pass pesananList here
           },
           child: Stack(
             alignment: Alignment.center,

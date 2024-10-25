@@ -19,15 +19,19 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.only(top: 29),
-          child: Text(
-            'Pengaturan Profil Toko',
-            style: TextStyle(fontFamily: 'Montserrat-VariableFont_wght'),
+  appBar: AppBar(
+    toolbarHeight: 90, // Height of the AppBar
+    flexibleSpace: Center( // Centering the title
+      child: const Text(
+        'Pengaturan Profil Toko',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
           ),
         ),
       ),
+  ),
       body: GestureDetector(
         onTap: () {
           // Menutup keyboard saat mengetuk area kosong
