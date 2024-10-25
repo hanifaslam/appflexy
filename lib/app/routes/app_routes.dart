@@ -16,6 +16,8 @@ abstract class Routes {
   static const PROFILEUSER2 = _Paths.PROFILEUSER2;
   static const SALES_HISTORY = _Paths.SALES_HISTORY;
   static const TAMBAH_TIKET = _Paths.TAMBAH_TIKET;
+  static const DAFTAR_KASIR = _Paths.DAFTAR_KASIR;
+  static const PENGATURAN_PROFILE = _Paths.PENGATURAN_PROFILE;
 }
 
 abstract class _Paths {
@@ -33,4 +35,6 @@ abstract class _Paths {
   static const PROFILEUSER2 = '/profileuser2';
   static const SALES_HISTORY = '/sales-history';
   static const TAMBAH_TIKET = '/tambah-tiket';
+  static const DAFTAR_KASIR = '/daftar-kasir';
+  static const PENGATURAN_PROFILE = '/pengaturan-profile';
 }

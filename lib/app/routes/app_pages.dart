@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/daftar_kasir/bindings/daftar_kasir_binding.dart';
+import '../modules/daftar_kasir/views/daftar_kasir_view.dart';
 import '../modules/daftar_produk/bindings/daftar_produk_binding.dart';
 import '../modules/daftar_produk/views/daftar_produk_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -10,6 +12,8 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/manajemen_tiket/bindings/manajemen_tiket_binding.dart';
 import '../modules/manajemen_tiket/views/manajemen_tiket_view.dart';
+import '../modules/pengaturan_profile/bindings/pengaturan_profile_binding.dart';
+import '../modules/pengaturan_profile/views/pengaturan_profile_view.dart';
 import '../modules/penjualan/bindings/penjualan_binding.dart';
 import '../modules/penjualan/views/penjualan_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
@@ -70,7 +74,9 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.KASIR,
-      page: () => const KasirView(),
+      page: () => KasirView(
+        pesananList: [],
+      ),
       binding: KasirBinding(),
     ),
     GetPage(
@@ -92,6 +98,16 @@ class AppPages {
       name: _Paths.TAMBAH_TIKET,
       page: () => TambahTiketView(),
       binding: TambahTiketBinding(),
+    ),
+    GetPage(
+      name: _Paths.DAFTAR_KASIR,
+      page: () => DaftarKasirView(),
+      binding: DaftarKasirBinding(),
+    ),
+    GetPage(
+      name: _Paths.PENGATURAN_PROFILE,
+      page: () => PengaturanProfileView(),
+      binding: PengaturanProfileBinding(),
     ),
   ];
 }
