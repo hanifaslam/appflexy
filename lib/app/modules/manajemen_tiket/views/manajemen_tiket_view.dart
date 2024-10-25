@@ -163,7 +163,8 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                   itemBuilder: (context, index) {
                     final tiket = filteredTiketList[index];
                     double hargaJual =
-                        double.tryParse(tiket['hargaJual'].toString()) ?? 0.0; // Ensure hargaJual is parsed correctly
+                        double.tryParse(tiket['hargaJual'].toString()) ??
+                            0.0; // Ensure hargaJual is parsed correctly
 
                     return Card(
                       color: Colors.grey[300],

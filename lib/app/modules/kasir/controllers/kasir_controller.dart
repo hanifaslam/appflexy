@@ -9,16 +9,19 @@ class KasirController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    print("Initial pesananList: $pesananList");
   }
 
   // Calculate subtotal
   double get subtotal => pesananList.fold(0.0, (sum, item) {
-        final price = double.tryParse(item['hargaJual'].toString()) ?? 0;
+        final price = double.tryParse(item['harga']?.toString() ?? '0') ??
+            0; // Use 'harga' here
         final quantity = item['quantity'] ?? 1;
         return sum + (price * quantity);
       });
 
-  // Calculate total (same as subtotal now that discount is removed)
+  // Calculate total
   double get total => subtotal;
 
   // Update quantity of a specific item in pesananList
@@ -35,5 +38,10 @@ class KasirController extends GetxController {
   // Format currency
   String formatCurrency(double value) {
     return currencyFormat.format(value);
+  }
+
+  // Method to clear pesananList
+  void clearPesanan() {
+    pesananList.clear();
   }
 }

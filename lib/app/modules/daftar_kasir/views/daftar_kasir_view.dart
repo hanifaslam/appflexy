@@ -26,8 +26,9 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
-    _loadData();
+    _tabController =
+        TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
+    _loadData(); // Load data when initializing
   }
 
   @override
@@ -37,16 +38,32 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   }
 
   void _loadData() {
-    // Load produk and tiket list from storage
-    produkList = List<Map<String, dynamic>>.from(
-        box.read<List<dynamic>>('produkList') ?? []);
-    tiketList = List<Map<String, dynamic>>.from(
-        (box.read<List<dynamic>>('tiketList') ?? []).map((tiket) {
-      tiket['namaTiket'] = tiket['namaTiket'] ?? ''; // Fallback for null values
-      tiket['hargaJual'] =
-          double.tryParse(tiket['hargaJual']?.toString() ?? '0') ?? 0.0;
-      return tiket;
-    }));
+    // Load produk list from GetStorage
+    List<dynamic>? storedProdukList = box.read<List<dynamic>>('produkList');
+    if (storedProdukList != null) {
+      produkList =
+          List<Map<String, dynamic>>.from(storedProdukList.map((produk) {
+        // Provide fallback values if any field is null
+        produk['namaProduk'] = produk['namaProduk'] ?? '';
+        produk['hargaJual'] =
+            double.tryParse(produk['hargaJual']?.toString() ?? '0') ??
+                0.0; // Ensure hargaJual is parsed
+        return produk;
+      }));
+    }
+
+    // Load tiket list from GetStorage
+    List<dynamic>? storedTiketList = box.read<List<dynamic>>('tiketList');
+    if (storedTiketList != null) {
+      tiketList = List<Map<String, dynamic>>.from(storedTiketList.map((tiket) {
+        // Provide fallback values if any field is null
+        tiket['namaTiket'] = tiket['namaTiket'] ?? '';
+        tiket['hargaJual'] =
+            double.tryParse(tiket['hargaJual']?.toString() ?? '0') ??
+                0.0; // Ensure hargaJual is parsed
+        return tiket;
+      }));
+    }
   }
 
   void updateSearchQuery(String query) {
@@ -58,8 +75,9 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   void addToPesanan(Map<String, dynamic> item) {
     setState(() {
       pesananList.add({
-        'nama': item['namaProduk'] ?? item['namaTiket'],
-        'harga': item['hargaJual'] ?? item['hargaTiket'],
+        'nama': item['namaProduk'] ?? item['namaTiket'], // Include both names
+        'harga': item['hargaJual'] ??
+            item['hargaJual'], // Ensure correct price is used
         'image': item['image'],
       });
       pesananCount++;
@@ -100,7 +118,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
               String title = item[nameKey] ?? '';
               double price = type == 'produk'
                   ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
-                  : double.tryParse(item['hargaTiket']?.toString() ?? '0') ?? 0.0;
+                  : double.tryParse(item['hargaJual']?.toString() ?? '0') ??
+                      0.0;
 
               return Card(
                 elevation: 4,
@@ -108,18 +127,20 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  leading: item['image'] != null && File(item['image']).existsSync()
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.file(
-                            File(item['image']),
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : Icon(Icons.image, size: 50),
-                  title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                  leading:
+                      item['image'] != null && File(item['image']).existsSync()
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.file(
+                                File(item['image']),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Icon(Icons.image, size: 50),
+                  title: Text(title,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(currencyFormat.format(price)),
                   onTap: () => addToPesanan(item),
                 ),
@@ -166,7 +187,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(() => KasirView(pesananList: pesananList)); // Pass pesananList here
+            Get.to(() =>
+                KasirView(pesananList: pesananList)); // Pass pesananList here
           },
           child: Stack(
             alignment: Alignment.center,

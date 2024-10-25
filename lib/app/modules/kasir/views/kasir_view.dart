@@ -22,11 +22,17 @@ class _KasirViewState extends State<KasirView> {
   void initState() {
     super.initState();
 
+    // Print the incoming pesananList for debugging
+    print("Incoming pesananList: ${widget.pesananList}");
+
     // Initialize pesananList and ensure each product has 'quantity'
     controller.pesananList.value = widget.pesananList.map((item) {
       item['quantity'] ??= 1; // Initialize quantity to 1 if it's null
       return item;
     }).toList();
+
+    // Print the initialized pesananList for debugging
+    print("Initialized pesananList: ${controller.pesananList}");
   }
 
   @override
@@ -54,7 +60,8 @@ class _KasirViewState extends State<KasirView> {
               children: [
                 Icon(Icons.inbox, size: 100, color: Colors.grey),
                 SizedBox(height: 16),
-                Text('Tidak ada pesanan.', style: TextStyle(color: Colors.grey)),
+                Text('Tidak ada pesanan.',
+                    style: TextStyle(color: Colors.grey)),
               ],
             ),
           );
@@ -69,11 +76,16 @@ class _KasirViewState extends State<KasirView> {
                     itemCount: controller.pesananList.length,
                     itemBuilder: (context, index) {
                       final produk = controller.pesananList[index];
-                      final hargaJual = produk['hargaJual'];
-                      final quantity = produk['quantity'] ?? 1;
+                      print(
+                          "Produk at index $index: $produk"); // Debugging print
+
+                      final hargaJual = produk['harga'] ?? 0; // Access 'harga'
+                      final quantity = produk['quantity'] ?? 1; // Default to 1
+                      final namaProduk = produk['nama'] ?? ''; // Access 'nama'
 
                       // Convert hargaJual to double safely
-                      final hargaNum = double.tryParse(hargaJual?.toString() ?? '0') ?? 0.0;
+                      final hargaNum =
+                          double.tryParse(hargaJual.toString()) ?? 0.0;
                       final formattedPrice = currencyFormat.format(hargaNum);
 
                       return Card(
@@ -81,7 +93,8 @@ class _KasirViewState extends State<KasirView> {
                         margin: EdgeInsets.symmetric(vertical: 8),
                         child: ListTile(
                           leading: Icon(Icons.shopping_bag, size: 40),
-                          title: Text(produk['namaProduk'] ?? produk['namaTiket']),
+                          title: Text(
+                              namaProduk), // Use the correct key for the name
                           subtitle: Text('Harga: $formattedPrice'),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -113,15 +126,18 @@ class _KasirViewState extends State<KasirView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Total',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
                       Text(currencyFormat.format(controller.total),
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
                 SizedBox(height: 20),
                 Center(
-                  child: Text('Pilih Metode Pembayaran', style: TextStyle(fontSize: 18)),
+                  child: Text('Pilih Metode Pembayaran',
+                      style: TextStyle(fontSize: 18)),
                 ),
                 SizedBox(height: 10),
                 Row(
@@ -131,7 +147,9 @@ class _KasirViewState extends State<KasirView> {
                       children: [
                         IconButton(
                           icon: Icon(CupertinoIcons.money_dollar, size: 50),
-                          color: selectedPaymentMethod == 'cash' ? Colors.green : Colors.grey,
+                          color: selectedPaymentMethod == 'cash'
+                              ? Colors.green
+                              : Colors.grey,
                           onPressed: () {
                             setState(() {
                               selectedPaymentMethod = 'cash';
@@ -145,7 +163,9 @@ class _KasirViewState extends State<KasirView> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.qr_code_scanner, size: 40),
-                          color: selectedPaymentMethod == 'qris' ? Colors.green : Colors.grey,
+                          color: selectedPaymentMethod == 'qris'
+                              ? Colors.green
+                              : Colors.grey,
                           onPressed: () {
                             setState(() {
                               selectedPaymentMethod = 'qris';
@@ -160,7 +180,8 @@ class _KasirViewState extends State<KasirView> {
                 SizedBox(height: 10),
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
                     child: ElevatedButton(
                       onPressed: () {
                         if (selectedPaymentMethod == null) {
@@ -187,9 +208,11 @@ class _KasirViewState extends State<KasirView> {
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff181681), // Button color
+                        backgroundColor:
+                            const Color(0xff181681), // Button color
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15), // Adjust the radius here
+                          borderRadius: BorderRadius.circular(
+                              15), // Adjust the radius here
                         ),
                       ),
                     ),
