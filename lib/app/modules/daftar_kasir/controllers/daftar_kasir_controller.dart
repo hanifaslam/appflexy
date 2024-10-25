@@ -18,6 +18,7 @@ class DaftarKasirController extends GetxController {
   void onClose() {
     super.onClose();
   }
+  
 
   void increment() => count.value++;
 }
