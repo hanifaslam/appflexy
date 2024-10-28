@@ -92,9 +92,13 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff181681),
         toolbarHeight: 80,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
             onPressed: () => Get.offAllNamed(Routes.HOME)),
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
@@ -102,9 +106,10 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
             onChanged: updateSearchQuery,
             decoration: InputDecoration(
               hintText: 'Cari Nama Tiket',
+              hintStyle: TextStyle(color: Colors.grey),
               border: InputBorder.none,
               filled: true,
-              fillColor: Colors.grey[200],
+              fillColor: Color(0xff365194).withOpacity(1),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(50),
@@ -118,7 +123,10 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert),
+            icon: Icon(
+              Icons.more_vert,
+              color: Colors.white,
+            ),
             onPressed: () {
               _showSortDialog();
             },
@@ -216,6 +224,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xff181681),
         onPressed: () async {
           final result = await Get.to(TambahTiketView());
           if (result != null) {
@@ -226,7 +235,10 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
             });
           }
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }

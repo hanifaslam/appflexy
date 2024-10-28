@@ -88,20 +88,23 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff181681),
         toolbarHeight: 80,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
           onPressed: () => Get.back(),
         ),
         title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
           child: TextField(
             onChanged: updateSearchQuery,
             decoration: InputDecoration(
               hintText: 'Cari Nama Produk',
+              hintStyle: TextStyle(color: Colors.grey),
               border: InputBorder.none,
               filled: true,
-              fillColor: Colors.grey[200],
+              fillColor: Color(0xff365194).withOpacity(1),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(50),
@@ -116,6 +119,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert),
+            color: Colors.white,
             onPressed: () {
               _showSortDialog();
             },
@@ -224,6 +228,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xff181681),
         onPressed: () async {
           final result = await Get.to(TambahProdukView());
           if (result != null) {
@@ -234,7 +239,10 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
             });
           }
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
