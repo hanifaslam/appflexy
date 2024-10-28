@@ -36,17 +36,16 @@ class _TambahTiketViewState extends State<TambahTiketView> {
       appBar: AppBar(
         toolbarHeight: 70,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text(
           widget.tiket == null ? 'Tambah Tiket' : 'Edit Tiket',
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+              color: Color(0xff181681), fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xff181681),
       ),
       body: GestureDetector(
         onTap: () {
@@ -63,7 +62,10 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                     controller: namaTiketController,
                     decoration: InputDecoration(
                       hintText: 'Nama Tiket',
-                      prefixIcon: Icon(Bootstrap.ticket_detailed),
+                      prefixIcon: Icon(
+                        Bootstrap.ticket_detailed,
+                        color: Color(0xff181681),
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(
                             13), // Set border radius to 25
@@ -78,7 +80,10 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                   TextField(
                     controller: stokController,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Bootstrap.box),
+                      prefixIcon: Icon(
+                        Bootstrap.box,
+                        color: Color(0xff181681),
+                      ),
                       hintText: 'Stok',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(
@@ -96,7 +101,10 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                     controller: hargaJualController,
                     decoration: InputDecoration(
                       hintText: 'Harga Jual',
-                      prefixIcon: Icon(IonIcons.cash),
+                      prefixIcon: Icon(
+                        IonIcons.cash,
+                        color: Color(0xff181681),
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(
                             13), // Set border radius to 25
@@ -113,6 +121,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                     controller: keteranganController,
                     decoration: InputDecoration(
                       hintText: 'Keterangan Tiket',
+                      hintStyle: TextStyle(color: Color(0xff181681)),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(
                             13), // Set border radius to 25

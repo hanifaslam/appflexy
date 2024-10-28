@@ -26,23 +26,21 @@ class _TambahProdukViewState extends State<TambahProdukView> {
       appBar: AppBar(
         toolbarHeight: 70,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
         title: Text(
           widget.produk == null ? 'Tambah Produk' : 'Edit Produk',
           style: const TextStyle(
-              color: Colors.white,
+              color: Color(0xff181681),
               fontFamily: 'Inter',
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xff181681),
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Container(
-          color: Color(0xff365194).withOpacity(0.6),
           child: Column(
             children: [
               Expanded(
@@ -56,10 +54,9 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                             controller: controller.namaProdukController,
                             decoration: InputDecoration(
                                 hintText: 'Nama Produk',
-                                hintStyle: TextStyle(color: Colors.white),
                                 prefixIcon: Icon(
                                   Bootstrap.box,
-                                  color: Colors.white,
+                                  color: Color(0xff181681),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(11),
@@ -74,10 +71,9 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                             controller: controller.kodeProdukController,
                             decoration: InputDecoration(
                               hintText: 'Kode Produk',
-                              hintStyle: TextStyle(color: Colors.white),
                               prefixIcon: Icon(
                                 Bootstrap.tags,
-                                color: Colors.white,
+                                color: Color(0xff181681),
                               ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(11)),
@@ -92,7 +88,10 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                             controller: controller.kategoriController,
                             decoration: InputDecoration(
                               hintText: 'Kategori',
-                              prefixIcon: Icon(Bootstrap.list),
+                              prefixIcon: Icon(
+                                Bootstrap.list,
+                                color: Color(0xff181681),
+                              ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(11)),
                               focusedBorder: OutlineInputBorder(
@@ -106,7 +105,10 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                             controller: controller.stokController,
                             decoration: InputDecoration(
                               hintText: 'Stok',
-                              prefixIcon: Icon(Bootstrap.box2),
+                              prefixIcon: Icon(
+                                Bootstrap.box2,
+                                color: Color(0xff181681),
+                              ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(11)),
                               focusedBorder: OutlineInputBorder(
@@ -124,7 +126,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               decoration: BoxDecoration(
                                 border:
-                                    Border.all(color: Colors.grey, width: 1),
+                                    Border.all(color: Colors.grey, width: 2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Padding(
@@ -141,7 +143,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                                             fit: BoxFit.cover,
                                           )
                                         : const Icon(Bootstrap.image,
-                                            size: 50, color: Colors.grey),
+                                            size: 50, color: Color(0xff181681)),
                                     const SizedBox(width: 8),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -166,7 +168,10 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                             controller: controller.hargaJualController,
                             decoration: InputDecoration(
                               hintText: 'Harga Sewa',
-                              prefixIcon: Icon(IonIcons.cash),
+                              prefixIcon: Icon(
+                                IonIcons.cash,
+                                color: Color(0xff181681),
+                              ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(11)),
                               focusedBorder: OutlineInputBorder(
@@ -180,7 +185,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                           TextField(
                             controller: controller.keteranganController,
                             decoration: InputDecoration(
-                              hintText: 'Keterangan Produk',
+                              hintText: 'Keterangan Produk (opsional)',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(11)),
                               focusedBorder: OutlineInputBorder(
@@ -198,7 +203,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.3),

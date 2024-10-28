@@ -92,12 +92,10 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff181681),
         toolbarHeight: 80,
         leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
             ),
             onPressed: () => Get.offAllNamed(Routes.HOME)),
         title: Padding(
@@ -106,10 +104,10 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
             onChanged: updateSearchQuery,
             decoration: InputDecoration(
               hintText: 'Cari Nama Tiket',
-              hintStyle: TextStyle(color: Colors.grey),
+              hintStyle: TextStyle(color: Color(0xff181681)),
               border: InputBorder.none,
               filled: true,
-              fillColor: Color(0xff365194).withOpacity(1),
+              fillColor: Colors.grey[350],
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(50),
@@ -125,7 +123,6 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
           IconButton(
             icon: Icon(
               Icons.more_vert,
-              color: Colors.white,
             ),
             onPressed: () {
               _showSortDialog();

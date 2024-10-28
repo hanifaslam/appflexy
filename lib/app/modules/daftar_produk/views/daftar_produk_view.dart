@@ -88,11 +88,9 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff181681),
         toolbarHeight: 80,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: Colors.white,
           onPressed: () => Get.back(),
         ),
         title: Padding(
@@ -101,10 +99,10 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
             onChanged: updateSearchQuery,
             decoration: InputDecoration(
               hintText: 'Cari Nama Produk',
-              hintStyle: TextStyle(color: Colors.grey),
+              hintStyle: TextStyle(color: Color(0xff181681)),
               border: InputBorder.none,
               filled: true,
-              fillColor: Color(0xff365194).withOpacity(1),
+              fillColor: Colors.grey[350],
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(50),
@@ -119,7 +117,6 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert),
-            color: Colors.white,
             onPressed: () {
               _showSortDialog();
             },
@@ -127,28 +124,30 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
         ],
       ),
       body: filteredProdukList.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.inbox,
-                    size: 100,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Tidak ada daftar produk yang dapat ditampilkan.',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+          ? Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.inbox,
+                      size: 100,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Tidak ada daftar produk yang dapat ditampilkan.',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             )
           : Padding(
