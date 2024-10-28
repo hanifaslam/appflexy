@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gap/gap.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class TambahTiketView extends StatefulWidget {
   final Map<String, dynamic>? tiket; // Data tiket yang akan diedit
@@ -61,6 +62,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                   controller: namaTiketController,
                   decoration: InputDecoration(
                     hintText: 'Nama Tiket',
+                    prefixIcon: Icon(Bootstrap.ticket_detailed),
                     border: OutlineInputBorder(
                       borderRadius:
                           BorderRadius.circular(13), // Set border radius to 25
@@ -71,6 +73,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                 TextField(
                   controller: stokController,
                   decoration: InputDecoration(
+                    prefixIcon: Icon(Bootstrap.box),
                     hintText: 'Stok',
                     border: OutlineInputBorder(
                       borderRadius:
@@ -84,6 +87,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                   controller: hargaJualController,
                   decoration: InputDecoration(
                     hintText: 'Harga Jual',
+                    prefixIcon: Icon(IonIcons.cash),
                     border: OutlineInputBorder(
                       borderRadius:
                           BorderRadius.circular(13), // Set border radius to 25

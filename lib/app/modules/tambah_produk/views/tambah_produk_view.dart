@@ -1,6 +1,7 @@
 import 'dart:io'; // Untuk menggunakan File
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:image_picker/image_picker.dart'; // Import image_picker
 import 'package:gap/gap.dart';
 
@@ -54,14 +55,19 @@ class _TambahProdukViewState extends State<TambahProdukView> {
       appBar: AppBar(
         toolbarHeight: 70,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 0, 0)),
+          icon:
+              const Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 0, 0)),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text(
           widget.produk == null ? 'Tambah Produk' : 'Edit Produk',
-          style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontFamily: 'Inter', fontStyle: FontStyle.normal, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+              color: Color.fromARGB(255, 0, 0, 0),
+              fontFamily: 'Inter',
+              fontStyle: FontStyle.normal,
+              fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
@@ -79,9 +85,9 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                   controller: namaProdukController,
                   decoration: InputDecoration(
                     hintText: 'Nama Produk',
+                    prefixIcon: Icon(Bootstrap.box),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11)
-                    ),
+                        borderRadius: BorderRadius.circular(11)),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -89,16 +95,18 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                   controller: kodeProdukController,
                   decoration: InputDecoration(
                     hintText: 'Kode Produk',
+                    prefixIcon: Icon(Bootstrap.tags),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11)
-                    ),
+                        borderRadius: BorderRadius.circular(11)),
                   ),
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(
                     hintText: 'Kategori',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
+                    prefixIcon: Icon(Bootstrap.list),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(11)),
                   ),
                   value: kategoriValue,
                   items: kategori.map((String value) {
@@ -118,7 +126,9 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                   controller: stokController,
                   decoration: InputDecoration(
                     hintText: 'Stok',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
+                    prefixIcon: Icon(Bootstrap.box2),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(11)),
                   ),
                   keyboardType: TextInputType.number,
                 ),
@@ -147,8 +157,10 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                 TextField(
                   controller: hargaJualController,
                   decoration: InputDecoration(
-                    hintText: 'Harga Jual',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
+                    hintText: 'Harga Sewa',
+                    prefixIcon: Icon(IonIcons.cash),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(11)),
                   ),
                   keyboardType: TextInputType.number,
                 ),
@@ -157,7 +169,8 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                   controller: keteranganController,
                   decoration: InputDecoration(
                     hintText: 'Keterangan Produk',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(11)),
                   ),
                   maxLines: 4,
                 ),
@@ -177,10 +190,13 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                     Get.back(result: newProduk); // Kirim data produk
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff181681), // Gunakan warna yang sesuai
-                    minimumSize: const Size(double.infinity, 50), // Sesuaikan lebar dan tinggi
+                    backgroundColor:
+                        const Color(0xff181681), // Gunakan warna yang sesuai
+                    minimumSize: const Size(
+                        double.infinity, 50), // Sesuaikan lebar dan tinggi
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20), // Bentuk tombol rounded
+                      borderRadius:
+                          BorderRadius.circular(20), // Bentuk tombol rounded
                     ),
                   ),
                   child: const Text(
