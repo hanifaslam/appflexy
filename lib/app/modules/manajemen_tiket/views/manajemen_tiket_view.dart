@@ -1,4 +1,3 @@
-import 'dart:io'; // Untuk menggunakan File
 import 'package:apptiket/app/modules/tambah_tiket/views/tambah_tiket_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -26,16 +25,20 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
   }
 
   void _loadTiketList() {
-    
     List<dynamic>? storedTiketList = box.read<List<dynamic>>('tiketList');
     if (storedTiketList != null) {
-      tiketList = List<Map<String, dynamic>>.from(storedTiketList);
+      tiketList = List<Map<String, dynamic>>.from(storedTiketList.map((tiket) {
+        // Provide fallback values if any field is null
+        tiket['namaTiket'] = tiket['namaTiket'] ?? '';
+        tiket['hargaJual'] =
+            double.tryParse(tiket['hargaJual']?.toString() ?? '0') ?? 0.0;
+        return tiket;
+      }));
       filteredTiketList = tiketList;
     }
   }
 
   void _saveTiketList() {
-    
     box.write('tiketList', tiketList);
   }
 
@@ -91,9 +94,8 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
       appBar: AppBar(
         toolbarHeight: 80,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.offAllNamed(Routes.HOME)
-        ),
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Get.offAllNamed(Routes.HOME)),
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
           child: TextField(
@@ -162,7 +164,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                     final tiket = filteredTiketList[index];
                     double hargaJual =
                         double.tryParse(tiket['hargaJual'].toString()) ??
-                            0.0; // Konversi hargaJual ke double
+                            0.0; // Ensure hargaJual is parsed correctly
 
                     return Card(
                       color: Colors.grey[300],
@@ -171,17 +173,6 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListTile(
-                        leading: tiket['image'] != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Image.file(
-                                  File(tiket['image']), // Tampilkan gambar
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Icon(Icons.image, size: 50),
                         title: Text(tiket['namaTiket'],
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: Text(
@@ -230,7 +221,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
           if (result != null) {
             setState(() {
               tiketList.add(result);
-              _saveTiketList(); 
+              _saveTiketList();
               updateSearchQuery(searchQuery);
             });
           }
@@ -259,7 +250,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
               onPressed: () {
                 setState(() {
                   tiketList.removeAt(index);
-                  _saveTiketList(); 
+                  _saveTiketList();
                   updateSearchQuery(searchQuery);
                 });
                 Navigator.of(context).pop();
@@ -279,7 +270,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
     if (result != null) {
       setState(() {
         tiketList[index] = result;
-        _saveTiketList(); 
+        _saveTiketList();
         updateSearchQuery(searchQuery);
       });
     }

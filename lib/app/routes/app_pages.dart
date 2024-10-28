@@ -12,6 +12,8 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/manajemen_tiket/bindings/manajemen_tiket_binding.dart';
 import '../modules/manajemen_tiket/views/manajemen_tiket_view.dart';
+import '../modules/pembayaran_cash/bindings/pembayaran_cash_binding.dart';
+import '../modules/pembayaran_cash/views/pembayaran_cash_view.dart';
 import '../modules/pengaturan_profile/bindings/pengaturan_profile_binding.dart';
 import '../modules/pengaturan_profile/views/pengaturan_profile_view.dart';
 import '../modules/penjualan/bindings/penjualan_binding.dart';
@@ -24,6 +26,8 @@ import '../modules/sales_history/bindings/sales_history_binding.dart';
 import '../modules/sales_history/views/sales_history_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
+import '../modules/struk/bindings/struk_binding.dart';
+import '../modules/struk/views/struk_view.dart';
 import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
 import '../modules/tambah_produk/views/tambah_produk_view.dart';
 import '../modules/tambah_tiket/bindings/tambah_tiket_binding.dart';
@@ -108,6 +112,18 @@ class AppPages {
       name: _Paths.PENGATURAN_PROFILE,
       page: () => PengaturanProfileView(),
       binding: PengaturanProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.PEMBAYARAN_CASH,
+      page: () => PembayaranCashView(),
+      binding: PembayaranCashBinding(),
+    ),
+    GetPage(
+      name: _Paths.STRUK,
+      page: () => StrukView(
+        receipt: Get.arguments,
+      ),
+      binding: StrukBinding(),
     ),
   ];
 }

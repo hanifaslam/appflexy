@@ -1,12 +1,10 @@
 import 'package:get/get.dart';
-
-import '../controllers/daftar_kasir_controller.dart';
+import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
 
 class DaftarKasirBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<DaftarKasirController>(
-      () => DaftarKasirController(),
-    );
+    // Bind the DaftarKasirController to GetX dependency management
+    Get.lazyPut<DaftarKasirController>(() => DaftarKasirController());
   }
 }

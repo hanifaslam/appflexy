@@ -21,10 +21,10 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
     return Scaffold(
       appBar: AppBar(
         title: const Padding(
-          padding: EdgeInsets.only(top: 29),
+          padding: EdgeInsets.only(top: 0),
           child: Text(
             'Pengaturan Profil Toko',
-            style: TextStyle(fontFamily: 'Montserrat-VariableFont_wght'),
+            style: TextStyle(fontFamily: 'mon', ),
           ),
         ),
         leading: IconButton(

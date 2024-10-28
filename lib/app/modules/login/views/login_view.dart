@@ -42,23 +42,37 @@ class LoginView extends GetView<LoginController> {
                   ),
 
                   const SizedBox(height: 40), // Spacing between logo and text
-                  const Text(
-                    "Buka tiket Anda untuk pengalaman luar biasa!",
-                    style: TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
+                  Text(
+                  "Buka tiket Anda untuk pengalaman luar biasa!",
+                    style: TextStyle(
+                    fontFamily: 'Inter', // Custom font family
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
                   ),
+                      textAlign: TextAlign.center,
+                ),
+
+                  
                   const SizedBox(height: 30), // Spacing between text and input fields
 
                   // Email input field
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: TextField(
-                      controller: controller.emailController,
-                      decoration: InputDecoration(
-                        hintText: "Email",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(color: Color(0xFF84AFC2)),
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextField(
+                    controller: controller.emailController,
+                    decoration: InputDecoration(
+                      hintText: "Email",
+                      hintStyle: const TextStyle(
+                        fontFamily: 'Inter', // Apply custom font
+                        fontSize: 16,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.bold,
+                        
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xFF84AFC2)),
                         ),
                       ),
                     ),
@@ -74,6 +88,14 @@ class LoginView extends GetView<LoginController> {
                           obscureText: controller.isPasswordHidden.value,
                           decoration: InputDecoration(
                             hintText: "Password",
+                            hintStyle: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.bold,
+                              
+
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),

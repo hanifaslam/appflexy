@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-class DaftarKasirController extends GetxController {
-  //TODO: Implement DaftarKasirController
+class StrukController extends GetxController {
+  //TODO: Implement StrukController
 
   final count = 0.obs;
   @override
