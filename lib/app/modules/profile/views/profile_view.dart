@@ -19,19 +19,15 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  appBar: AppBar(
-    toolbarHeight: 90, // Height of the AppBar
-    flexibleSpace: Center( // Centering the title
-      child: const Text(
-        'Pengaturan Profil Toko',
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
+      appBar: AppBar(
+        title: const Padding(
+          padding: EdgeInsets.only(top: 29),
+          child: Text(
+            'Pengaturan Profil Toko',
+            style: TextStyle(fontFamily: 'Montserrat-VariableFont_wght'),
           ),
         ),
       ),
-  ),
       body: GestureDetector(
         onTap: () {
           // Menutup keyboard saat mengetuk area kosong
@@ -115,18 +111,25 @@ class ProfileView extends GetView<ProfileController> {
                   onPressed: () {
                     if (controller.companyName.value.isNotEmpty &&
                         controller.companyType.value.isNotEmpty &&
-                        controller.companyAddress.value.isNotEmpty &&
-                        controller.companyLogoPath.value.isNotEmpty) {
-                      Get.offAllNamed(Routes.HOME); // Navigasi ke halaman HOME
+                        controller.companyAddress.value.isNotEmpty) {
+                      // Simpan data ke GetStorage
+                      controller.saveToStorage();
+
+                      // Kirim data ke API
+                      controller.saveProfileToApi();
+
+                      // Navigasi ke halaman HOME jika berhasil
+                      Get.offAllNamed(Routes.HOME);
                     } else {
                       Get.snackbar(
                         'Peringatan',
-                        'Harap isi semua kolom',
-                        backgroundColor: const Color(0xFF5C8FDA).withOpacity(0.2),
+                        'Harap isi semua kolom teks',
+                        backgroundColor:
+                            const Color(0xFF5C8FDA).withOpacity(0.2),
                         colorText: const Color(0xFF2B47CA),
-                        margin: const EdgeInsets.all(16), // Margin untuk memberi jarak
-                        borderRadius: 8, // Sudut melengkung
-                        snackStyle: SnackStyle.FLOATING, // Snackbar tipe floating
+                        margin: const EdgeInsets.all(16),
+                        borderRadius: 8,
+                        snackStyle: SnackStyle.FLOATING,
                       );
                     }
                   },

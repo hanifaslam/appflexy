@@ -14,7 +14,11 @@ class Profileuser2View extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Profil',
-          style: TextStyle(fontFamily: 'Inter', fontStyle: FontStyle.italic,fontWeight:  FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontFamily: 'Inter',
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
         ),
         backgroundColor: Color(0xFF213F84),
       ),
@@ -27,13 +31,20 @@ class Profileuser2View extends StatelessWidget {
               color: Color(0xFF213F84),
               child: Stack(
                 children: [
-                  Positioned(top: 20, left: 50, child: circleDecoration(30, 0.4)),
-                  Positioned(top: 70, left: 20, child: circleDecoration(20, 0.6)),
-                  Positioned(top: 100, left: 90, child: circleDecoration(15, 0.8)),
-                  Positioned(top: 50, left: 30, child: circleDecoration(80, 0.5)),
-                  Positioned(top: 20, right: 50, child: circleDecoration(100, 0.7)),
-                  Positioned(top: 120, right: 10, child: circleDecoration(60, 1.0)),
-                  Positioned(top: 150, left: 20, child: circleDecoration(40, 0.8)),
+                  Positioned(
+                      top: 20, left: 50, child: circleDecoration(30, 0.4)),
+                  Positioned(
+                      top: 70, left: 20, child: circleDecoration(20, 0.6)),
+                  Positioned(
+                      top: 100, left: 90, child: circleDecoration(15, 0.8)),
+                  Positioned(
+                      top: 50, left: 30, child: circleDecoration(80, 0.5)),
+                  Positioned(
+                      top: 20, right: 50, child: circleDecoration(100, 0.7)),
+                  Positioned(
+                      top: 120, right: 10, child: circleDecoration(60, 1.0)),
+                  Positioned(
+                      top: 150, left: 20, child: circleDecoration(40, 0.8)),
                 ],
               ),
             ),
@@ -58,15 +69,21 @@ class Profileuser2View extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Obx(() => Text(
-                              controller.companyName.value,
-                              style: TextStyle(fontSize: 24, fontFamily: 'Inter', fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
-                            )),
+                                  controller.companyName.value,
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontFamily: 'Inter',
+                                      fontStyle: FontStyle.italic,
+                                      fontWeight: FontWeight.bold),
+                                )),
                             SizedBox(height: 30),
                             // Sales Info
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 10),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(15),
@@ -81,27 +98,26 @@ class Profileuser2View extends StatelessWidget {
                                 child: Center(
                                   child: Column(
                                     children: [
-                                      Icon(Icons.arrow_downward, color: Colors.green, size: 30),
+                                      Icon(Icons.arrow_downward,
+                                          color: Colors.green, size: 30),
                                       SizedBox(height: 5),
                                       Text(
                                         'Penjualan',
                                         style: TextStyle(
-                                          color: Colors.green,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Inter',
-                                          fontStyle: FontStyle.italic
-                                        ),
+                                            color: Colors.green,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Inter',
+                                            fontStyle: FontStyle.italic),
                                       ),
                                       SizedBox(height: 5),
                                       Text(
                                         'Rp 4.000.000',
                                         style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Inter',
-                                          fontStyle: FontStyle.italic
-                                        ),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Inter',
+                                            fontStyle: FontStyle.italic),
                                       ),
                                     ],
                                   ),
@@ -110,13 +126,17 @@ class Profileuser2View extends StatelessWidget {
                             ),
                             SizedBox(height: 20),
                             // Menu Items
-                            menuItem('Grafik Penjualan', Icons.arrow_forward, () {
+                            menuItem('Grafik Penjualan', Icons.arrow_forward,
+                                () {
                               // Navigate to sales graph
                               // Get.toNamed(Routes.GRAFIK_PENJUALAN);
                             }),
-                            menuItem('Pengaturan Profil Toko', Icons.arrow_forward, () {
+                            menuItem(
+                                'Pengaturan Profil Toko', Icons.arrow_forward,
+                                () {
                               // Navigate to profile settings
-                              Get.toNamed(Routes.PENGATURAN_PROFILE); // Navigasi ke halaman pengaturan profil
+                              Get.toNamed(Routes
+                                  .PENGATURAN_PROFILE); // Navigasi ke halaman pengaturan profil
                             }),
                             menuItem('Ganti Password', Icons.arrow_forward, () {
                               // Navigate to change password
@@ -142,9 +162,11 @@ class Profileuser2View extends StatelessWidget {
                           child: Obx(
                             () => CircleAvatar(
                               radius: 55,
-                              backgroundImage: controller.companyLogo.value.isNotEmpty
-                                  ? FileImage(File(controller.companyLogo.value))
-                                  : AssetImage('assets/logo/logoflex.png'),
+                              backgroundImage:
+                                  controller.companyLogo.value.isNotEmpty
+                                      ? FileImage(
+                                          File(controller.companyLogo.value))
+                                      : AssetImage('assets/logo/logoflex.png'),
                             ),
                           ),
                         ),
@@ -186,7 +208,8 @@ class Profileuser2View extends StatelessWidget {
   }
 
   // Menu item widget
-  Widget menuItem(String title, IconData icon, Function onTap, [Color? textColor]) {
+  Widget menuItem(String title, IconData icon, Function onTap,
+      [Color? textColor]) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: GestureDetector(
