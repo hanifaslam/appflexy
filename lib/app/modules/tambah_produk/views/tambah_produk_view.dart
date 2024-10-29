@@ -1,214 +1,240 @@
-import 'dart:io'; // Untuk menggunakan File
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:icons_plus/icons_plus.dart';
-import 'package:image_picker/image_picker.dart'; // Import image_picker
 import 'package:gap/gap.dart';
+import 'package:icons_plus/icons_plus.dart';
+
+import '../controllers/tambah_produk_controller.dart';
 
 class TambahProdukView extends StatefulWidget {
-  final Map<String, dynamic>? produk; // Data produk yang akan diedit
-  final int? index; // Index produk untuk di-update
+  final Map<String, dynamic>? produk;
+  final int? index;
 
   TambahProdukView({this.produk, this.index});
 
   @override
-  _TambahProdukViewState createState() => _TambahProdukViewState();
+  State<TambahProdukView> createState() => _TambahProdukViewState();
 }
 
 class _TambahProdukViewState extends State<TambahProdukView> {
-  final TextEditingController namaProdukController = TextEditingController();
-  final TextEditingController kodeProdukController = TextEditingController();
-  final TextEditingController stokController = TextEditingController();
-  final TextEditingController hargaJualController = TextEditingController();
-  final TextEditingController keteranganController = TextEditingController();
-  String? kategoriValue;
-  List<String> kategori = ['Elektronik', 'Fashion', 'Makanan', 'Minuman'];
-
-  File? _selectedImage; // Untuk menyimpan gambar yang dipilih
-  final ImagePicker _picker = ImagePicker(); // Instance dari ImagePicker
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.produk != null) {
-      namaProdukController.text = widget.produk!['namaProduk'];
-      kodeProdukController.text = widget.produk!['kodeProduk'];
-      stokController.text = widget.produk!['stok'];
-      hargaJualController.text = widget.produk!['hargaJual'];
-      keteranganController.text = widget.produk!['keterangan'];
-      kategoriValue = widget.produk!['kategori'];
-    }
-  }
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path); // Simpan gambar yang dipilih
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(TambahProdukController());
+
+    controller.initializeProduk(widget.produk);
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 70,
         leading: IconButton(
-          icon:
-              const Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 0, 0)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
         ),
         title: Text(
           widget.produk == null ? 'Tambah Produk' : 'Edit Produk',
           style: const TextStyle(
-              color: Color.fromARGB(255, 0, 0, 0),
+              color: Color(0xff181681),
               fontFamily: 'Inter',
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
       body: GestureDetector(
-        onTap: () {
-          // Menutup keyboard saat mengetuk area kosong
-          FocusScope.of(context).unfocus();
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: namaProdukController,
-                  decoration: InputDecoration(
-                    hintText: 'Nama Produk',
-                    prefixIcon: Icon(Bootstrap.box),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11)),
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Container(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: GetBuilder<TambahProdukController>(
+                    builder: (controller) {
+                      return Column(
+                        children: [
+                          TextField(
+                            controller: controller.namaProdukController,
+                            decoration: InputDecoration(
+                                hintText: 'Nama Produk',
+                                prefixIcon: Icon(
+                                  Bootstrap.box,
+                                  color: Color(0xff181681),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(11),
+                                    borderSide: BorderSide(
+                                        color: Color(0xff181681), width: 2.0))),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: controller.kodeProdukController,
+                            decoration: InputDecoration(
+                              hintText: 'Kode Produk',
+                              prefixIcon: Icon(
+                                Bootstrap.tags,
+                                color: Color(0xff181681),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff181681), width: 2.0)),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: controller.kategoriController,
+                            decoration: InputDecoration(
+                              hintText: 'Kategori',
+                              prefixIcon: Icon(
+                                Bootstrap.list,
+                                color: Color(0xff181681),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff181681), width: 2.0)),
+                            ),
+                          ),
+                          const Gap(30),
+                          TextField(
+                            controller: controller.stokController,
+                            decoration: InputDecoration(
+                              hintText: 'Stok',
+                              prefixIcon: Icon(
+                                Bootstrap.box2,
+                                color: Color(0xff181681),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff181681), width: 2.0)),
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                          const Gap(30),
+                          GestureDetector(
+                            onTap: controller.pickImage,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    controller.selectedImage != null
+                                        ? Image.file(
+                                            controller.selectedImage!,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Icon(Bootstrap.image,
+                                            size: 50, color: Color(0xff181681)),
+                                    const SizedBox(width: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      child: Text(
+                                        controller.selectedImage != null
+                                            ? 'Ganti Foto Produk'
+                                            : 'Masukan Foto Produk',
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            fontFamily: 'inter',
+                                            fontStyle: FontStyle.normal),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: controller.hargaJualController,
+                            decoration: InputDecoration(
+                              hintText: 'Harga Sewa',
+                              prefixIcon: Icon(
+                                IonIcons.cash,
+                                color: Color(0xff181681),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff181681), width: 2.0)),
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: controller.keteranganController,
+                            decoration: InputDecoration(
+                              hintText: 'Keterangan Produk (opsional)',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff181681), width: 2.0)),
+                            ),
+                            maxLines: 4,
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: kodeProdukController,
-                  decoration: InputDecoration(
-                    hintText: 'Kode Produk',
-                    prefixIcon: Icon(Bootstrap.tags),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11)),
-                  ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 8,
+                      offset: const Offset(0, -3),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    hintText: 'Kategori',
-                    prefixIcon: Icon(Bootstrap.list),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11)),
-                  ),
-                  value: kategoriValue,
-                  items: kategori.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      kategoriValue = newValue;
-                    });
-                  },
-                ),
-                const Gap(30),
-                TextField(
-                  controller: stokController,
-                  decoration: InputDecoration(
-                    hintText: 'Stok',
-                    prefixIcon: Icon(Bootstrap.box2),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11)),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-                const Gap(30),
-                GestureDetector(
-                  onTap: _pickImage, // Buka galeri saat ditekan
-                  child: Row(
-                    children: [
-                      _selectedImage != null
-                          ? Image.file(
-                              _selectedImage!,
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            )
-                          : const Icon(Icons.image, size: 100),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Masukan Foto Produk',
-                        style: TextStyle(fontSize: 18),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final newProduk = controller.createNewProduk();
+                      Get.back(result: newProduk);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff181681),
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: hargaJualController,
-                  decoration: InputDecoration(
-                    hintText: 'Harga Sewa',
-                    prefixIcon: Icon(IonIcons.cash),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11)),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: keteranganController,
-                  decoration: InputDecoration(
-                    hintText: 'Keterangan Produk',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11)),
-                  ),
-                  maxLines: 4,
-                ),
-                const Gap(70),
-                ElevatedButton(
-                  onPressed: () {
-                    // Kembali ke halaman sebelumnya dengan data produk
-                    Map<String, dynamic> newProduk = {
-                      'namaProduk': namaProdukController.text,
-                      'kodeProduk': kodeProdukController.text,
-                      'stok': stokController.text,
-                      'hargaJual': hargaJualController.text,
-                      'keterangan': keteranganController.text,
-                      'kategori': kategoriValue,
-                      'image': _selectedImage?.path, // Simpan path dari gambar
-                    };
-                    Get.back(result: newProduk); // Kirim data produk
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color(0xff181681), // Gunakan warna yang sesuai
-                    minimumSize: const Size(
-                        double.infinity, 50), // Sesuaikan lebar dan tinggi
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(20), // Bentuk tombol rounded
                     ),
-                  ),
-                  child: const Text(
-                    'Tambahkan Produk',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white, // Warna teks tombol putih
+                    child: const Text(
+                      'Tambahkan Produk',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

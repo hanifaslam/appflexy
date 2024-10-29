@@ -94,7 +94,9 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
       appBar: AppBar(
         toolbarHeight: 80,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(
+              Icons.arrow_back,
+            ),
             onPressed: () => Get.offAllNamed(Routes.HOME)),
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
@@ -102,9 +104,10 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
             onChanged: updateSearchQuery,
             decoration: InputDecoration(
               hintText: 'Cari Nama Tiket',
+              hintStyle: TextStyle(color: Color(0xff181681)),
               border: InputBorder.none,
               filled: true,
-              fillColor: Colors.grey[200],
+              fillColor: Colors.grey[350],
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(50),
@@ -118,7 +121,9 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert),
+            icon: Icon(
+              Icons.more_vert,
+            ),
             onPressed: () {
               _showSortDialog();
             },
@@ -216,6 +221,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xff181681),
         onPressed: () async {
           final result = await Get.to(TambahTiketView());
           if (result != null) {
@@ -226,7 +232,10 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
             });
           }
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }

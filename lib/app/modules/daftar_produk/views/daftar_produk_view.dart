@@ -94,14 +94,15 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
           onPressed: () => Get.back(),
         ),
         title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
           child: TextField(
             onChanged: updateSearchQuery,
             decoration: InputDecoration(
               hintText: 'Cari Nama Produk',
+              hintStyle: TextStyle(color: Color(0xff181681)),
               border: InputBorder.none,
               filled: true,
-              fillColor: Colors.grey[200],
+              fillColor: Colors.grey[350],
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(50),
@@ -123,28 +124,30 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
         ],
       ),
       body: filteredProdukList.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.inbox,
-                    size: 100,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Tidak ada daftar produk yang dapat ditampilkan.',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+          ? Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.inbox,
+                      size: 100,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Tidak ada daftar produk yang dapat ditampilkan.',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             )
           : Padding(
@@ -224,6 +227,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xff181681),
         onPressed: () async {
           final result = await Get.to(TambahProdukView());
           if (result != null) {
@@ -234,7 +238,10 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
             });
           }
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
