@@ -20,7 +20,7 @@ class SalesHistoryController extends GetxController {
       'customer': 'Customer 9',
       'time': '21/09/2024 - 10:20 AM',
       'paymentSource': 'Bagas Kopling',
-      'paymentMethod': 'Debit',
+      'paymentMethod': 'QRIS',
       'items': [
         {'name': 'Tiket Dewasa', 'quantity': 2, 'price': 50000},
         {'name': 'Tiket Anak', 'quantity': 1, 'price': 35000},
@@ -80,7 +80,7 @@ class SalesHistoryController extends GetxController {
       'customer': 'Customer 4',
       'time': '21/09/2024 - 09:55 AM',
       'paymentSource': 'Mas Kepin',
-      'paymentMethod': 'Debit',
+      'paymentMethod': 'Tunai',
       'items': [
         {'name': 'Tiket Dewasa', 'quantity': 2, 'price': 50000},
         {'name': 'Jaket Pelampung', 'quantity': 1, 'price': 20000},
