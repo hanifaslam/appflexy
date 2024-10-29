@@ -67,7 +67,7 @@ class SalesHistoryController extends GetxController {
     {
       'customer': 'Customer 5',
       'time': '21/09/2024 - 10:00 AM',
-      'paymentSource': 'Mulyo',
+      'paymentSource': 'Mulyono',
       'paymentMethod': 'Tunai',
       'items': [
         {'name': 'Tiket Dewasa', 'quantity': 1, 'price': 50000},
@@ -79,7 +79,7 @@ class SalesHistoryController extends GetxController {
     {
       'customer': 'Customer 4',
       'time': '21/09/2024 - 09:55 AM',
-      'paymentSource': 'Jin Kazama',
+      'paymentSource': 'Mas Kepin',
       'paymentMethod': 'Debit',
       'items': [
         {'name': 'Tiket Dewasa', 'quantity': 2, 'price': 50000},
@@ -103,7 +103,7 @@ class SalesHistoryController extends GetxController {
     {
       'customer': 'Customer 2',
       'time': '21/09/2024 - 09:40 AM',
-      'paymentSource': 'Lee Chaolan',
+      'paymentSource': 'Mas Admin',
       'paymentMethod': 'Tunai',
       'items': [
         {'name': 'Tiket Dewasa', 'quantity': 1, 'price': 50000},

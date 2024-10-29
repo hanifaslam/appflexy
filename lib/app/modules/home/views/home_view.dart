@@ -182,7 +182,7 @@ class _HomeViewState extends State<HomeView> {
                     const Color(0xff5475F9),
                     Colors.white,
                     onTap: () {
-                      Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama
+                      Get.offAllNamed(Routes.SALES_HISTORY); // sementara masih manggil pages yg sama
                     },
                   ),
                   _buildCircularIconButton(
