@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:apptiket/app/modules/kasir/views/kasir_view.dart';
+import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
+    _tabController =
+        TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
     _loadData();
   }
 
@@ -58,9 +60,9 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   void addToPesanan(Map<String, dynamic> item) {
     setState(() {
       pesananList.add({
-        'nama': item['namaProduk'] ?? item['namaTiket'],
-        'harga': item['hargaJual'] ?? item['hargaTiket'],
-        'image': item['image'],
+        'namaProduk': item['namaProduk'] ?? item['namaTiket'],
+        'hargaJual': item['hargaJual'] ?? item['hargaTiket'],
+        'image': item['image'] ?? '', // Menghindari null dengan nilai kosong
       });
       pesananCount++;
     });
@@ -100,7 +102,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
               String title = item[nameKey] ?? '';
               double price = type == 'produk'
                   ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
-                  : double.tryParse(item['hargaTiket']?.toString() ?? '0') ?? 0.0;
+                  : double.tryParse(item['hargaTiket']?.toString() ?? '0') ??
+                      0.0;
 
               return Card(
                 elevation: 4,
@@ -108,18 +111,20 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  leading: item['image'] != null && File(item['image']).existsSync()
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.file(
-                            File(item['image']),
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : Icon(Icons.image, size: 50),
-                  title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                  leading:
+                      item['image'] != null && File(item['image']).existsSync()
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.file(
+                                File(item['image']),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Icon(Icons.image, size: 50),
+                  title: Text(title,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(currencyFormat.format(price)),
                   onTap: () => addToPesanan(item),
                 ),
@@ -134,11 +139,20 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            'Daftar Produk dan Tiket',
-            style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+          title: TextField(
+            onChanged: updateSearchQuery,
+            decoration: InputDecoration(
+              hintText: 'Cari Produk atau Tiket',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.0),
+                borderSide: BorderSide.none,
+              ),
+              filled: true,
+              fillColor: Colors.white.withOpacity(0.1),
+              contentPadding: EdgeInsets.symmetric(vertical: 8.0),
+            ),
           ),
-          titleSpacing: 45,
           bottom: TabBar(
             controller: _tabController,
             tabs: [
@@ -166,7 +180,15 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(() => KasirView(pesananList: pesananList)); // Pass pesananList here
+            if (pesananList.isEmpty) {
+              Get.snackbar(
+                'Pesanan Kosong',
+                'Tambahkan produk atau tiket ke pesanan terlebih dahulu',
+                snackPosition: SnackPosition.BOTTOM,
+              );
+            } else {
+              Get.to(() => KasirView(pesananList: pesananList));
+            }
           },
           child: Stack(
             alignment: Alignment.center,

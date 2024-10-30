@@ -1,4 +1,4 @@
-import 'dart:io'; // Untuk menggunakan File
+import 'dart:io';
 import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,8 +12,8 @@ class DaftarProdukView extends StatefulWidget {
 
 class _DaftarProdukViewState extends State<DaftarProdukView> {
   final NumberFormat currencyFormat =
-      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
-  final box = GetStorage(); // Inisialisasi GetStorage
+      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
+  final box = GetStorage();
   List<Map<String, dynamic>> produkList = [];
   List<Map<String, dynamic>> filteredProdukList = [];
   String searchQuery = '';
@@ -21,20 +21,25 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
   @override
   void initState() {
     super.initState();
-    _loadProdukList(); // Load data saat initState
+    _loadProdukList();
+  }
+
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadProdukList(); // Memuat data produk dari GetStorage setiap kali halaman diakses kembali
   }
 
   void _loadProdukList() {
-    // Memuat daftar produk dari GetStorage
     List<dynamic>? storedProdukList = box.read<List<dynamic>>('produkList');
     if (storedProdukList != null) {
-      produkList = List<Map<String, dynamic>>.from(storedProdukList);
-      filteredProdukList = produkList;
+      setState(() {
+        produkList = List<Map<String, dynamic>>.from(storedProdukList);
+        filteredProdukList = produkList;
+      });
     }
   }
 
   void _saveProdukList() {
-    // Menyimpan daftar produk ke GetStorage
     box.write('produkList', produkList);
   }
 
@@ -48,180 +53,84 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
     });
   }
 
-  void _showSortDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Sort Produk"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text("Ascending"),
-                onTap: () {
-                  setState(() {
-                    filteredProdukList.sort(
-                        (a, b) => a['namaProduk'].compareTo(b['namaProduk']));
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: Text("Descending"),
-                onTap: () {
-                  setState(() {
-                    filteredProdukList.sort(
-                        (a, b) => b['namaProduk'].compareTo(a['namaProduk']));
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-          child: TextField(
-            onChanged: updateSearchQuery,
-            decoration: InputDecoration(
-              hintText: 'Cari Nama Produk',
-              border: InputBorder.none,
-              filled: true,
-              fillColor: Colors.grey[200],
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
-                borderRadius: BorderRadius.circular(50),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
-                borderRadius: BorderRadius.circular(50),
-              ),
+        title: TextField(
+          onChanged: updateSearchQuery,
+          decoration: InputDecoration(
+            hintText: 'Cari Nama Produk',
+            prefixIcon: Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.0),
+              borderSide: BorderSide.none,
             ),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.1),
+            contentPadding: EdgeInsets.symmetric(vertical: 8.0),
           ),
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert),
-            onPressed: () {
-              _showSortDialog();
-            },
+            onPressed: _showSortDialog,
           ),
         ],
       ),
       body: filteredProdukList.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.inbox,
-                    size: 100,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Tidak ada daftar produk yang dapat ditampilkan.',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  itemCount: filteredProdukList.length,
-                  itemBuilder: (context, index) {
-                    final produk = filteredProdukList[index];
-                    double hargaJual =
-                        double.tryParse(produk['hargaJual'].toString()) ??
-                            0.0; // Konversi hargaJual ke double
-
-                    return Card(
-                      color: Colors.grey[300],
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+          ? Center(child: Text('Tidak ada daftar produk'))
+          : ListView.builder(
+              itemCount: filteredProdukList.length,
+              itemBuilder: (context, index) {
+                final produk = filteredProdukList[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade700,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ListTile(
+                      leading: Image.asset(
+                        'assets/logo/logoflex.png', // Ganti path sesuai dengan ikon yang diinginkan
+                        width: 40,
+                        height: 40,
                       ),
-                      child: ListTile(
-                        leading: produk['image'] != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Image.file(
-                                  File(produk['image']), // Tampilkan gambar
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Icon(Icons.image, size: 50),
-                        title: Text(produk['namaProduk'],
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text(
-                          'Stok: ${produk['stok']} | ${currencyFormat.format(hargaJual)}', // Tampilkan harga yang diformat
-                        ),
-                        trailing: PopupMenuButton<String>(
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              _editProduk(index, produk);
-                            } else if (value == 'delete') {
-                              _showDeleteDialog(index);
-                            }
-                          },
-                          itemBuilder: (BuildContext context) => [
-                            PopupMenuItem(
-                              value: 'edit',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit),
-                                  SizedBox(width: 8),
-                                  Text('Edit Produk'),
-                                ],
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.delete),
-                                  SizedBox(width: 8),
-                                  Text('Hapus Produk'),
-                                ],
-                              ),
-                            ),
-                          ],
+                      title: Text(
+                        produk['namaProduk'],
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            currencyFormat.format(produk['hargaJual']),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            'Stok: ${produk['stok']}',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            produkList.removeAt(index);
+                            _saveProdukList();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -229,7 +138,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
           if (result != null) {
             setState(() {
               produkList.add(result);
-              _saveProdukList(); // Simpan setelah menambah produk
+              _saveProdukList();
               updateSearchQuery(searchQuery);
             });
           }
@@ -239,48 +148,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
     );
   }
 
-  void _showDeleteDialog(int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Konfirmasi"),
-          content: Text("Apakah yakin ingin menghapus barang ini?"),
-          actions: [
-            TextButton(
-              child: Text("Batal"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text("Hapus", style: TextStyle(color: Colors.red)),
-              onPressed: () {
-                setState(() {
-                  produkList.removeAt(index);
-                  _saveProdukList(); // Simpan setelah menghapus produk
-                  updateSearchQuery(searchQuery);
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _editProduk(int index, Map<String, dynamic> produk) async {
-    final result = await Get.to(TambahProdukView(
-      produk: produk,
-      index: index,
-    ));
-    if (result != null) {
-      setState(() {
-        produkList[index] = result;
-        _saveProdukList(); // Simpan setelah mengedit produk
-        updateSearchQuery(searchQuery);
-      });
-    }
+  void _showSortDialog() {
+    // Sort dialog code here
   }
 }
