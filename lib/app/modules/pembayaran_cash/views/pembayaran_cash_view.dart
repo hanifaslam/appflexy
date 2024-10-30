@@ -14,12 +14,44 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
   final TextEditingController cashController = TextEditingController();
   final KasirController controller = Get.find<KasirController>();
 
+  // Formatter for currency
+  final NumberFormat currencyFormat =
+      NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    // Set initial formatted value if needed
+    cashController.text = currencyFormat.format(0);
+  }
+
+  void _onCashInputChanged(String value) {
+    String formattedValue;
+
+    // Remove any non-numeric characters
+    value = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Format the numeric value
+    if (value.isNotEmpty) {
+      double parsedValue = double.parse(value);
+      formattedValue = currencyFormat.format(parsedValue);
+    } else {
+      formattedValue = currencyFormat.format(0);
+    }
+
+    // Update the controller text with formatted value
+    cashController.value = TextEditingValue(
+      text: formattedValue,
+      selection: TextSelection.collapsed(offset: formattedValue.length),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Obx(() => Text(
-              'Total: ${NumberFormat.currency(locale: 'id', symbol: 'Rp').format(controller.total)}',
+              'Total: ${currencyFormat.format(controller.total)}',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -46,11 +78,15 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                     OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
                 hintText: 'Rp 0',
               ),
+              onChanged: _onCashInputChanged,
             ),
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                final jumlahUang = double.tryParse(cashController.text) ?? 0.0;
+                // Parse the unformatted numeric value
+                final jumlahUang = double.tryParse(cashController.text
+                        .replaceAll(RegExp(r'[^0-9]'), '')) ??
+                    0.0;
                 final totalHarga = controller.total;
 
                 if (jumlahUang < totalHarga) {

@@ -157,9 +157,12 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
         appBar: AppBar(
           title: Text(
             'Daftar Produk dan Tiket',
-            style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.bold,
+                color: Color(0xff181681)),
           ),
-          titleSpacing: 45,
+          centerTitle: true,
           bottom: TabBar(
             controller: _tabController,
             tabs: [
@@ -186,6 +189,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Color(0xff181681),
           onPressed: () {
             Get.to(() =>
                 KasirView(pesananList: pesananList)); // Pass pesananList here
@@ -193,7 +197,10 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(Icons.shopping_cart),
+              Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+              ),
               if (pesananCount > 0)
                 Positioned(
                   right: 0,
