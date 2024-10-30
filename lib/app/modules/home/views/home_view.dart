@@ -43,11 +43,14 @@ class _HomeViewState extends State<HomeView> {
 
             // Navigasi ke halaman yang sesuai
             if (index == 0) {
-              Get.offAllNamed(Routes.HOME); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(
+                  Routes.HOME); // Ganti dengan nama rute yang sesuai
             } else if (index == 1) {
-              Get.toNamed(Routes.DAFTAR_KASIR); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(
+                  Routes.DAFTAR_KASIR); // Ganti dengan nama rute yang sesuai
             } else if (index == 2) {
-              Get.offAllNamed(Routes.PROFILEUSER2); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(
+                  Routes.PROFILEUSER2); // Ganti dengan nama rute yang sesuai
             }
           });
         },
@@ -182,7 +185,8 @@ class _HomeViewState extends State<HomeView> {
                     const Color(0xff5475F9),
                     Colors.white,
                     onTap: () {
-                      Get.offAllNamed(Routes.MANAJEMEN_TIKET); // sementara masih manggil pages yg sama
+                      Get.offAllNamed(Routes
+                          .MANAJEMEN_TIKET); // sementara masih manggil pages yg sama
                     },
                   ),
                   _buildCircularIconButton(
@@ -192,7 +196,8 @@ class _HomeViewState extends State<HomeView> {
                     const Color(0xffF95454),
                     Colors.white,
                     onTap: () {
-                      Get.toNamed(Routes.DAFTAR_PRODUK); // sementara masih manggil pages yg sama
+                      Get.toNamed(Routes
+                          .DAFTAR_PRODUK); // sementara masih manggil pages yg sama
                     },
                   ),
                 ],

@@ -1,4 +1,5 @@
 import 'package:apptiket/app/modules/pembayaran_cash/views/pembayaran_cash_view.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,7 +50,7 @@ class _KasirViewState extends State<KasirView> {
         titleSpacing: 90,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.offAllNamed(Routes.DAFTAR_KASIR),
         ),
       ),
       body: Obx(() {
