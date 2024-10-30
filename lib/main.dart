@@ -8,7 +8,7 @@ import 'app/widgets/splash.dart';
 
 void main() async {
   await GetStorage.init();
-  Get.put(ProdukController());
+  Get.put(TambahProdukController());
   runApp(MyApp());
 }
 

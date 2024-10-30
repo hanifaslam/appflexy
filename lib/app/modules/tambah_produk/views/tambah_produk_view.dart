@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gap/gap.dart';
@@ -10,7 +9,7 @@ class TambahProdukView extends StatefulWidget {
   final Map<String, dynamic>? produk;
   final int? index;
 
-  TambahProdukView({Key? key, this.produk, this.index}) : super(key: key);
+  TambahProdukView({this.produk, this.index});
 
   @override
   State<TambahProdukView> createState() => _TambahProdukViewState();
