@@ -131,10 +131,10 @@ class _KasirViewState extends State<KasirView> {
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    );
+                  },
+                )),
                 Divider(),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),

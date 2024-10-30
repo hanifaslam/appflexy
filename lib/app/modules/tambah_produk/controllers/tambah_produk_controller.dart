@@ -1,58 +1,79 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
-class TambahProdukController extends GetxController {
-  final TextEditingController namaProdukController = TextEditingController();
-  final TextEditingController kodeProdukController = TextEditingController();
-  final TextEditingController stokController = TextEditingController();
-  final TextEditingController hargaJualController = TextEditingController();
-  final TextEditingController keteranganController = TextEditingController();
-  final TextEditingController kategoriController = TextEditingController();
+class ProdukController extends GetxController {
+  final namaProdukController = TextEditingController();
+  final kodeProdukController = TextEditingController();
+  final stokController = TextEditingController();
+  final hargaJualController = TextEditingController();
+  final keteranganController = TextEditingController();
 
-  File? selectedImage;
+  var kategoriValue =
+      Rxn<String>(); // Make kategoriValue observable and nullable
+  List<String> kategori = ['Elektronik', 'Fashion', 'Makanan', 'Minuman'];
+
+  Rx<File?> selectedImage = Rx<File?>(null); // Make selectedImage observable
   final ImagePicker picker = ImagePicker();
+  final String apiUrl =
+      'http://127.0.0.1:8000/api/products'; // Replace with your API URL
 
-  void initializeProduk(Map<String, dynamic>? produk) {
-    if (produk != null) {
-      namaProdukController.text = produk['namaProduk'];
-      kodeProdukController.text = produk['kodeProduk'];
-      stokController.text = produk['stok'];
-      hargaJualController.text = produk['hargaJual'];
-      keteranganController.text = produk['keterangan'];
-      kategoriController.text = produk['kategori'];
+  // Future<void> pickImage() async {
+  //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  //   if (pickedFile != null) {
+  //     selectedImage.value = File(pickedFile.path);
+  //   }
+  // }
+
+  Future<void> addProduk() async {
+    if (namaProdukController.text.isEmpty ||
+        kodeProdukController.text.isEmpty ||
+        stokController.text.isEmpty ||
+        hargaJualController.text.isEmpty ||
+        kategoriValue.value == null) {
+      Get.snackbar('Error', 'Semua kolom harus diisi');
+      return;
+    }
+
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+      request.fields['namaProduk'] = namaProdukController.text;
+      request.fields['kodeProduk'] = kodeProdukController.text;
+      request.fields['stok'] = stokController.text;
+      request.fields['hargaJual'] =
+          double.parse(hargaJualController.text).toStringAsFixed(2);
+      request.fields['keterangan'] = keteranganController.text;
+      request.fields['kategori'] = kategoriValue.value!;
+
+      // if (selectedImage.value != null) {
+      //   request.files.add(
+      //     await http.MultipartFile.fromPath('image', selectedImage.value!.path),
+      //   );
+      // }
+
+      var response = await request.send();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Get.snackbar('Success', 'Produk berhasil ditambahkan');
+        clearFields();
+      } else {
+        Get.snackbar('Error',
+            'Gagal menambahkan produk. Status: ${response.statusCode}');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Terjadi kesalahan: $e');
     }
   }
 
-  Future<void> pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      selectedImage = File(pickedFile.path);
-      update();
-    }
-  }
-
-  Map<String, dynamic> createNewProduk() {
-    return {
-      'namaProduk': namaProdukController.text,
-      'kodeProduk': kodeProdukController.text,
-      'stok': stokController.text,
-      'hargaJual': hargaJualController.text,
-      'keterangan': keteranganController.text,
-      'kategori': kategoriController.text,
-      'image': selectedImage?.path,
-    };
-  }
-
-  @override
-  void onClose() {
-    namaProdukController.dispose();
-    kodeProdukController.dispose();
-    stokController.dispose();
-    hargaJualController.dispose();
-    keteranganController.dispose();
-    kategoriController.dispose();
-    super.onClose();
+  void clearFields() {
+    namaProdukController.clear();
+    kodeProdukController.clear();
+    stokController.clear();
+    hargaJualController.clear();
+    keteranganController.clear();
+    kategoriValue.value = null;
+    selectedImage.value = null;
   }
 }
