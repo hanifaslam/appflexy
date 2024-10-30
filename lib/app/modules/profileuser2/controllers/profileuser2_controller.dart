@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'dart:io';
 import 'package:get_storage/get_storage.dart';
 
 final box = GetStorage();
@@ -11,7 +10,7 @@ class Profileuser2Controller extends GetxController {
 
   // Observable untuk nama perusahaan dan path logo
   var companyName = ''.obs;
-  var companyLogo = ''.obs;  // Path untuk logo
+  var companyLogo = ''.obs; // Path untuk logo
 
   @override
   void onInit() {
@@ -57,7 +56,7 @@ class Profileuser2Controller extends GetxController {
   // Fungsi untuk mengambil logo dari penyimpanan
   String getLogoFilePath() {
     return companyLogo.value.isEmpty
-        ? 'assets/images/default_logo.png'  // Logo default jika tidak ada
-        : companyLogo.value;  // Path logo dari penyimpanan
+        ? 'assets/images/default_logo.png' // Logo default jika tidak ada
+        : companyLogo.value; // Path logo dari penyimpanan
   }
 }

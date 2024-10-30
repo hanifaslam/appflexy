@@ -29,7 +29,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
     super.initState();
     _tabController =
         TabController(length: 2, vsync: this); // 2 tabs: produk & tiket
-    _loadData();
+    _loadData(); // Load data when initializing
   }
 
   @override
@@ -39,16 +39,32 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   }
 
   void _loadData() {
-    // Load produk and tiket list from storage
-    produkList = List<Map<String, dynamic>>.from(
-        box.read<List<dynamic>>('produkList') ?? []);
-    tiketList = List<Map<String, dynamic>>.from(
-        (box.read<List<dynamic>>('tiketList') ?? []).map((tiket) {
-      tiket['namaTiket'] = tiket['namaTiket'] ?? ''; // Fallback for null values
-      tiket['hargaJual'] =
-          double.tryParse(tiket['hargaJual']?.toString() ?? '0') ?? 0.0;
-      return tiket;
-    }));
+    // Load produk list from GetStorage
+    List<dynamic>? storedProdukList = box.read<List<dynamic>>('produkList');
+    if (storedProdukList != null) {
+      produkList =
+          List<Map<String, dynamic>>.from(storedProdukList.map((produk) {
+        // Provide fallback values if any field is null
+        produk['namaProduk'] = produk['namaProduk'] ?? '';
+        produk['hargaJual'] =
+            double.tryParse(produk['hargaJual']?.toString() ?? '0') ??
+                0.0; // Ensure hargaJual is parsed
+        return produk;
+      }));
+    }
+
+    // Load tiket list from GetStorage
+    List<dynamic>? storedTiketList = box.read<List<dynamic>>('tiketList');
+    if (storedTiketList != null) {
+      tiketList = List<Map<String, dynamic>>.from(storedTiketList.map((tiket) {
+        // Provide fallback values if any field is null
+        tiket['namaTiket'] = tiket['namaTiket'] ?? '';
+        tiket['hargaJual'] =
+            double.tryParse(tiket['hargaJual']?.toString() ?? '0') ??
+                0.0; // Ensure hargaJual is parsed
+        return tiket;
+      }));
+    }
   }
 
   void updateSearchQuery(String query) {
@@ -60,9 +76,10 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
   void addToPesanan(Map<String, dynamic> item) {
     setState(() {
       pesananList.add({
-        'namaProduk': item['namaProduk'] ?? item['namaTiket'],
-        'hargaJual': item['hargaJual'] ?? item['hargaTiket'],
-        'image': item['image'] ?? '', // Menghindari null dengan nilai kosong
+        'nama': item['namaProduk'] ?? item['namaTiket'], // Include both names
+        'harga': item['hargaJual'] ??
+            item['hargaJual'], // Ensure correct price is used
+        'image': item['image'],
       });
       pesananCount++;
     });
@@ -102,8 +119,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
               String title = item[nameKey] ?? '';
               double price = type == 'produk'
                   ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
-                  : double.tryParse(item['hargaTiket']?.toString() ?? '0') ??
-                      0.0;
+                  : double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0;
 
               return Card(
                 elevation: 4,
@@ -139,20 +155,14 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: TextField(
-            onChanged: updateSearchQuery,
-            decoration: InputDecoration(
-              hintText: 'Cari Produk atau Tiket',
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.white.withOpacity(0.1),
-              contentPadding: EdgeInsets.symmetric(vertical: 8.0),
-            ),
+          title: Text(
+            'Daftar Produk dan Tiket',
+            style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.bold,
+                color: Color(0xff181681)),
           ),
+          centerTitle: true,
           bottom: TabBar(
             controller: _tabController,
             tabs: [
@@ -179,6 +189,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Color(0xff181681),
           onPressed: () {
             if (pesananList.isEmpty) {
               Get.snackbar(
@@ -193,7 +204,10 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(Icons.shopping_cart),
+              Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+              ),
               if (pesananCount > 0)
                 Positioned(
                   right: 0,

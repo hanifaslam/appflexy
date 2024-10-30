@@ -57,14 +57,29 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          onChanged: updateSearchQuery,
-          decoration: InputDecoration(
-            hintText: 'Cari Nama Produk',
-            prefixIcon: Icon(Icons.search),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
-              borderSide: BorderSide.none,
+        toolbarHeight: 80,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          child: TextField(
+            onChanged: updateSearchQuery,
+            decoration: InputDecoration(
+              hintText: 'Cari Nama Produk',
+              hintStyle: TextStyle(color: Color(0xff181681)),
+              border: InputBorder.none,
+              filled: true,
+              fillColor: Colors.grey[350],
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(50),
+              ),
             ),
             filled: true,
             fillColor: Colors.white.withOpacity(0.1),
@@ -79,24 +94,53 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
         ],
       ),
       body: filteredProdukList.isEmpty
-          ? Center(child: Text('Tidak ada daftar produk'))
-          : ListView.builder(
-              itemCount: filteredProdukList.length,
-              itemBuilder: (context, index) {
-                final produk = filteredProdukList[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade700,
-                      borderRadius: BorderRadius.circular(10),
+          ? Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.inbox,
+                      size: 100,
+                      color: Colors.grey,
                     ),
-                    child: ListTile(
-                      leading: Image.asset(
-                        'assets/logo/logoflex.png', // Ganti path sesuai dengan ikon yang diinginkan
-                        width: 40,
-                        height: 40,
+                    SizedBox(height: 16),
+                    Text(
+                      'Tidak ada daftar produk yang dapat ditampilkan.',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: EdgeInsets.all(8.0),
+                child: ListView.builder(
+                  itemCount: filteredProdukList.length,
+                  itemBuilder: (context, index) {
+                    final produk = filteredProdukList[index];
+                    double hargaJual =
+                        double.tryParse(produk['hargaJual'].toString()) ??
+                            0.0; // Konversi hargaJual ke double
+
+                    return Card(
+                      color: Colors.grey[300],
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       title: Text(
                         produk['namaProduk'],
@@ -133,6 +177,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
               },
             ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xff181681),
         onPressed: () async {
           final result = await Get.to(TambahProdukView());
           if (result != null) {
@@ -143,7 +188,10 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
             });
           }
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }

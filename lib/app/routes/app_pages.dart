@@ -27,7 +27,9 @@ import '../modules/sales_history/views/sales_history_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/struk/bindings/struk_binding.dart';
+
 import '../modules/struk/views/struk_view.dart';
+
 import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
 import '../modules/tambah_produk/views/tambah_produk_view.dart';
 import '../modules/tambah_tiket/bindings/tambah_tiket_binding.dart';

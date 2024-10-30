@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:apptiket/app/modules/pembayaran_cash/views/pembayaran_cash_view.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,11 +25,17 @@ class _KasirViewState extends State<KasirView> {
   void initState() {
     super.initState();
 
+    // Print the incoming pesananList for debugging
+    print("Incoming pesananList: ${widget.pesananList}");
+
     // Initialize pesananList and ensure each product has 'quantity'
     controller.pesananList.value = widget.pesananList.map((item) {
       item['quantity'] ??= 1; // Initialize quantity to 1 if it's null
       return item;
     }).toList();
+
+    // Print the initialized pesananList for debugging
+    print("Initialized pesananList: ${controller.pesananList}");
   }
 
   @override
@@ -38,12 +47,15 @@ class _KasirViewState extends State<KasirView> {
       appBar: AppBar(
         title: Text(
           'Daftar Pesanan',
-          style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.bold,
+              color: Color(0xff181681)),
         ),
-        titleSpacing: 90,
+        centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.offAllNamed(Routes.DAFTAR_KASIR),
         ),
       ),
       body: Obx(() {
@@ -66,46 +78,58 @@ class _KasirViewState extends State<KasirView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                    child: ListView.builder(
-                  itemCount: controller.pesananList.length,
-                  itemBuilder: (context, index) {
-                    final produk = controller.pesananList[index];
-                    final namaProduk = produk['namaProduk'] ??
-                        produk['namaTiket'] ??
-                        'Tidak diketahui';
-                    final hargaJual =
-                        produk['hargaJual'] ?? produk['hargaTiket'] ?? 0.0;
-                    final quantity = produk['quantity'] ?? 1;
+                  child: ListView.builder(
+                    itemCount: controller.pesananList.length,
+                    itemBuilder: (context, index) {
+                      final item = controller.pesananList[index];
+                      print("Produk at index $index: $item"); // Debugging print
 
-                    // Konversi hargaJual ke double dengan nilai default 0.0 jika null
-                    final hargaNum =
-                        double.tryParse(hargaJual.toString()) ?? 0.0;
-                    final formattedPrice = currencyFormat.format(hargaNum);
+                      final hargaJual = item['harga'] ?? 0; // Access 'harga'
+                      final quantity = item['quantity'] ?? 1; // Default to 1
+                      final namaProduk = item['nama'] ?? ''; // Access 'nama'
 
-                    return Card(
-                      elevation: 2,
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      child: ListTile(
-                        leading: Icon(Icons.shopping_bag, size: 40),
-                        title: Text(namaProduk),
-                        subtitle: Text('Harga: $formattedPrice'),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.remove),
-                              onPressed: () {
-                                controller.updateQuantity(index, -1);
-                              },
-                            ),
-                            Text('$quantity'),
-                            IconButton(
-                              icon: Icon(Icons.add),
-                              onPressed: () {
-                                controller.updateQuantity(index, 1);
-                              },
-                            ),
-                          ],
+                      // Convert hargaJual to double safely
+                      final hargaNum =
+                          double.tryParse(hargaJual.toString()) ?? 0.0;
+                      final formattedPrice = currencyFormat.format(hargaNum);
+
+                      return Card(
+                        elevation: 2,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: item['image'] != null &&
+                                  File(item['image']).existsSync()
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Image.file(
+                                    File(item['image']),
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Icon(Icons.image, size: 50),
+                          title: Text(
+                              namaProduk), // Use the correct key for the name
+                          subtitle: Text('Harga: $formattedPrice'),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.remove),
+                                onPressed: () {
+                                  controller.updateQuantity(index, -1);
+                                },
+                              ),
+                              Text('$quantity'),
+                              IconButton(
+                                icon: Icon(Icons.add),
+                                onPressed: () {
+                                  controller.updateQuantity(index, 1);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
