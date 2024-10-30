@@ -14,7 +14,7 @@ class KasirController extends GetxController {
   }
 
   // Calculate subtotal
-  double get subtotal => pesananList.fold(0.0, (sum, item) {
+  double get total => pesananList.fold(0.0, (sum, item) {
         final price = double.tryParse(item['harga']?.toString() ?? '0') ??
             0; // Use 'harga' here
         final quantity = item['quantity'] ?? 1;
@@ -22,7 +22,6 @@ class KasirController extends GetxController {
       });
 
   // Calculate total
-  double get total => subtotal;
 
   // Update quantity of a specific item in pesananList
   void updateQuantity(int index, int change) {
