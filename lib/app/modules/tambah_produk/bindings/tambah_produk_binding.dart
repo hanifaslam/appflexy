@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 class TambahProdukBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ProdukController>(
-      () => ProdukController(),
+    Get.lazyPut<TambahProdukController>(
+      () => TambahProdukController(),
     );
   }
 }

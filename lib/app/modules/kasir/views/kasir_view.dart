@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:apptiket/app/modules/pembayaran_cash/views/pembayaran_cash_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
@@ -131,10 +130,10 @@ class _KasirViewState extends State<KasirView> {
                             ],
                           ),
                         ),
-                      ),
-                    );
-                  },
-                )),
+                      );
+                    },
+                  ),
+                ),
                 Divider(),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),

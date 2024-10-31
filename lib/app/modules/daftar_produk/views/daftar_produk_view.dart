@@ -1,9 +1,10 @@
-import 'dart:io';
-import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
+import 'dart:io'; // For using File
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
+import 'package:apptiket/app/modules/daftar_produk/controllers/daftar_produk_controller.dart';
 
 class DaftarProdukView extends StatefulWidget {
   @override
@@ -12,45 +13,72 @@ class DaftarProdukView extends StatefulWidget {
 
 class _DaftarProdukViewState extends State<DaftarProdukView> {
   final NumberFormat currencyFormat =
-      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
+      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
   final box = GetStorage();
-  List<Map<String, dynamic>> produkList = [];
-  List<Map<String, dynamic>> filteredProdukList = [];
+  final daftarProdukController = Get.find<DaftarProdukController>();
   String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _loadProdukList();
-  }
-
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loadProdukList(); // Memuat data produk dari GetStorage setiap kali halaman diakses kembali
+    daftarProdukController.fetchProducts();
   }
 
   void _loadProdukList() {
     List<dynamic>? storedProdukList = box.read<List<dynamic>>('produkList');
     if (storedProdukList != null) {
-      setState(() {
-        produkList = List<Map<String, dynamic>>.from(storedProdukList);
-        filteredProdukList = produkList;
-      });
+      daftarProdukController.products.value =
+          List<Map<String, dynamic>>.from(storedProdukList);
     }
   }
 
   void _saveProdukList() {
-    box.write('produkList', produkList);
+    box.write('produkList', daftarProdukController.products);
   }
 
   void updateSearchQuery(String query) {
     setState(() {
       searchQuery = query;
-      filteredProdukList = produkList
-          .where((produk) =>
-              produk['namaProduk'].toLowerCase().contains(query.toLowerCase()))
-          .toList();
     });
+  }
+
+  void _showSortDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Sort Produk"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text("Ascending"),
+                onTap: () {
+                  _sortProdukList(true);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: Text("Descending"),
+                onTap: () {
+                  _sortProdukList(false);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _sortProdukList(bool ascending) {
+    daftarProdukController.products.sort((a, b) {
+      int comparison = a['namaProduk'].compareTo(b['namaProduk']);
+      return ascending ? comparison : -comparison;
+    });
+    setState(() {}); // Rebuild to reflect changes
   }
 
   @override
@@ -81,9 +109,6 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
                 borderRadius: BorderRadius.circular(50),
               ),
             ),
-            filled: true,
-            fillColor: Colors.white.withOpacity(0.1),
-            contentPadding: EdgeInsets.symmetric(vertical: 8.0),
           ),
         ),
         actions: [
@@ -93,99 +118,26 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
           ),
         ],
       ),
-      body: filteredProdukList.isEmpty
-          ? Container(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.inbox,
-                      size: 100,
-                      color: Colors.grey,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Tidak ada daftar produk yang dapat ditampilkan.',
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  itemCount: filteredProdukList.length,
-                  itemBuilder: (context, index) {
-                    final produk = filteredProdukList[index];
-                    double hargaJual =
-                        double.tryParse(produk['hargaJual'].toString()) ??
-                            0.0; // Konversi hargaJual ke double
+      body: Obx(() {
+        // Filter products based on search query
+        final filteredProdukList =
+            daftarProdukController.products.where((produk) {
+          final namaProduk = produk['namaProduk'] as String?;
+          return namaProduk != null &&
+              namaProduk.toLowerCase().contains(searchQuery.toLowerCase());
+        }).toList();
 
-                    return Card(
-                      color: Colors.grey[300],
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      title: Text(
-                        produk['namaProduk'],
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            currencyFormat.format(produk['hargaJual']),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            'Stok: ${produk['stok']}',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.white),
-                        onPressed: () {
-                          setState(() {
-                            produkList.removeAt(index);
-                            _saveProdukList();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+        return filteredProdukList.isEmpty
+            ? _buildEmptyState()
+            : _buildProductList(filteredProdukList);
+      }),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff181681),
         onPressed: () async {
           final result = await Get.to(TambahProdukView());
           if (result != null) {
-            setState(() {
-              produkList.add(result);
-              _saveProdukList();
-              updateSearchQuery(searchQuery);
-            });
+            daftarProdukController.addProduct(result);
+            _saveProdukList();
           }
         },
         child: Icon(
@@ -196,7 +148,165 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
     );
   }
 
-  void _showSortDialog() {
-    // Sort dialog code here
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.inbox,
+            size: 100,
+            color: Colors.grey,
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Tidak ada daftar produk yang dapat ditampilkan.',
+            style: TextStyle(color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
+            style: TextStyle(color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductList(List<dynamic> filteredProdukList) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: filteredProdukList.length,
+          itemBuilder: (context, index) {
+            final produk = filteredProdukList[index];
+            double hargaJual =
+                double.tryParse(produk['hargaJual'].toString()) ?? 0.0;
+
+            return Card(
+              color: Colors.grey[300],
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: produk['image'] != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.file(
+                          File(produk['image']),
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Icon(Icons.image, size: 50),
+                title: Text(produk['namaProduk'],
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text(
+                  'Stok: ${produk['stok']} | ${currencyFormat.format(hargaJual)}',
+                ),
+                trailing: _buildProductMenu(index, produk),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  PopupMenuButton<String> _buildProductMenu(
+      int index, Map<String, dynamic> produk) {
+    return PopupMenuButton<String>(
+      onSelected: (value) {
+        if (value == 'edit') {
+          _editProduk(index, produk);
+        } else if (value == 'delete') {
+          _showDeleteDialog(index);
+        }
+      },
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          value: 'edit',
+          child: Row(
+            children: [
+              Icon(Icons.edit),
+              SizedBox(width: 8),
+              Text('Edit Produk'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete),
+              SizedBox(width: 8),
+              Text('Hapus Produk'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showDeleteDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Konfirmasi Hapus'),
+          content: Text('Apakah Anda yakin ingin menghapus produk ini?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // Close the dialog
+              },
+              child: Text('Batal'),
+            ),
+            TextButton(
+              onPressed: () {
+                _deleteProduct(index);
+                Get.back(); // Close the dialog after deletion
+              },
+              child: Text('Hapus'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteProduct(int index) async {
+    final productId = daftarProdukController.products[index]['id'];
+    final success = await daftarProdukController.deleteProduct(productId);
+
+    if (success) {
+      Get.snackbar('Sukses', 'Produk berhasil dihapus',
+          backgroundColor: Colors.green, colorText: Colors.white);
+      daftarProdukController.products.removeAt(index);
+      _saveProdukList();
+    } else {
+      Get.snackbar('Error', 'Gagal menghapus produk',
+          backgroundColor: Colors.red, colorText: Colors.white);
+    }
+  }
+
+  void _editProduk(int index, Map<String, dynamic> produk) async {
+    final result = await Get.to(TambahProdukView(
+      produk: produk,
+    ));
+    if (result != null) {
+      daftarProdukController.updateProduct(index, result);
+      _saveProdukList();
+    }
   }
 }
