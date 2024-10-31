@@ -21,20 +21,20 @@ class MyApp extends StatelessWidget {
       initialRoute: Routes.HOME,
       getPages: AppPages.routes,
     );
-    // return FutureBuilder(
-    //   future: Future.delayed(Duration(seconds: 2)),
-    //   builder: (context, snapshot) {
-    //     if (snapshot.connectionState == ConnectionState.waiting) {
-    //       return SplashScreen();
-    //     } else {
-    //       return GetMaterialApp(
-    //         debugShowCheckedModeBanner: false,
-    //         title: "Application",
-    //         initialRoute: AppPages.INITIAL,
-    //         getPages: AppPages.routes,
-    //       );
-    //     }
-    //   },
-    // );
+    return FutureBuilder(
+      future: Future.delayed(Duration(seconds: 2)),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SplashScreen();
+        } else {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: "Application",
+            initialRoute: AppPages.INITIAL,
+            getPages: AppPages.routes,
+          );
+        }
+      },
+    );
   }
 }

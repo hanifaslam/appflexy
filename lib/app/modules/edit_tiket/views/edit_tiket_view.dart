@@ -4,17 +4,17 @@ import 'package:gap/gap.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 
-class TambahTiketView extends StatefulWidget {
+class EditTiketView extends StatefulWidget {
   final Map<String, dynamic>? tiket; // Data tiket yang akan diedit
   final int? index; // Index tiket untuk di-update
 
-  TambahTiketView({this.tiket, this.index});
+  EditTiketView({this.tiket, this.index});
 
   @override
-  _TambahTiketViewState createState() => _TambahTiketViewState();
+  _EditTiketViewState createState() => _EditTiketViewState();
 }
 
-class _TambahTiketViewState extends State<TambahTiketView> {
+class _EditTiketViewState extends State<EditTiketView> {
   final TextEditingController namaTiketController = TextEditingController();
   final TextEditingController stokController = TextEditingController();
   final TextEditingController hargaJualController = TextEditingController();
@@ -24,10 +24,10 @@ class _TambahTiketViewState extends State<TambahTiketView> {
   void initState() {
     super.initState();
     if (widget.tiket != null) {
-      namaTiketController.text = widget.tiket!['namaTiket'];
-      stokController.text = widget.tiket!['stok'];
-      hargaJualController.text = widget.tiket!['hargaTiket'];
-      keteranganController.text = widget.tiket!['keterangan'];
+      namaTiketController.text = widget.tiket!['namaTiket'] ?? '';
+      stokController.text = widget.tiket!['stok'].toString();
+      hargaJualController.text = widget.tiket!['hargaJual'].toString();
+      keteranganController.text = widget.tiket!['keterangan'] ?? '';
     }
   }
 
@@ -92,8 +92,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                         color: Color(0xff181681),
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                            13), // Set border radius to 25
+                        borderRadius: BorderRadius.circular(13),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
@@ -111,8 +110,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                       ),
                       hintText: 'Stok',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                            13), // Set border radius to 25
+                        borderRadius: BorderRadius.circular(13),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
@@ -131,8 +129,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                         color: Color(0xff181681),
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                            13), // Set border radius to 25
+                        borderRadius: BorderRadius.circular(13),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
@@ -149,8 +146,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                       hintText: 'Keterangan Tiket',
                       hintStyle: TextStyle(color: Color(0xff181681)),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                            13), // Set border radius to 25
+                        borderRadius: BorderRadius.circular(13),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
@@ -162,38 +158,29 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                   const Gap(70),
                   ElevatedButton(
                     onPressed: () {
-                      // Parse the unformatted numeric value for hargaTiket
-                      final jumlahUang = double.tryParse(hargaJualController
-                              .text
-                              .replaceAll(RegExp(r'[^0-9]'), '')) ??
-                          0;
-
                       // Kembali ke halaman sebelumnya dengan data tiket
-                      Map<String, dynamic> newTiket = {
+                      Map<String, dynamic> updatedTiket = {
                         'namaTiket': namaTiketController.text,
-                        'stok': int.tryParse(stokController.text) ??
-                            0, // Convert stok to int
-                        'hargaTiket':
-                            jumlahUang, // Use the parsed numeric value
+                        'stok': int.tryParse(stokController.text) ?? 0,
+                        'hargaJual': double.tryParse(hargaJualController.text
+                                .replaceAll(RegExp(r'[^0-9]'), '')) ??
+                            0,
                         'keterangan': keteranganController.text,
                       };
-                      Get.back(result: newTiket); // Kirim data tiket
+                      Get.back(result: updatedTiket); // Kirim data tiket
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color(0xff181681), // Gunakan warna yang sesuai
-                      minimumSize: const Size(
-                          double.infinity, 50), // Sesuaikan lebar dan tinggi
+                      backgroundColor: const Color(0xff181681),
+                      minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(20), // Bentuk tombol rounded
+                        borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: const Text(
-                      'Tambahkan tiket',
-                      style: TextStyle(
+                    child: Text(
+                      widget.tiket == null ? 'Tambahkan Tiket' : 'Update Tiket',
+                      style: const TextStyle(
                         fontSize: 16,
-                        color: Colors.white, // Warna teks tombol putih
+                        color: Colors.white,
                       ),
                     ),
                   ),

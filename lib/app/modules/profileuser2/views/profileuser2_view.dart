@@ -186,7 +186,7 @@ class Profileuser2View extends StatelessWidget {
           if (index == 0) {
             Get.offAllNamed(Routes.HOME); // Go to Home
           } else if (index == 1) {
-            Get.offAllNamed(Routes.KASIR); // Go to Kasir
+            Get.offAllNamed(Routes.DAFTAR_KASIR); // Go to Kasir
           } else if (index == 2) {
             // Stay on profile
           }

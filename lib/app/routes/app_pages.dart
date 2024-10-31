@@ -4,6 +4,10 @@ import '../modules/daftar_kasir/bindings/daftar_kasir_binding.dart';
 import '../modules/daftar_kasir/views/daftar_kasir_view.dart';
 import '../modules/daftar_produk/bindings/daftar_produk_binding.dart';
 import '../modules/daftar_produk/views/daftar_produk_view.dart';
+import '../modules/edit_produk/bindings/edit_produk_binding.dart';
+import '../modules/edit_produk/views/edit_produk_view.dart';
+import '../modules/edit_tiket/bindings/edit_tiket_binding.dart';
+import '../modules/edit_tiket/views/edit_tiket_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/kasir/bindings/kasir_binding.dart';
@@ -27,9 +31,7 @@ import '../modules/sales_history/views/sales_history_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/struk/bindings/struk_binding.dart';
-
 import '../modules/struk/views/struk_view.dart';
-
 import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
 import '../modules/tambah_produk/views/tambah_produk_view.dart';
 import '../modules/tambah_tiket/bindings/tambah_tiket_binding.dart';
@@ -87,7 +89,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.DAFTAR_PRODUK,
-      page: () => DaftarProdukView(),
+      page: () => DaftarProdukView(), // Disesuaikan dengan kode Anda
       binding: DaftarProdukBinding(),
     ),
     GetPage(
@@ -126,6 +128,21 @@ class AppPages {
         receipt: Get.arguments,
       ),
       binding: StrukBinding(),
+    ),
+    GetPage(
+      name: _Paths.EDIT_PRODUK,
+      page: () => EditProdukView(
+          // Di sini, 'produk' dan 'index' tidak dapat digunakan
+          // karena mereka tidak didefinisikan dalam konteks ini.
+          // Jika Anda ingin menerima parameter di EditProdukView,
+          // Anda perlu menggunakan Get.arguments untuk mengambil data yang relevan.
+          ),
+      binding: EditProdukBinding(),
+    ),
+    GetPage(
+      name: _Paths.EDIT_TIKET,
+      page: () => EditTiketView(),
+      binding: EditTiketBinding(),
     ),
   ];
 }
