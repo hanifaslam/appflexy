@@ -1,5 +1,5 @@
 import 'dart:io'; // Untuk menggunakan File
-import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
+import 'package:apptiket/app/modules/edit_produk/views/edit_produk_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -229,7 +229,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff181681),
         onPressed: () async {
-          final result = await Get.to(TambahProdukView());
+          final result = await Get.to(EditProdukView());
           if (result != null) {
             setState(() {
               produkList.add(result);
@@ -278,7 +278,7 @@ class _DaftarProdukViewState extends State<DaftarProdukView> {
   }
 
   void _editProduk(int index, Map<String, dynamic> produk) async {
-    final result = await Get.to(TambahProdukView(
+    final result = await Get.to(EditProdukView(
       produk: produk,
       index: index,
     ));

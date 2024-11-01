@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:apptiket/app/modules/pembayaran_cash/views/pembayaran_cash_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,9 +46,12 @@ class _KasirViewState extends State<KasirView> {
       appBar: AppBar(
         title: Text(
           'Daftar Pesanan',
-          style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.bold,
+              color: Color(0xff181681)),
         ),
-        titleSpacing: 90,
+        centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Get.offAllNamed(Routes.DAFTAR_KASIR),
@@ -76,13 +80,12 @@ class _KasirViewState extends State<KasirView> {
                   child: ListView.builder(
                     itemCount: controller.pesananList.length,
                     itemBuilder: (context, index) {
-                      final produk = controller.pesananList[index];
-                      print(
-                          "Produk at index $index: $produk"); // Debugging print
+                      final item = controller.pesananList[index];
+                      print("Produk at index $index: $item"); // Debugging print
 
-                      final hargaJual = produk['harga'] ?? 0; // Access 'harga'
-                      final quantity = produk['quantity'] ?? 1; // Default to 1
-                      final namaProduk = produk['nama'] ?? ''; // Access 'nama'
+                      final hargaJual = item['harga'] ?? 0; // Access 'harga'
+                      final quantity = item['quantity'] ?? 1; // Default to 1
+                      final namaProduk = item['nama'] ?? ''; // Access 'nama'
 
                       // Convert hargaJual to double safely
                       final hargaNum =
@@ -93,7 +96,18 @@ class _KasirViewState extends State<KasirView> {
                         elevation: 2,
                         margin: EdgeInsets.symmetric(vertical: 8),
                         child: ListTile(
-                          leading: Icon(Icons.shopping_bag, size: 40),
+                          leading: item['image'] != null &&
+                                  File(item['image']).existsSync()
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Image.file(
+                                    File(item['image']),
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Icon(Icons.image, size: 50),
                           title: Text(
                               namaProduk), // Use the correct key for the name
                           subtitle: Text('Harga: $formattedPrice'),

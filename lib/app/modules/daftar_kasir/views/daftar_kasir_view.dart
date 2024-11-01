@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:apptiket/app/modules/kasir/views/kasir_view.dart';
+import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -118,8 +119,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
               String title = item[nameKey] ?? '';
               double price = type == 'produk'
                   ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
-                  : double.tryParse(item['hargaJual']?.toString() ?? '0') ??
-                      0.0;
+                  : double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0;
 
               return Card(
                 elevation: 4,
@@ -157,9 +157,12 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
         appBar: AppBar(
           title: Text(
             'Daftar Produk dan Tiket',
-            style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.bold,
+                color: Color(0xff181681)),
           ),
-          titleSpacing: 45,
+          centerTitle: true,
           bottom: TabBar(
             controller: _tabController,
             tabs: [
@@ -186,14 +189,25 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Color(0xff181681),
           onPressed: () {
-            Get.to(() =>
-                KasirView(pesananList: pesananList)); // Pass pesananList here
+            if (pesananList.isEmpty) {
+              Get.snackbar(
+                'Pesanan Kosong',
+                'Tambahkan produk atau tiket ke pesanan terlebih dahulu',
+                snackPosition: SnackPosition.BOTTOM,
+              );
+            } else {
+              Get.to(() => KasirView(pesananList: pesananList));
+            }
           },
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(Icons.shopping_cart),
+              Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+              ),
               if (pesananCount > 0)
                 Positioned(
                   right: 0,

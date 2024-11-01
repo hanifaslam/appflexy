@@ -1,3 +1,4 @@
+import 'package:apptiket/app/modules/edit_tiket/views/edit_tiket_view.dart';
 import 'package:apptiket/app/modules/tambah_tiket/views/tambah_tiket_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -223,7 +224,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff181681),
         onPressed: () async {
-          final result = await Get.to(TambahTiketView());
+          final result = await Get.to(EditTiketView());
           if (result != null) {
             setState(() {
               tiketList.add(result);
@@ -272,7 +273,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
   }
 
   void _editTiket(int index, Map<String, dynamic> tiket) async {
-    final result = await Get.to(TambahTiketView(
+    final result = await Get.to(EditTiketView(
       tiket: tiket,
       index: index,
     ));

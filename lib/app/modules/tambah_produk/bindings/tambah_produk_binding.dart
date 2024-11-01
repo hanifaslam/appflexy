@@ -1,6 +1,5 @@
+import 'package:apptiket/app/modules/tambah_produk/controllers/tambah_produk_controller.dart';
 import 'package:get/get.dart';
-
-import '../controllers/tambah_produk_controller.dart';
 
 class TambahProdukBinding extends Bindings {
   @override

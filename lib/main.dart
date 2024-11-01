@@ -1,3 +1,4 @@
+import 'package:apptiket/app/modules/tambah_produk/controllers/tambah_produk_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -7,7 +8,7 @@ import 'app/widgets/splash.dart';
 
 void main() async {
   await GetStorage.init();
-
+  Get.put(TambahProdukController());
   runApp(MyApp());
 }
 
