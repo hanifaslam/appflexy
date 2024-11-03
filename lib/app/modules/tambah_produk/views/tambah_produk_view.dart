@@ -27,15 +27,16 @@ class _TambahProdukViewState extends State<TambahProdukView> {
         toolbarHeight: 70,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.back(result: true),
         ),
         title: Text(
           widget.produk == null ? 'Tambah Produk' : 'Edit Produk',
           style: const TextStyle(
-              color: Color(0xff181681),
-              fontFamily: 'Inter',
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.bold),
+            color: Color(0xff181681),
+            fontFamily: 'Inter',
+            fontStyle: FontStyle.normal,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: GestureDetector(
@@ -53,18 +54,20 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                           TextField(
                             controller: controller.namaProdukController,
                             decoration: InputDecoration(
-                                hintText: 'Nama Produk',
-                                prefixIcon: Icon(
-                                  Bootstrap.box,
-                                  color: Color(0xff181681),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(11),
-                                    borderSide: BorderSide(
-                                        color: Color(0xff181681), width: 2.0))),
+                              hintText: 'Nama Produk',
+                              prefixIcon: Icon(
+                                Bootstrap.box,
+                                color: Color(0xff181681),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(11),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                    color: Color(0xff181681), width: 2.0),
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 16),
                           TextField(
@@ -76,11 +79,13 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                                 color: Color(0xff181681),
                               ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11)),
+                                borderRadius: BorderRadius.circular(11),
+                              ),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                      color: Color(0xff181681), width: 2.0)),
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                    color: Color(0xff181681), width: 2.0),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -93,11 +98,13 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                                 color: Color(0xff181681),
                               ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11)),
+                                borderRadius: BorderRadius.circular(11),
+                              ),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                      color: Color(0xff181681), width: 2.0)),
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                    color: Color(0xff181681), width: 2.0),
+                              ),
                             ),
                           ),
                           const Gap(30),
@@ -110,11 +117,13 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                                 color: Color(0xff181681),
                               ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11)),
+                                borderRadius: BorderRadius.circular(11),
+                              ),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                      color: Color(0xff181681), width: 2.0)),
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                    color: Color(0xff181681), width: 2.0),
+                              ),
                             ),
                             keyboardType: TextInputType.number,
                           ),
@@ -173,11 +182,13 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                                 color: Color(0xff181681),
                               ),
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11)),
+                                borderRadius: BorderRadius.circular(11),
+                              ),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                      color: Color(0xff181681), width: 2.0)),
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                    color: Color(0xff181681), width: 2.0),
+                              ),
                             ),
                             keyboardType: TextInputType.number,
                           ),
@@ -187,11 +198,13 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                             decoration: InputDecoration(
                               hintText: 'Keterangan Produk (opsional)',
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11)),
+                                borderRadius: BorderRadius.circular(11),
+                              ),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                      color: Color(0xff181681), width: 2.0)),
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                    color: Color(0xff181681), width: 2.0),
+                              ),
                             ),
                             maxLines: 4,
                           ),
@@ -216,9 +229,9 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: ElevatedButton(
-                    onPressed: () {
-                      final newProduk = controller.createNewProduk();
-                      Get.back(result: newProduk);
+                    onPressed: () async {
+                      // Call the addProduct method to post the data
+                      await controller.addProduct();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff181681),
