@@ -17,7 +17,14 @@ class _ProfileBtnState extends State<ProfileBtn> {
   void _changeColor() {
     setState(() {
       _buttonColor = const Color(0xff181681)
-          .withOpacity(0.2); // Change color when button is pressed
+          .withOpacity(0.2); // Ubah warna saat tombol ditekan
+    });
+
+    // Kembalikan warna tombol ke keadaan semula setelah 200 milidetik
+    Future.delayed(const Duration(milliseconds: 200), () {
+      setState(() {
+        _buttonColor = const Color(0xff181681); // Warna semula
+      });
     });
   }
 

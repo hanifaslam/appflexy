@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:apptiket/app/modules/kasir/views/kasir_view.dart';
-import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -117,9 +116,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
             itemBuilder: (context, index) {
               final item = filteredList[index];
               String title = item[nameKey] ?? '';
-              double price = type == 'produk'
-                  ? double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0
-                  : double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0;
+              double price =
+                  double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0;
 
               return Card(
                 elevation: 4,
@@ -127,18 +125,21 @@ class _DaftarKasirViewState extends State<DaftarKasirView>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  leading:
-                      item['image'] != null && File(item['image']).existsSync()
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: Image.file(
-                                File(item['image']),
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Icon(Icons.image, size: 50),
+                  leading: type == 'produk' &&
+                          item['image'] != null &&
+                          File(item['image']).existsSync()
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.file(
+                            File(item['image']),
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : type == 'produk'
+                          ? Icon(Icons.image, size: 50)
+                          : null,
                   title: Text(title,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(currencyFormat.format(price)),

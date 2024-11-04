@@ -56,7 +56,7 @@ class ProfileController extends GetxController {
   Future<void> saveProfileToApi() async {
     try {
       var url = Uri.parse(
-          'http://127.0.0.1:8000/api/stores'); // Ganti dengan URL API Anda
+          'http://10.0.2.2:8000/api/stores'); // Ganti dengan URL API Anda
       var request = http.MultipartRequest('POST', url);
 
       // Tambahkan field ke dalam request dengan nama yang sesuai

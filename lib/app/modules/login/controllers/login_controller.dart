@@ -24,7 +24,7 @@ class LoginController extends GetxController {
 
   // Handle login API request
   Future<Map<String, dynamic>> login(String email, String password) async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/login');
+    final url = Uri.parse('http://10.0.2.2:8000/api/login');
 
     if (email.isEmpty || password.isEmpty) {
       return {
@@ -85,7 +85,7 @@ class LoginController extends GetxController {
 
   // Fetch current user data from the API
   Future<void> fetchCurrentUser(String token) async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/user');
+    final url = Uri.parse('http://10.0.2.2:8000/api/user');
 
     try {
       final response = await http.get(
@@ -120,7 +120,7 @@ class LoginController extends GetxController {
 
   // Fetch users from the API
   Future<void> fetchUsers() async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/users');
+    final url = Uri.parse('http://10.0.2.2:8000/api/users');
 
     try {
       final response = await http.get(url);

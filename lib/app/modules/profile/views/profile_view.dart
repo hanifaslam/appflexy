@@ -24,9 +24,13 @@ class ProfileView extends GetView<ProfileController> {
           padding: EdgeInsets.only(top: 29),
           child: Text(
             'Pengaturan Profil Toko',
-            style: TextStyle(fontFamily: 'Montserrat-VariableFont_wght'),
+            style: TextStyle(
+                fontFamily: 'Montserrat-VariableFont_wght',
+                fontWeight: FontWeight.bold,
+                color: Color(0xff181681)),
           ),
         ),
+        centerTitle: true,
       ),
       body: GestureDetector(
         onTap: () {
@@ -39,6 +43,7 @@ class ProfileView extends GetView<ProfileController> {
             child: Column(
               children: [
                 // Logo Toko
+                Gap(20),
                 GestureDetector(
                   onTap: _pickImage,
                   child: Obx(() {

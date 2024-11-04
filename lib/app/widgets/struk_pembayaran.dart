@@ -1,4 +1,6 @@
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class StrukPembayaran extends StatelessWidget {
@@ -43,7 +45,7 @@ class StrukPembayaran extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.offAllNamed(Routes.DAFTAR_KASIR);
           },
           child: Text('Tutup'),
         ),
