@@ -14,12 +14,14 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
   final TextEditingController cashController = TextEditingController();
   final PembayaranCashController pembayaranController =
       Get.put(PembayaranCashController());
-  final KasirController kasirController =
-      Get.find<KasirController>(); // Renamed for clarity
+  final KasirController kasirController = Get.find<KasirController>();
 
   // Currency formatter
   final NumberFormat currencyFormat =
       NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0);
+
+  // Variable untuk melacak nominal yang sedang dipilih
+  int? selectedNominal;
 
   @override
   void initState() {
@@ -42,12 +44,43 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
     );
   }
 
+  // Fungsi untuk membuat tombol shortcut nominal dengan warna dan teks bold saat dipilih
+  Widget _buildNominalButton(int nominal, Color color) {
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          selectedNominal = nominal; // Menyimpan nominal yang dipilih
+        });
+        String formattedValue = currencyFormat.format(nominal.toDouble());
+        cashController.value = TextEditingValue(
+          text: formattedValue,
+          selection: TextSelection.collapsed(offset: formattedValue.length),
+        );
+      },
+      child: Text(
+        currencyFormat.format(nominal),
+        style: TextStyle(
+          fontWeight: selectedNominal == nominal
+              ? FontWeight.bold
+              : FontWeight.normal, // Teks bold jika tombol dipilih
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Obx(() => Text(
-              'Total: ${currencyFormat.format(kasirController.total)}', // Use total from KasirController
+              'Total: ${currencyFormat.format(kasirController.total)}',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -94,6 +127,7 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 16),
+
             TextField(
               controller: cashController,
               keyboardType: TextInputType.number,
@@ -104,7 +138,28 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
               ),
               onChanged: _onCashInputChanged,
             ),
+
+            // Tombol shortcut nominal di bawah TextField
             SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNominalButton(20000, Colors.green.shade100),
+                _buildNominalButton(50000, Colors.blue.shade100),
+                _buildNominalButton(100000, Colors.red.shade100),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNominalButton(150000, Colors.purple.shade100),
+                _buildNominalButton(200000, Colors.yellow.shade100),
+                _buildNominalButton(250000, Colors.orange.shade100),
+              ],
+            ),
+            SizedBox(height: 16),
+
             ElevatedButton(
               onPressed: () {
                 final jumlahUang = double.tryParse(cashController.text
