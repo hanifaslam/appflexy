@@ -36,6 +36,8 @@ import '../modules/tambah_produk/views/tambah_produk_view.dart';
 import '../modules/tambah_tiket/bindings/tambah_tiket_binding.dart';
 import '../modules/tambah_tiket/views/tambah_tiket_view.dart';
 import 'package:apptiket/app/modules/daftar_produk/views/daftar_produk_view.dart';
+import '../modules/ganti_password/bindings/ganti_password_binding.dart';
+import '../modules/ganti_password/views/ganti_password_view.dart';
 
 part 'app_routes.dart';
 
@@ -144,5 +146,10 @@ class AppPages {
       page: () => EditTiketView(),
       binding: EditTiketBinding(),
     ),
+    GetPage(
+      name: _Paths.GANTI_PASSWORD,
+      page: () => GantiPasswordView(),
+      binding: GantiPasswordBinding(),
+    )
   ];
 }
