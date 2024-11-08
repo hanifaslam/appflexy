@@ -83,7 +83,7 @@ class AppPages {
     GetPage(
       name: _Paths.KASIR,
       page: () => KasirView(
-        pesananList: [],
+          pesananList: [],
       ),
       binding: KasirBinding(),
     ),

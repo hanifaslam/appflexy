@@ -8,10 +8,6 @@ class PembayaranCashController extends GetxController {
   // Observable variable to store the total price
   RxDouble total = 0.0.obs;
 
-  // Variables for company information (if needed in the receipt)
-  RxString companyName = 'Nama Perusahaan'.obs;
-  RxString companyAddress = 'Alamat Perusahaan'.obs;
-
   // Function to calculate the total price based on items in pesananList
   void calculateTotal() {
     total.value = pesananList.fold(0.0, (sum, item) {

@@ -1,22 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/sales_history_controller.dart';
-import '../../pembayaran_cash/controllers/pembayaran_cash_controller.dart'; // Import PembayaranCashController
-import '../../../routes/app_pages.dart'; // Import untuk route
-// Import intl for currency formatting
+import '../../../routes/app_pages.dart';
 
 class SalesHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Buat instance controller
-    final SalesHistoryController salesController = Get.find();
-    final PembayaranCashController pembayaranController =
-        Get.put(PembayaranCashController());
-
-    // Instance pembayaran controller
-
-    // Load sales data
-    salesController.loadSalesData();
+    final SalesHistoryController salesController = Get.find<SalesHistoryController>();
 
     return Scaffold(
       backgroundColor: Color(0xFFFFFCF7),
@@ -24,8 +14,7 @@ class SalesHistoryPage extends StatelessWidget {
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () =>
-              Get.offAllNamed(Routes.HOME), // Menghapus history saat ke home
+          onPressed: () => Get.offAllNamed(Routes.HOME),
         ),
         title: Text(
           'Riwayat Penjualan',
@@ -39,11 +28,13 @@ class SalesHistoryPage extends StatelessWidget {
         elevation: 0,
       ),
       body: Obx(() {
-        // Memantau perubahan data
+        if (salesController.salesHistory.isEmpty) {
+          return Center(child: Text('Belum ada riwayat penjualan.'));
+        }
         return ListView.builder(
-          itemCount: salesController.salesData.length,
+          itemCount: salesController.salesHistory.length,
           itemBuilder: (context, index) {
-            final sale = salesController.salesData[index];
+            final sale = salesController.salesHistory[index];
             return Card(
               color: Color(0xFFEDEDED),
               shape: RoundedRectangleBorder(
@@ -53,22 +44,21 @@ class SalesHistoryPage extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ExpansionTile(
                 title: Text(
-                  sale['customer'] as String? ?? 'Unknown Customer',
+                  sale['customer'] ?? 'Unknown Customer',
                   style: TextStyle(
                     color: Color(0xFF213F84),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: Text(
-                  sale['time'] as String? ?? 'Unknown Time',
+                  sale['time'] ?? 'Unknown Time',
                   style: TextStyle(
                     color: Color(0xFF213F84),
                   ),
                 ),
                 children: [
                   Divider(color: Color(0xFF213F84)),
-                  _buildSaleDetails(sale,
-                      pembayaranController), // Ngambil data lewat controller
+                  _buildSaleDetails(sale, salesController),
                 ],
               ),
             );
@@ -78,8 +68,7 @@ class SalesHistoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSaleDetails(
-      Map<String, dynamic> sale, PembayaranCashController controller) {
+  Widget _buildSaleDetails(Map<String, dynamic> sale, SalesHistoryController salesController) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
@@ -97,23 +86,6 @@ class SalesHistoryPage extends StatelessWidget {
               ),
               Text(
                 sale['paymentMethod'] ?? 'Unknown Method',
-                style: TextStyle(color: Color(0xFF213F84)),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Sumber Pembayaran:',
-                style: TextStyle(
-                  color: Color(0xFF213F84),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                sale['paymentSource'] ?? 'Unknown Source',
                 style: TextStyle(color: Color(0xFF213F84)),
               ),
             ],
@@ -138,7 +110,7 @@ class SalesHistoryPage extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  'Rp ${controller.formatCurrency(item['hargaJual'] * item['quantity'])}',
+                  salesController.formatCurrency(item['hargaJual'] * item['quantity']),
                   style: TextStyle(color: Color(0xFF213F84)),
                 ),
               ],
@@ -157,7 +129,7 @@ class SalesHistoryPage extends StatelessWidget {
                 ),
               ),
               Text(
-                'Rp ${controller.formatCurrency(sale['total'])}',
+                salesController.formatCurrency(sale['total']),
                 style: TextStyle(
                   color: Color(0xFF213F84),
                   fontWeight: FontWeight.bold,

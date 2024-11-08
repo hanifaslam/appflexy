@@ -109,6 +109,14 @@ class _HomeViewState extends State<HomeView> {
       decoration: BoxDecoration(
         color: const Color(0xff365194).withOpacity(1), // Warna biru tua
         borderRadius: BorderRadius.circular(20), // Sudut melengkung
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26, // Bayangan
+            offset: Offset(0, 4), // Posisi bayangan
+            blurRadius: 20, // Blur radius bayangan
+            spreadRadius: 3, // Luas bayangan
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0), // Padding dalam kontainer
@@ -160,9 +168,17 @@ class _HomeViewState extends State<HomeView> {
             // Kontainer putih dengan ikon di dalamnya
             Container(
               margin: const EdgeInsets.only(top: 10),
-              decoration: const BoxDecoration(
-                color: Color(0xffffffff), // Latar putih
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9), // Latar putih
                 borderRadius: BorderRadius.all(Radius.circular(20)),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26, // Bayangan
+                    offset: Offset(0, 4), // Posisi bayangan
+                    blurRadius: 20, // Blur radius bayangan
+                    spreadRadius: 3, // Luas bayangan
+                  ),
+                ],
               ),
               padding: const EdgeInsets.symmetric(vertical: 15),
               child: Row(
@@ -214,22 +230,24 @@ class _HomeViewState extends State<HomeView> {
     return Expanded(
       child: Container(
         width: double.infinity, // Lebar penuh
-        decoration: const BoxDecoration(
-          color: Colors.white, // Latar belakang putih
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.9), // Latar belakang putih
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(37), // Sudut atas kiri melengkung
             topRight: Radius.circular(37), // Sudut atas kanan melengkung
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black26, // Bayangan
-              offset: Offset(0, 4), // Posisi bayangan
-              blurRadius: 20, // Blur radius bayangan
-              spreadRadius: 3, // Luas bayangan
+              color:
+              Colors.black.withOpacity(0.1), // Warna dan transparansi shadow
+              spreadRadius: 2, // Sebar bayangan
+              blurRadius: 8, // Blur bayangan
+              offset: const Offset(0, -3), // Arah bayangan (x, y)
             ),
           ],
         ),
         child: Column(
+
           crossAxisAlignment: CrossAxisAlignment.center, // Rata tengah
           children: [
             const Padding(

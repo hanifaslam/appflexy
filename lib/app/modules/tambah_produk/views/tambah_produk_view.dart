@@ -27,7 +27,10 @@ class _TambahProdukViewState extends State<TambahProdukView> {
         toolbarHeight: 70,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(result: true),
+          onPressed: () async {
+            controller.clearFields();
+            Get.back(result: true);
+          }
         ),
         title: Text(
           widget.produk == null ? 'Tambah Produk' : 'Edit Produk',

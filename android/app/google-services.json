@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "555414002130",
+    "project_id": "imgdata-573e6",
+    "storage_bucket": "imgdata-573e6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555414002130:android:902bb29eae6497d8d1100b",
+        "android_client_info": {
+          "package_name": "com.cokicoki.apptiket"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgCFrx1XlVofa5I28fHUcMt9weBj3qsqQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555414002130:android:e57e27cf1693efcfd1100b",
+        "android_client_info": {
+          "package_name": "com.img_data"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgCFrx1XlVofa5I28fHUcMt9weBj3qsqQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

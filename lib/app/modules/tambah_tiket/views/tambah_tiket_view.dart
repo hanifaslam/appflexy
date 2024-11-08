@@ -53,7 +53,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
 
   Future<void> updateTiket(int id, Map<String, dynamic> tiketData) async {
     final response = await http.put(
-      Uri.parse('http://127.0.0.1:8000/api/tikets/$id'),
+      Uri.parse('http://10.0.2.2:8000/api/tikets/$id'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

@@ -27,10 +27,16 @@ class TambahProdukController extends GetxController {
   }
 
   Future<void> pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      selectedImage = File(pickedFile.path);
-      update();
+    try {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        selectedImage = File(pickedFile.path);
+        update(); // Refresh UI after selecting image
+      } else {
+        Get.snackbar('No Image Selected', 'Please select an image');
+      }
+    } catch (error) {
+      Get.snackbar('Error', 'Failed to pick image: $error');
     }
   }
 
@@ -48,7 +54,7 @@ class TambahProdukController extends GetxController {
 
   Future<void> addProduct() async {
     final Uri apiUrl = Uri.parse(
-        'http://10.0.2.2:8000/api/products'); // Replace with your actual API endpoint
+        'http://10.0.2.2:8000/api/products'); // Ganti dengan endpoint API Anda
 
     try {
       final request = http.MultipartRequest('POST', apiUrl);
@@ -73,7 +79,7 @@ class TambahProdukController extends GetxController {
       final response = await request.send();
       final responseData = await http.Response.fromStream(response);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 201) {
         Get.snackbar('Success', 'Product added successfully');
         clearFields();
       } else {
