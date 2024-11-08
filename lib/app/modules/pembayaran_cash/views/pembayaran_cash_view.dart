@@ -13,12 +13,13 @@ class PembayaranCashView extends StatefulWidget {
 class _PembayaranCashViewState extends State<PembayaranCashView> {
   final TextEditingController cashController = TextEditingController();
   final PembayaranCashController pembayaranController =
-  Get.put(PembayaranCashController());
+      Get.put(PembayaranCashController());
+
   final KasirController kasirController = Get.find<KasirController>();
 
   // Currency formatter
   final NumberFormat currencyFormat =
-  NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0);
+      NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0);
 
   // Variable untuk melacak nominal yang sedang dipilih
   int? selectedNominal;
@@ -80,12 +81,12 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
     return Scaffold(
       appBar: AppBar(
         title: Obx(() => Text(
-          'Total: ${currencyFormat.format(kasirController.total)}',
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xff181681)),
-        )),
+              'Total: ${currencyFormat.format(kasirController.total)}',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff181681)),
+            )),
         centerTitle: true,
       ),
       body: Padding(
@@ -94,33 +95,33 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Obx(() => ListView.builder(
-              shrinkWrap: true,
-              itemCount: pembayaranController.pesananList.length,
-              itemBuilder: (context, index) {
-                final item = pembayaranController.pesananList[index];
-                return ListTile(
-                  title: Text(item['nama']),
-                  subtitle: Text(
-                      '${currencyFormat.format(item['hargaJual'])} x ${item['quantity']}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove),
-                        onPressed: () =>
-                            pembayaranController.updateQuantity(index, -1),
+                  shrinkWrap: true,
+                  itemCount: pembayaranController.pesananList.length,
+                  itemBuilder: (context, index) {
+                    final item = pembayaranController.pesananList[index];
+                    return ListTile(
+                      title: Text(item['nama']),
+                      subtitle: Text(
+                          '${currencyFormat.format(item['hargaJual'])} x ${item['quantity']}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.remove),
+                            onPressed: () =>
+                                pembayaranController.updateQuantity(index, -1),
+                          ),
+                          Text('${item['quantity']}'),
+                          IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () =>
+                                pembayaranController.updateQuantity(index, 1),
+                          ),
+                        ],
                       ),
-                      Text('${item['quantity']}'),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () =>
-                            pembayaranController.updateQuantity(index, 1),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            )),
+                    );
+                  },
+                )),
             SizedBox(height: 16),
             Text(
               'Masukkan nominal uang yang diterima:',
@@ -133,7 +134,7 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(11)),
                 hintText: 'Rp 0',
               ),
               onChanged: _onCashInputChanged,
@@ -163,7 +164,7 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
             ElevatedButton(
               onPressed: () {
                 final jumlahUang = double.tryParse(cashController.text
-                    .replaceAll(RegExp(r'[^0-9]'), '')) ??
+                        .replaceAll(RegExp(r'[^0-9]'), '')) ??
                     0.0;
                 final totalHarga =
                     kasirController.total; // Use total from KasirController
