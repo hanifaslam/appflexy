@@ -128,6 +128,7 @@ class Profileuser2View extends StatelessWidget {
                               // Navigate to notifications
                               // Get.toNamed(Routes.NOTIFIKASI);
                             }),
+                            
                             menuItem('Hapus Akun', Icons.arrow_forward, () {
                               // Navigate to delete account
                               // Get.toNamed(Routes.HAPUS_AKUN);

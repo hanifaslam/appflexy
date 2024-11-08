@@ -13,7 +13,7 @@ class GantiPasswordView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ganti Password'),
-        backgroundColor: Colors.blue[900],
+        backgroundColor: const Color(0xFF213F84),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -22,32 +22,59 @@ class GantiPasswordView extends StatelessWidget {
             TextField(
               onChanged: (value) => controller.passwordLama.value = value,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: new InputDecoration(
                 labelText: "Password Saat Ini",
-                border: OutlineInputBorder()
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFF213F84),
+                    width: 0.5,
+                  )
+                )
               ),
             ),
             SizedBox(height: 16),
             TextField(
               onChanged: (value) => controller.passwordBaru.value = value,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: new InputDecoration(
                 labelText: "Password Baru",
-                border: OutlineInputBorder()
+                enabledBorder: OutlineInputBorder(
+                  borderSide:  BorderSide(
+                    color: Color(0xFF213F84),
+                    width: 0.5,
+                  ),
+                )
               ),
             ),
             SizedBox(height: 16),
             TextField(
               onChanged: (value) => controller.passwordBaru.value = value,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: new InputDecoration(
                 labelText: "Konfirmasi Password Baru",
-                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFF213F84),
+                    width: 0.5,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 32),
             Obx((){
               return ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF213F84),
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24, 
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)
+                  ),
+                  elevation: 4,
+                ),
                 onPressed: controller.isLoading.value ? null : (){
                   controller.gantiPassword();
                 },
