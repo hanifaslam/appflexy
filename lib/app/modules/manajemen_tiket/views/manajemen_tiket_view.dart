@@ -4,6 +4,7 @@ import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
@@ -155,7 +156,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff181681),
-        toolbarHeight: 80,
+        toolbarHeight: 90,
         leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,
@@ -168,10 +169,11 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
             onChanged: updateSearchQuery,
             decoration: InputDecoration(
               hintText: 'Cari Nama Tiket',
+              prefixIcon: Icon(Icons.search_sharp),
               hintStyle: TextStyle(color: Color(0xff181681)),
               border: InputBorder.none,
               filled: true,
-              fillColor: Colors.white,
+              fillColor: Colors.grey[350],
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(50),
@@ -196,108 +198,137 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
         ],
       ),
       body: filteredTiketList.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.inbox,
-                    size: 100,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Tidak ada daftar tiket yang dapat ditampilkan.',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Tambahkan tiket untuk dapat menampilkan daftar tiket yang tersedia.',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+          ? Container(
+            color: Colors.white24,
+            child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Bootstrap.box,
+                      size: 100,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Tidak ada daftar tiket yang dapat ditampilkan.',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                padding: EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  itemCount: filteredTiketList.length,
-                  itemBuilder: (context, index) {
-                    final tiket = filteredTiketList[index];
-                    double hargaJual =
-                        double.tryParse(tiket['hargaJual'].toString()) ?? 0.0;
+              ),
+          )
+          : Container(
+            color: Colors.white24,
+            child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                    itemCount: filteredTiketList.length,
+                    itemBuilder: (context, index) {
+                      final tiket = filteredTiketList[index];
+                      double hargaJual =
+                          double.tryParse(tiket['hargaJual'].toString()) ?? 0.0;
 
-                    return Card(
-                      color: Colors.grey[300],
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListTile(
-                        title: Text(tiket['namaTiket'],
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text(
-                          'Stok: ${tiket['stok']} | ${currencyFormat.format(hargaJual)}',
-                        ),
-                        trailing: PopupMenuButton<String>(
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              _editTiket(index, tiket);
-                            } else if (value == 'delete') {
-                              _showDeleteDialog(index, tiket['id']);
-                            }
-                          },
-                          itemBuilder: (BuildContext context) => [
-                            PopupMenuItem(
-                              value: 'edit',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit),
-                                  SizedBox(width: 8),
-                                  Text('Edit Tiket'),
-                                ],
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.delete),
-                                  SizedBox(width: 8),
-                                  Text('Hapus Tiket'),
-                                ],
-                              ),
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3), // warna bayangan dengan opacity
+                              spreadRadius: 2, // jarak sebaran bayangan
+                              blurRadius: 6, // tingkat blur bayangan
+                              offset: Offset(6, 10), // posisi bayangan (x, y)
                             ),
                           ],
                         ),
-                      ),
-                    );
-                  },
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ListTile(
+                              title: Text(tiket['namaTiket'],
+                                  style: TextStyle(fontWeight: FontWeight.bold)),
+                              subtitle: Text(
+                                'Stok: ${tiket['stok']} | ${currencyFormat.format(hargaJual)}',
+                              ),
+                              trailing: PopupMenuButton<String>(
+                                onSelected: (value) {
+                                  if (value == 'edit') {
+                                    _editTiket(index, tiket);
+                                  } else if (value == 'delete') {
+                                    _showDeleteDialog(index, tiket['id']);
+                                  }
+                                },
+                                itemBuilder: (BuildContext context) => [
+                                  PopupMenuItem(
+                                    value: 'edit',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.edit),
+                                        SizedBox(width: 8),
+                                        Text('Edit Tiket'),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'delete',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.delete),
+                                        SizedBox(width: 8),
+                                        Text('Hapus Tiket'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
+          ),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2), // warna bayangan dengan opacity
+              spreadRadius: 2, // jarak sebaran bayangan
+              blurRadius: 6, // tingkat blur bayangan
+              offset: Offset(3, 5), // posisi bayangan (x, y)
             ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff181681),
-        onPressed: () async {
-          final result = await Get.to(TambahTiketView());
-          if (result != null) {
-            setState(() {
-              tiketList.add(result);
-              updateSearchQuery(searchQuery);
-            });
-          }
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
+          ],
+        ),
+        child: FloatingActionButton(
+          elevation: 4,
+          backgroundColor: Color(0xff181681),
+          onPressed: () async {
+            final result = await Get.to(TambahTiketView());
+            if (result != null) {
+              setState(() {
+                tiketList.add(result);
+                updateSearchQuery(searchQuery);
+              });
+            }
+          },
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ),
     );

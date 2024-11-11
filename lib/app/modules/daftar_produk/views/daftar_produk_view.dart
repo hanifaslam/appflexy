@@ -17,9 +17,10 @@ class DaftarProdukView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
+        backgroundColor: Color(0xff181681),
+        toolbarHeight: 90,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white,),
           onPressed: () => Get.back(),
         ),
         title: Padding(
@@ -28,6 +29,7 @@ class DaftarProdukView extends StatelessWidget {
             onChanged: (query) => controller.updateSearchQuery(query),
             decoration: InputDecoration(
               hintText: 'Cari Nama Produk',
+              prefixIcon: Icon(Icons.search_sharp),
               hintStyle: TextStyle(color: Color(0xff181681)),
               border: InputBorder.none,
               filled: true,
@@ -45,7 +47,7 @@ class DaftarProdukView extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert),
+            icon: Icon(Icons.more_vert, color: Colors.white,),
             onPressed: () {
               _showSortDialog(context); // Tampilkan dialog pengurutan
             },
@@ -73,12 +75,6 @@ class DaftarProdukView extends StatelessWidget {
                   style: TextStyle(color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 8),
-                Text(
-                  'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
-                  style: TextStyle(color: Colors.grey),
-                  textAlign: TextAlign.center,
-                ),
               ],
             ),
           );
@@ -99,59 +95,75 @@ class DaftarProdukView extends StatelessWidget {
                 double hargaJual =
                     double.tryParse(produk['hargaJual'].toString()) ?? 0.0;
 
-                return Card(
-                  color: Colors.grey[300],
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
+                return Container(
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3), // warna bayangan dengan opacity
+                        spreadRadius: 2, // jarak sebaran bayangan
+                        blurRadius: 6, // tingkat blur bayangan
+                        offset: Offset(6, 10), // posisi bayangan (x, y)
+                      ),
+                    ],
                   ),
-                  child: ListTile(
-                    leading: produk['image'] != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.file(
-                              File(produk['image']),
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        leading: produk['image'] != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.file(
+                                  File(produk['image']),
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Icon(Icons.image, size: 50),
+                        title: Text(produk['namaProduk'],
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(
+                          'Stok: ${produk['stok']} | ${currencyFormat.format(hargaJual)}',
+                        ),
+                        trailing: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                              _editProduk(index, produk);
+                            } else if (value == 'delete') {
+                              _showDeleteDialog(context, index, produk['id']);
+                            }
+                          },
+                          itemBuilder: (BuildContext context) => [
+                            PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit),
+                                  SizedBox(width: 8),
+                                  Text('Edit Produk'),
+                                ],
+                              ),
                             ),
-                          )
-                        : Icon(Icons.image, size: 50),
-                    title: Text(produk['namaProduk'],
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text(
-                      'Stok: ${produk['stok']} | ${currencyFormat.format(hargaJual)}',
-                    ),
-                    trailing: PopupMenuButton<String>(
-                      onSelected: (value) {
-                        if (value == 'edit') {
-                          _editProduk(index, produk);
-                        } else if (value == 'delete') {
-                          _showDeleteDialog(context, index, produk['id']);
-                        }
-                      },
-                      itemBuilder: (BuildContext context) => [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit),
-                              SizedBox(width: 8),
-                              Text('Edit Produk'),
-                            ],
-                          ),
+                            PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete),
+                                  SizedBox(width: 8),
+                                  Text('Hapus Produk'),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Row(
-                            children: [
-                              Icon(Icons.delete),
-                              SizedBox(width: 8),
-                              Text('Hapus Produk'),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 );
@@ -160,17 +172,31 @@ class DaftarProdukView extends StatelessWidget {
           ),
         );
       }),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff181681),
-        onPressed: () async {
-          final result = await Get.to(TambahProdukView());
-          if (result != null) {
-            controller.fetchProducts(); // Refresh the product list after adding
-          }
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2), // warna bayangan dengan opacity
+              spreadRadius: 2, // jarak sebaran bayangan
+              blurRadius: 6, // tingkat blur bayangan
+              offset: Offset(3, 5), // posisi bayangan (x, y)
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          elevation: 4,
+          backgroundColor: Color(0xff181681),
+          onPressed: () async {
+            final result = await Get.to(TambahProdukView());
+            if (result != null) {
+              controller.fetchProducts(); // Refresh the product list after adding
+            }
+          },
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ),
     );
