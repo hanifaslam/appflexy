@@ -3,65 +3,161 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DaftarProdukController extends GetxController {
-  var products = <Map<String, dynamic>>[].obs; // List of all products
-  var filteredProdukList =
-      <Map<String, dynamic>>[].obs; // Filtered product list
-  var searchQuery = ''.obs; // Search query
-  var isLoading = true.obs; // Loading state
+  var products = <Map<String, dynamic>>[].obs;
+  var filteredProdukList = <Map<String, dynamic>>[].obs;
+  var searchQuery = ''.obs;
+  var isLoading = true.obs;
 
   @override
   void onReady() {
     super.onReady();
-    fetchProducts(); // Fetch products when the controller is initialized
+    fetchProducts();
   }
 
   // Method to fetch products from the API
   Future<void> fetchProducts() async {
-    isLoading.value = true; // Set loading to true
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:8000/api/products'));
+    try {
+      isLoading.value = true;
+      final response = await http.get(
+        Uri.parse('http://10.0.2.2:8000/api/products'),
+        headers: {'Accept': 'application/json'},
+      );
 
-    if (response.statusCode == 200) {
-      List<dynamic> productList = json.decode(response.body);
-      products.value = List<Map<String, dynamic>>.from(productList);
-      filteredProdukList.value =
-          products; // Initially, filtered list is all products
-    } else {
-      // Handle error
-      Get.snackbar('Error', 'Failed to load products');
+      if (response.statusCode == 200) {
+        List<dynamic> productList = json.decode(response.body);
+        products.value = List<Map<String, dynamic>>.from(productList);
+        filteredProdukList.value = products;
+        print('Fetched ${products.length} products');
+      } else {
+        print('Error status code: ${response.statusCode}');
+        print('Error response: ${response.body}');
+        Get.snackbar(
+            'Error', 'Failed to load products: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception during fetch: $e');
+      Get.snackbar('Error', 'Failed to load products: $e');
+    } finally {
+      isLoading.value = false;
     }
-    isLoading.value = false; // Set loading to false
   }
 
-  // Method to add a new product to the list
-  void addProduct(Map<String, dynamic> newProduct) {
-    products.add(newProduct); // Add new product to the product list
-    filteredProdukList.add(newProduct); // Also add to filtered list
+  // Method to add a new product
+  Future<void> addProduct(Map<String, dynamic> newProduct,
+      {String? imagePath}) async {
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://10.0.2.2:8000/api/products'),
+      );
+
+      // Add all product data as fields
+      request.fields['namaProduk'] = newProduct['namaProduk'];
+      request.fields['kodeProduk'] = newProduct['kodeProduk'];
+      request.fields['kategori'] = newProduct['kategori'];
+      request.fields['stok'] = newProduct['stok'].toString();
+      request.fields['hargaJual'] = newProduct['hargaJual'].toString();
+      if (newProduct['keterangan'] != null) {
+        request.fields['keterangan'] = newProduct['keterangan'];
+      }
+
+      // Add image if provided
+      if (imagePath != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('image', imagePath));
+      }
+
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+
+      if (response.statusCode == 201) {
+        var jsonResponse = json.decode(responseData);
+        products.add(jsonResponse['data']);
+        filteredProdukList.add(jsonResponse['data']);
+        Get.snackbar('Success', 'Product added successfully');
+      } else {
+        print('Error adding product: $responseData');
+        Get.snackbar('Error', 'Failed to add product');
+      }
+    } catch (e) {
+      print('Exception adding product: $e');
+      Get.snackbar('Error', 'Failed to add product: $e');
+    }
   }
 
-  // Method to delete a product by ID
+  // Method to update a product
+  Future<void> updateProduct(int productId, Map<String, dynamic> updatedData,
+      {String? imagePath}) async {
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://10.0.2.2:8000/api/products/$productId'),
+      );
+
+      // Add PUT method simulation
+      request.fields['_method'] = 'PUT';
+
+      // Add all product data as fields
+      request.fields['namaProduk'] = updatedData['namaProduk'];
+      request.fields['kodeProduk'] = updatedData['kodeProduk'];
+      request.fields['kategori'] = updatedData['kategori'];
+      request.fields['stok'] = updatedData['stok'].toString();
+      request.fields['hargaJual'] = updatedData['hargaJual'].toString();
+      if (updatedData['keterangan'] != null) {
+        request.fields['keterangan'] = updatedData['keterangan'];
+      }
+
+      // Add image if provided
+      if (imagePath != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('image', imagePath));
+      }
+
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(responseData);
+        int index =
+            products.indexWhere((product) => product['id'] == productId);
+        if (index != -1) {
+          products[index] = jsonResponse['data'];
+          filteredProdukList[index] = jsonResponse['data'];
+        }
+        Get.snackbar('Success', 'Product updated successfully');
+      } else {
+        print('Error updating product: $responseData');
+        Get.snackbar('Error', 'Failed to update product');
+      }
+    } catch (e) {
+      print('Exception updating product: $e');
+      Get.snackbar('Error', 'Failed to update product: $e');
+    }
+  }
+
+  // Method to delete a product
   Future<void> deleteProduct(int productId) async {
-    final response = await http
-        .delete(Uri.parse('http://10.0.2.2:8000/api/products/$productId'));
+    try {
+      final response = await http.delete(
+        Uri.parse('http://10.0.2.2:8000/api/products/$productId'),
+        headers: {'Accept': 'application/json'},
+      );
 
-    if (response.statusCode == 200) {
-      products.removeWhere((product) =>
-          product['id'] == productId); // Remove product from the list
-      filteredProdukList.removeWhere(
-          (product) => product['id'] == productId); // Remove from filtered list
-      Get.snackbar('Success', 'Product deleted successfully');
-    } else {
-      // Handle error
-      Get.snackbar('Error', 'Failed to delete product');
+      if (response.statusCode == 200) {
+        products.removeWhere((product) => product['id'] == productId);
+        filteredProdukList.removeWhere((product) => product['id'] == productId);
+        Get.snackbar('Success', 'Product deleted successfully');
+      } else {
+        print('Error deleting product: ${response.body}');
+        Get.snackbar('Error', 'Failed to delete product');
+      }
+    } catch (e) {
+      print('Exception deleting product: $e');
+      Get.snackbar('Error', 'Failed to delete product: $e');
     }
   }
 
-  // Method to refresh the product list
-  Future<void> refreshProductList() async {
-    await fetchProducts(); // Call fetch to reload data from the API
-  }
-
-  // Method to update the search query and filter the product list
+  // Method to update search query and filter products
   void updateSearchQuery(String query) {
     searchQuery.value = query;
     filteredProdukList.value = products
@@ -69,37 +165,15 @@ class DaftarProdukController extends GetxController {
             .toString()
             .toLowerCase()
             .contains(query.toLowerCase()))
-        .toList(); // Filter products based on the search query
+        .toList();
   }
 
-  // Method to sort the filtered product list by name
+  // Method to sort products
   void sortFilteredProdukList({bool ascending = true}) {
     filteredProdukList.sort((a, b) {
       return ascending
-          ? a['namaProduk'].compareTo(b['namaProduk'])
-          : b['namaProduk'].compareTo(a['namaProduk']);
+          ? a['namaProduk'].toString().compareTo(b['namaProduk'].toString())
+          : b['namaProduk'].toString().compareTo(a['namaProduk'].toString());
     });
-  }
-
-  // Method to update a product
-  Future<void> updateProduct(
-      int productId, Map<String, dynamic> updatedData) async {
-    final response = await http.put(
-      Uri.parse('http://10.0.2.2:8000/api/products/$productId'),
-      body: updatedData,
-    );
-
-    if (response.statusCode == 200) {
-      // Update the local product list
-      int index = products.indexWhere((product) => product['id'] == productId);
-      if (index != -1) {
-        products[index] = updatedData; // Replace with updated data
-        filteredProdukList[index] = updatedData; // Also update filtered list
-      }
-      Get.snackbar('Success', 'Product updated successfully');
-    } else {
-      // Handle error
-      Get.snackbar('Error', 'Failed to update product');
-    }
   }
 }
