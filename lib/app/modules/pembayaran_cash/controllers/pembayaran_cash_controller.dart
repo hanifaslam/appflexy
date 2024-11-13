@@ -11,7 +11,7 @@ class PembayaranCashController extends GetxController {
   // Function to calculate the total price based on items in pesananList
   void calculateTotal() {
     total.value = pesananList.fold(0.0, (sum, item) {
-      return sum + (item['hargaJual'] * item['quantity']);
+      return sum + (item['price'] * item['quantity']);
     });
   }
 
@@ -26,28 +26,6 @@ class PembayaranCashController extends GetxController {
     }
 
     // Recalculate the total after updating quantities
-    calculateTotal();
-  }
-
-  // Function to add a new item to the order list
-  void addItemToPesanan(String nama, double hargaJual, int quantity) {
-    // Check if item already exists in pesananList
-    final existingItemIndex =
-        pesananList.indexWhere((item) => item['nama'] == nama);
-
-    if (existingItemIndex >= 0) {
-      // If item exists, update the quantity
-      pesananList[existingItemIndex]['quantity'] += quantity;
-    } else {
-      // If item does not exist, add as new entry
-      pesananList.add({
-        'nama': nama,
-        'hargaJual': hargaJual,
-        'quantity': quantity,
-      });
-    }
-
-    // Recalculate the total after adding the item
     calculateTotal();
   }
 

@@ -102,7 +102,7 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                     return ListTile(
                       title: Text(item['nama']),
                       subtitle: Text(
-                          '${currencyFormat.format(item['hargaJual'])} x ${item['quantity']}'),
+                          '${currencyFormat.format(item['price'])} x ${item['quantity']}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

@@ -20,8 +20,10 @@ class KasirView extends StatefulWidget {
 
 class _KasirViewState extends State<KasirView> {
   final KasirController controller = Get.put(KasirController());
-  final SalesHistoryController salesHistoryController = Get.put(SalesHistoryController());
-  final PembayaranCashController pembayaranCashController = Get.put(PembayaranCashController());
+  final SalesHistoryController salesHistoryController =
+  Get.put(SalesHistoryController());
+  final PembayaranCashController pembayaranCashController =
+  Get.put(PembayaranCashController());
   String? selectedPaymentMethod;
 
   @override
@@ -33,7 +35,8 @@ class _KasirViewState extends State<KasirView> {
 
   @override
   Widget build(BuildContext context) {
-    final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
+    final NumberFormat currencyFormat =
+    NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +61,8 @@ class _KasirViewState extends State<KasirView> {
               children: [
                 Icon(Icons.inbox, size: 100, color: Colors.grey),
                 SizedBox(height: 16),
-                Text('Tidak ada pesanan.', style: TextStyle(color: Colors.grey)),
+                Text('Tidak ada pesanan.',
+                    style: TextStyle(color: Colors.grey)),
               ],
             ),
           );
@@ -76,25 +80,30 @@ class _KasirViewState extends State<KasirView> {
                       print("Produk at index $index: $item");
 
                       return Obx(() {
-                        final quantity = controller.localQuantities[index].value;
+                        final quantity =
+                            controller.localQuantities[index].value;
 
                         if (quantity <= 0) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            controller.daftarKasirController.pesananList.removeAt(index);
+                            controller.daftarKasirController.pesananList
+                                .removeAt(index);
                             controller.localQuantities.removeAt(index);
                           });
                           return const SizedBox.shrink();
                         }
 
-                        final double hargaJual = double.tryParse(item['price'].toString()) ?? 0;
+                        final double hargaJual =
+                            double.tryParse(item['price'].toString()) ?? 0;
                         final String namaProduk = item['name'] ?? '';
-                        final String formattedPrice = currencyFormat.format(hargaJual);
+                        final String formattedPrice =
+                        currencyFormat.format(hargaJual);
 
                         return Card(
                           elevation: 2,
                           margin: EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
-                            leading: (item['image'] != null && File(item['image']).existsSync())
+                            leading: (item['image'] != null &&
+                                File(item['image']).existsSync())
                                 ? ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: Image.file(
@@ -112,13 +121,15 @@ class _KasirViewState extends State<KasirView> {
                               children: [
                                 IconButton(
                                   icon: Icon(Icons.remove),
-                                  onPressed: () => controller.updateQuantity(index, -1),
+                                  onPressed: () =>
+                                      controller.updateQuantity(index, -1),
                                 ),
                                 Text(quantity.toString(),
                                     style: TextStyle(fontSize: 16)),
                                 IconButton(
                                   icon: Icon(Icons.add),
-                                  onPressed: () => controller.updateQuantity(index, 1),
+                                  onPressed: () =>
+                                      controller.updateQuantity(index, 1),
                                 ),
                               ],
                             ),
@@ -135,10 +146,12 @@ class _KasirViewState extends State<KasirView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Total',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
                       Obx(() => Text(
                         currencyFormat.format(controller.total),
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       )),
                     ],
                   ),
@@ -189,7 +202,7 @@ class _KasirViewState extends State<KasirView> {
                 SizedBox(height: 10),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (selectedPaymentMethod == null) {
                         Get.snackbar(
                           'Pilih Metode Pembayaran',
@@ -197,26 +210,38 @@ class _KasirViewState extends State<KasirView> {
                           snackPosition: SnackPosition.BOTTOM,
                         );
                       } else {
-                        // Save each item in sales history
-                        widget.pesananList.forEach((item) {
-                          salesHistoryController.addSale({
-                            'name': item['name'],
-                            'quantity': controller.localQuantities[widget.pesananList.indexOf(item)].value,
-                            'price': item['price'],
-                            'time': DateTime.now().toString(),
-                            'total': controller.total,
-                            'paymentMethod': selectedPaymentMethod,
-                          });
-                        });
+                        // Set the payment method in controller
+                        controller.setPaymentMethod(selectedPaymentMethod!);
 
-                        if (selectedPaymentMethod == 'cash') {
-                          Get.to(PembayaranCashView());
-                        } else if (selectedPaymentMethod == 'qris') {
-                          Get.snackbar(
-                            'Pembayaran QRIS',
-                            'Proses pembayaran QRIS berhasil',
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
+                        // Submit order to API
+                        final success = await controller.submitOrder();
+
+                        if (success) {
+                          // Save to sales history after successful API submission
+                          widget.pesananList.forEach((item) {
+                            salesHistoryController.addSale({
+                              'name': item['name'],
+                              'quantity': controller
+                                  .localQuantities[
+                              widget.pesananList.indexOf(item)]
+                                  .value,
+                              'price': item['price'],
+                              'time': DateTime.now().toString(),
+                              'total': controller.total,
+                              'paymentMethod': selectedPaymentMethod,
+                            });
+                          });
+
+                          // Proceed with payment flow
+                          if (selectedPaymentMethod == 'cash') {
+                            Get.to(PembayaranCashView());
+                          } else if (selectedPaymentMethod == 'qris') {
+                            Get.snackbar(
+                              'Pembayaran QRIS',
+                              'Proses pembayaran QRIS berhasil',
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                          }
                         }
                       }
                     },

@@ -6,9 +6,29 @@ import 'package:http/http.dart' as http;
 class DaftarKasirController extends GetxController {
   var produkList = <Map<String, dynamic>>[].obs;
   var tiketList = <Map<String, dynamic>>[].obs;
-  var pesananList = <Map<String, dynamic>>[].obs; // Observable list
+  var pesananList = <Map<String, dynamic>>[].obs;
   var pesananCount = 0.obs;
   var searchQuery = ''.obs;
+  var isLoading = false.obs;
+
+  final String baseUrl = 'http://10.0.2.2:8000/api';
+
+  // Add filtered getters
+  List<Map<String, dynamic>> get filteredProdukList {
+    if (searchQuery.isEmpty) return produkList;
+    return produkList.where((item) {
+      final namaProduk = item['namaProduk']?.toString().toLowerCase() ?? '';
+      return namaProduk.contains(searchQuery.value.toLowerCase());
+    }).toList();
+  }
+
+  List<Map<String, dynamic>> get filteredTiketList {
+    if (searchQuery.isEmpty) return tiketList;
+    return tiketList.where((item) {
+      final namaTiket = item['namaTiket']?.toString().toLowerCase() ?? '';
+      return namaTiket.contains(searchQuery.value.toLowerCase());
+    }).toList();
+  }
 
   @override
   void onInit() {
@@ -17,89 +37,115 @@ class DaftarKasirController extends GetxController {
     fetchTiketList();
   }
 
-  // Fetch products from API
   Future<void> fetchProdukList() async {
+    isLoading.value = true;
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/products'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/products'),
+        headers: {'Accept': 'application/json'},
+      );
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         produkList.value = List<Map<String, dynamic>>.from(data);
       } else {
-        Get.snackbar('Error', 'Failed to load products');
+        throw Exception('Failed to load products: ${response.statusCode}');
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load products: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to load products: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  // Fetch tickets from API
   Future<void> fetchTiketList() async {
+    isLoading.value = true;
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/tikets'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/tikets'),
+        headers: {'Accept': 'application/json'},
+      );
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         tiketList.value = List<Map<String, dynamic>>.from(data);
       } else {
-        Get.snackbar('Error', 'Failed to load tickets');
+        throw Exception('Failed to load tickets: ${response.statusCode}');
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load tickets: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to load tickets: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  // Update search query
   void updateSearchQuery(String query) {
     searchQuery.value = query.toLowerCase();
   }
 
-  // Filtered list based on search query for products
-  List<Map<String, dynamic>> get filteredProdukList {
-    if (searchQuery.isEmpty) return produkList;
-    return produkList.where((item) => (item['namaProduk']?.toString().toLowerCase() ?? '').contains(searchQuery.value)).toList();
-  }
-
-  // Filtered list based on search query for tickets
-  List<Map<String, dynamic>> get filteredTiketList {
-    if (searchQuery.isEmpty) return tiketList;
-    return tiketList.where((item) => (item['namaTiket']?.toString().toLowerCase() ?? '').contains(searchQuery.value)).toList();
-  }
-
-  // Add an item to pesananList and update pesananCount
   void addToPesanan(Map<String, dynamic> item) {
-    // Check if the item is already in pesananList
-    var existingItem = pesananList.firstWhereOrNull((pesanan) => pesanan['id'] == item['id']);
+    var existingItem = pesananList.firstWhereOrNull((pesanan) =>
+    pesanan['id'] == item['id'] &&
+        pesanan['type'] ==
+            (item.containsKey('namaProduk') ? 'produk' : 'tiket'));
+
     if (existingItem != null) {
-      // If it exists, increase the quantity
-      existingItem['quantity']++;
+      existingItem['quantity'] = (existingItem['quantity'] ?? 1) + 1;
+      pesananList.refresh();
     } else {
-      // If it doesn't exist, add it to the list
       pesananList.add({
         'id': item['id'],
         'name': item['namaProduk'] ?? item['namaTiket'],
-        'price': item['hargaJual'],
+        'price': double.parse(item['hargaJual'].toString()),
         'quantity': 1,
         'type': item.containsKey('namaProduk') ? 'produk' : 'tiket',
+        'image': item['image'],
       });
     }
+
     pesananCount.value = pesananList.length;
-    print('Pesanan List: $pesananList');
-    Get.snackbar('Pesanan', '${item['namaProduk'] ?? item['namaTiket']} added to pesanan.', colorText: Colors.white);
+    Get.snackbar(
+      'Added to Cart',
+      '${item['namaProduk'] ?? item['namaTiket']} added to cart',
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: Duration(seconds: 2),
+    );
   }
 
-
-  // Remove an item from pesananList and update pesananCount
   void removeFromPesanan(Map<String, dynamic> item) {
-    pesananList.removeWhere((pesanan) => pesanan['id'] == item['id']);
+    pesananList.removeWhere((pesanan) =>
+    pesanan['id'] == item['id'] && pesanan['type'] == item['type']);
     pesananCount.value = pesananList.length;
-
-    Get.snackbar('Pesanan', '${item['namaProduk'] ?? item['namaTiket']} removed from pesanan.');
+    Get.snackbar(
+      'Removed from Cart',
+      '${item['name']} removed from cart',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
   }
 
-  // Update the quantity of an item in pesananList
-  void updateQuantity(int index, int quantity) {
+  void updateQuantity(int index, int newQuantity) {
     if (index >= 0 && index < pesananList.length) {
-      pesananList[index]['quantity'] = quantity;
-      if (quantity <= 0) removeFromPesanan(pesananList[index]); // Remove if quantity is zero
+      if (newQuantity <= 0) {
+        removeFromPesanan(pesananList[index]);
+      } else {
+        pesananList[index]['quantity'] = newQuantity;
+        pesananList.refresh();
+      }
     }
+  }
+
+  void clearPesanan() {
+    pesananList.clear();
+    pesananCount.value = 0;
   }
 }

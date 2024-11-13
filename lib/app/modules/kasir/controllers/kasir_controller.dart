@@ -1,14 +1,22 @@
+import 'dart:convert';
+import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import '../../daftar_kasir/controllers/daftar_kasir_controller.dart';
-import '../../sales_history/controllers/sales_history_controller.dart';
 
 class KasirController extends GetxController {
-  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
-  final DaftarKasirController daftarKasirController = Get.find<DaftarKasirController>();
-  final SalesHistoryController salesHistoryController = Get.put(SalesHistoryController());
+  final DaftarKasirController daftarKasirController =
+  Get.find<DaftarKasirController>();
+  final NumberFormat currencyFormat = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+    decimalDigits: 0,
+  );
 
+  var isProcessing = false.obs;
   RxList<RxInt> localQuantities = <RxInt>[].obs;
+  var selectedPaymentMethod = ''.obs;
 
   @override
   void onInit() {
@@ -19,56 +27,137 @@ class KasirController extends GetxController {
   void initializeLocalQuantities() {
     localQuantities.value = List.generate(
       daftarKasirController.pesananList.length,
-          (index) => RxInt(daftarKasirController.pesananList[index]['quantity'] ?? 1),
+          (index) =>
+          RxInt(daftarKasirController.pesananList[index]['quantity'] ?? 1),
     );
   }
 
-  List<Map<String, dynamic>> get pesananList => daftarKasirController.pesananList;
+  List<Map<String, dynamic>> get pesananList =>
+      daftarKasirController.pesananList;
 
   double get total => pesananList.fold(0.0, (sum, item) {
-    final price = double.tryParse(item['price']?.toString() ?? '0') ?? 0;
-    int quantity = localQuantities.isNotEmpty ? localQuantities[pesananList.indexOf(item)].value : 1;
+    final price = double.tryParse(item['price'].toString()) ?? 0.0;
+    final quantity = localQuantities.isNotEmpty
+        ? localQuantities[pesananList.indexOf(item)].value
+        : 1;
     return sum + (price * quantity);
   });
 
-  void updateQuantity(int index, int change) {
-    if (index >= 0 && index < localQuantities.length) {
-      int currentQuantity = localQuantities[index].value;
-      int newQuantity = currentQuantity + change;
-      localQuantities[index].value = newQuantity > 0 ? newQuantity : 0;
+  Future<bool> submitOrder() async {
+    print('submitOrder function called');
+
+    // Validasi sebelum mengirim
+    if (pesananList.isEmpty) {
+      print('Pesanan list kosong');
+      Get.snackbar(
+        'Error',
+        'No items in order',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+
+    if (selectedPaymentMethod.value.isEmpty) {
+      print('Payment method belum dipilih');
+      Get.snackbar(
+        'Error',
+        'Please select a payment method',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+
+    if (isProcessing.value) {
+      print('Masih dalam proses');
+      return false;
+    }
+
+    isProcessing.value = true;
+
+    try {
+      final orderData = {
+        'customer': 'Walk-in Customer',
+        'time': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+        'payment_method': selectedPaymentMethod.value,
+        'total': total,
+        'items': pesananList.map((item) {
+          final index = pesananList.indexOf(item);
+          final quantity = localQuantities[index].value;
+          return {
+            'name': item['name'],
+            'quantity': quantity,
+            'price': item['price'],
+            'total_item_price': item['price'] * quantity,
+          };
+        }).toList(),
+      };
+
+      print('Order Data: ${jsonEncode(orderData)}');
+      print('Sending to URL: ${daftarKasirController.baseUrl}/orders');
+
+      final response = await http.post(
+        Uri.parse('${daftarKasirController.baseUrl}/orders'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(orderData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 201) {
+
+        Get.snackbar(
+          'Success',
+          'Order has been processed successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        return true;
+      } else {
+        throw Exception(
+            'Failed to create order: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      print('Error submitting order: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to process order: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    } finally {
+      isProcessing.value = false;
     }
   }
 
-  String formatCurrency(double value) {
-    return currencyFormat.format(value);
+  void updateQuantity(int index, int change) {
+    if (index >= 0 && index < localQuantities.length) {
+      final newQuantity = localQuantities[index].value + change;
+      if (newQuantity > 0) {
+        localQuantities[index].value = newQuantity;
+        daftarKasirController.updateQuantity(index, newQuantity);
+      } else {
+        daftarKasirController.removeFromPesanan(pesananList[index]);
+        localQuantities.removeAt(index);
+      }
+    }
   }
 
-  void clearPesanan() {
-    daftarKasirController.pesananList.clear();
+  void setPaymentMethod(String method) {
+    selectedPaymentMethod.value = method;
+  }
+
+  void clearOrder() {
+    daftarKasirController.clearPesanan();
     localQuantities.clear();
+    selectedPaymentMethod.value = '';
   }
 
-  // New method to prepare and save sales history
-  void saveOrderHistory() {
-    final salesData = {
-      'customer': 'Customer Name', // Replace with actual customer data if available
-      'time': DateTime.now().toString(),
-      'paymentMethod': pesananList.isNotEmpty ? pesananList.first['selectedPaymentMethod'] : 'Unknown Method',
-      'items': pesananList.map((item) {
-        final int index = pesananList.indexOf(item);
-        final int quantity = localQuantities[index].value;
-        return {
-          'name': item['name'],
-          'quantity': quantity,
-          'hargaJual': item['price'],
-          'totalItemPrice': item['price'] * quantity,
-        };
-      }).toList(),
-      'total': total,
-    };
-
-    // Save the sales data to sales history
-    salesHistoryController.addSale(salesData);
-    clearPesanan(); // Optionally clear the order after saving
-  }
+  String formatCurrency(double value) => currencyFormat.format(value);
 }
