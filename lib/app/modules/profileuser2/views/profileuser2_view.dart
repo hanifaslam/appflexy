@@ -29,24 +29,6 @@ class Profileuser2View extends StatelessWidget {
             Container(
               height: 400,
               color: Color(0xFF213F84),
-              child: Stack(
-                children: [
-                  Positioned(
-                      top: 20, left: 50, child: circleDecoration(30, 0.4)),
-                  Positioned(
-                      top: 70, left: 20, child: circleDecoration(20, 0.6)),
-                  Positioned(
-                      top: 100, left: 90, child: circleDecoration(15, 0.8)),
-                  Positioned(
-                      top: 50, left: 30, child: circleDecoration(80, 0.5)),
-                  Positioned(
-                      top: 20, right: 50, child: circleDecoration(100, 0.7)),
-                  Positioned(
-                      top: 120, right: 10, child: circleDecoration(60, 1.0)),
-                  Positioned(
-                      top: 150, left: 20, child: circleDecoration(40, 0.8)),
-                ],
-              ),
             ),
             // Profile container
             Padding(
@@ -146,6 +128,7 @@ class Profileuser2View extends StatelessWidget {
                               // Navigate to notifications
                               // Get.toNamed(Routes.NOTIFIKASI);
                             }),
+                            
                             menuItem('Hapus Akun', Icons.arrow_forward, () {
                               // Navigate to delete account
                               // Get.toNamed(Routes.HAPUS_AKUN);
