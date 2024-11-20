@@ -1,4 +1,3 @@
-import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
 import 'package:apptiket/app/modules/pembayaran_cash/controllers/pembayaran_cash_controller.dart';
 import 'package:apptiket/app/modules/tambah_produk/controllers/tambah_produk_controller.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Application",
-      initialRoute: Routes.HOME,
+      initialRoute: Routes.LOGIN,
       getPages: AppPages.routes,
     );
     return FutureBuilder(

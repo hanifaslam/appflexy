@@ -2,6 +2,7 @@ import 'package:apptiket/app/widgets/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../registrasi/views/registrasi_view.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -20,7 +21,7 @@ class LoginView extends GetView<LoginController> {
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
-                vertical: 50.0, // Adjust top padding if needed
+                vertical: 80.0, // Adjust top padding if needed
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center, // Align items to the center horizontally
@@ -112,9 +113,25 @@ class LoginView extends GetView<LoginController> {
                       )),
 
                   const SizedBox(height: 40), // Spacing between password input and button
-
                   // Button
                   ProfileBtn(),
+
+                  SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Belum punya akun?', style: TextStyle(fontSize: 16),),
+                        SizedBox(width: 7,),
+                        GestureDetector(
+                            onTap: () {
+                              Get.to(() => RegistrasiView());
+                            },
+                            child: Text('Daftar disini', style: TextStyle(color: Colors.blue, fontSize: 16),)),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),

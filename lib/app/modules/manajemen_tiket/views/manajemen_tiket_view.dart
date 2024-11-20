@@ -259,7 +259,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                               title: Text(tiket['namaTiket'],
                                   style: TextStyle(fontWeight: FontWeight.bold)),
                               subtitle: Text(
-                                'Stok: ${tiket['stok']} | ${currencyFormat.format(hargaJual)}',
+                                'Stok: ${tiket['stok']} |  ${currencyFormat.format(hargaJual)}',
                               ),
                               trailing: PopupMenuButton<String>(
                                 onSelected: (value) {

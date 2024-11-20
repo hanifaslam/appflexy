@@ -23,6 +23,7 @@ abstract class Routes {
   static const EDIT_PRODUK = _Paths.EDIT_PRODUK;
   static const EDIT_TIKET = _Paths.EDIT_TIKET;
   static const GANTI_PASSWORD = _Paths.GANTI_PASSWORD;
+  static const REGISTRASI = _Paths.REGISTRASI;
 }
 
 abstract class _Paths {
@@ -47,4 +48,5 @@ abstract class _Paths {
   static const EDIT_PRODUK = '/edit-produk';
   static const EDIT_TIKET = '/edit-tiket';
   static const GANTI_PASSWORD = '/ganti-password';
+  static const REGISTRASI = '/registrasi';
 }

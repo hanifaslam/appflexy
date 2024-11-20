@@ -3,10 +3,13 @@ import 'package:get/get.dart';
 import '../modules/daftar_kasir/bindings/daftar_kasir_binding.dart';
 import '../modules/daftar_kasir/views/daftar_kasir_view.dart';
 import '../modules/daftar_produk/bindings/daftar_produk_binding.dart';
+import '../modules/daftar_produk/views/daftar_produk_view.dart';
 import '../modules/edit_produk/bindings/edit_produk_binding.dart';
 import '../modules/edit_produk/views/edit_produk_view.dart';
 import '../modules/edit_tiket/bindings/edit_tiket_binding.dart';
 import '../modules/edit_tiket/views/edit_tiket_view.dart';
+import '../modules/ganti_password/bindings/ganti_password_binding.dart';
+import '../modules/ganti_password/views/ganti_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/kasir/bindings/kasir_binding.dart';
@@ -25,6 +28,8 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/profileuser2/bindings/profileuser2_binding.dart';
 import '../modules/profileuser2/views/profileuser2_view.dart';
+import '../modules/registrasi/bindings/registrasi_binding.dart';
+import '../modules/registrasi/views/registrasi_view.dart';
 import '../modules/sales_history/bindings/sales_history_binding.dart';
 import '../modules/sales_history/views/sales_history_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
@@ -35,9 +40,6 @@ import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
 import '../modules/tambah_produk/views/tambah_produk_view.dart';
 import '../modules/tambah_tiket/bindings/tambah_tiket_binding.dart';
 import '../modules/tambah_tiket/views/tambah_tiket_view.dart';
-import 'package:apptiket/app/modules/daftar_produk/views/daftar_produk_view.dart';
-import '../modules/ganti_password/bindings/ganti_password_binding.dart';
-import '../modules/ganti_password/views/ganti_password_view.dart';
 
 part 'app_routes.dart';
 
@@ -85,7 +87,7 @@ class AppPages {
     GetPage(
       name: _Paths.KASIR,
       page: () => KasirView(
-          pesananList: [],
+        pesananList: [],
       ),
       binding: KasirBinding(),
     ),
@@ -150,6 +152,11 @@ class AppPages {
       name: _Paths.GANTI_PASSWORD,
       page: () => GantiPasswordView(),
       binding: GantiPasswordBinding(),
-    )
+    ),
+    GetPage(
+      name: _Paths.REGISTRASI,
+      page: () =>  RegistrasiView(),
+      binding: RegistrasiBinding(),
+    ),
   ];
 }
