@@ -26,15 +26,35 @@ class SalesHistoryPage extends StatelessWidget {
         backgroundColor: Color(0xff213F84),
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
+        actions: [
+          Obx(() {
+            return DropdownButton<String>(
+              value: salesController.filterType.value,
+              icon: Icon(Icons.more_vert, color: Colors.white), // Change to three dots icon
+              dropdownColor: Color(0xff213F84),
+              items: <String>['All', 'Weekly', 'Monthly', 'Yearly'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: TextStyle(color: Colors.white)),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  salesController.setFilter(newValue);
+                }
+              },
+            );
+          }),
+        ],
       ),
       body: Obx(() {
-        if (salesController.salesHistory.isEmpty) {
+        if (salesController.filteredSalesHistory.isEmpty) {
           return Center(child: Text('Belum ada riwayat penjualan.'));
         }
         return ListView.builder(
-          itemCount: salesController.salesHistory.length,
+          itemCount: salesController.filteredSalesHistory.length,
           itemBuilder: (context, index) {
-            final sale = salesController.salesHistory[index];
+            final sale = salesController.filteredSalesHistory[index];
             return Card(
               color: Color(0xFFEDEDED),
               shape: RoundedRectangleBorder(
@@ -85,7 +105,7 @@ class SalesHistoryPage extends StatelessWidget {
                 ),
               ),
               Text(
-                sale['paymentMethod'] ?? 'Unknown Method',
+                sale['payment_method'] ?? 'Unknown Method',
                 style: TextStyle(color: Color(0xFF213F84)),
               ),
             ],
@@ -110,7 +130,7 @@ class SalesHistoryPage extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  salesController.formatCurrency(item['hargaJual'] * item['quantity']),
+                  salesController.formatCurrency(item['total_item_price']),
                   style: TextStyle(color: Color(0xFF213F84)),
                 ),
               ],
@@ -137,7 +157,6 @@ class SalesHistoryPage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8),
         ],
       ),
     );

@@ -30,6 +30,21 @@ class DaftarKasirController extends GetxController {
     }).toList();
   }
 
+  Future<List<dynamic>> getOrderItems() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/order_items'));
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load order items');
+      }
+    } catch (e) {
+      print('Error fetching order items: $e');
+      return [];
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();

@@ -5,8 +5,9 @@ import 'package:apptiket/app/widgets/navbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 
-// HomeView dengan CurvedNavigationBar
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -15,42 +16,43 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  int _pageIndex = 0; // Index untuk melacak halaman aktif
-
-  // Daftar halaman untuk setiap tab
+  int _pageIndex = 0;
   final List<Widget> _pages = [
     const Center(child: Text('Beranda', style: TextStyle(fontSize: 24))),
     const Center(child: Text('Penjualan', style: TextStyle(fontSize: 24))),
     const Center(child: Text('Settings', style: TextStyle(fontSize: 24))),
   ];
 
+  final HomeController homeController = Get.put(HomeController());
+
+  @override
+  void initState() {
+    super.initState();
+    homeController.fetchBarChartData(); // Fetch chart data when initializing
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff181681),
-      appBar: _buildAppBar(), // AppBar dengan gaya kustom
+      backgroundColor: const Color(0xff181681),
+      appBar: _buildAppBar(),
       body: Stack(
         children: [
-          _buildBackground(), // Latar belakang putih
-          _buildContent(), // Konten utama di atas latar
+          _buildBackground(),
+          _buildContent(),
         ],
       ),
       bottomNavigationBar: CustomNavigationBar(
         currentIndex: _pageIndex,
         onTap: (index) {
           setState(() {
-            _pageIndex = index; // Update halaman aktif
-
-            // Navigasi ke halaman yang sesuai
+            _pageIndex = index;
             if (index == 0) {
-              Get.offAllNamed(
-                  Routes.HOME); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(Routes.HOME);
             } else if (index == 1) {
-              Get.offAllNamed(
-                  Routes.DAFTAR_KASIR); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(Routes.DAFTAR_KASIR);
             } else if (index == 2) {
-              Get.offAllNamed(
-                  Routes.PROFILEUSER2); // Ganti dengan nama rute yang sesuai
+              Get.offAllNamed(Routes.PROFILEUSER2);
             }
           });
         },
@@ -58,92 +60,86 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  // AppBar dengan judul dan style kustom
   AppBar _buildAppBar() {
     return AppBar(
-      toolbarHeight: 150, // Tinggi AppBar
-      backgroundColor: const Color(0xff181681), // Warna latar AppBar
-      elevation: 0, // Hilangkan bayangan
+      toolbarHeight: 150,
+      backgroundColor: const Color(0xff181681),
+      elevation: 0,
       title: Container(
-        padding: const EdgeInsets.only(top: 5.0), // Padding atas kecil
+        padding: const EdgeInsets.only(top: 5.0),
         child: const Text(
           "Flexy",
           style: TextStyle(
             fontFamily: 'Pacifico',
-            fontSize: 50, // Ukuran font besar
+            fontSize: 50,
             fontWeight: FontWeight.normal,
-            color: Color(0xffffffff), // Warna biru
+            color: Colors.white,
           ),
         ),
       ),
     );
   }
 
-  // Latar belakang putih untuk halaman
   Widget _buildBackground() {
     return Container(
-      height: Get.height, // Isi layar penuh secara vertikal
-      width: Get.width, // Isi layar penuh secara horizontal
-      color: Color(0xff181681), // Warna putih
+      height: Get.height,
+      width: Get.width,
+      color: const Color(0xff181681),
     );
   }
 
-  // Konten utama dengan informasi dan bagian bawah
   Widget _buildContent() {
     return Container(
-      margin: const EdgeInsets.only(top: 10), // Margin atas
+      margin: const EdgeInsets.only(top: 10),
       child: Column(
         children: [
-          _buildUserInfoSection(), // Bagian informasi pengguna
-          const SizedBox(height: 20), // Jarak antar konten
-          _buildBottomSection(), // Bagian bawah dengan ikon besar
+          _buildUserInfoSection(),
+          const SizedBox(height: 20),
+          _buildBottomSection(),
         ],
       ),
     );
   }
 
-  // Bagian informasi pengguna dengan avatar dan notifikasi
   Widget _buildUserInfoSection() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 25), // Margin kiri-kanan
+      margin: const EdgeInsets.symmetric(horizontal: 25),
       decoration: BoxDecoration(
-        color: const Color(0xff365194).withOpacity(1), // Warna biru tua
-        borderRadius: BorderRadius.circular(20), // Sudut melengkung
+        color: const Color(0xff365194).withOpacity(1),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
-            color: Colors.black26, // Bayangan
-            offset: Offset(0, 4), // Posisi bayangan
-            blurRadius: 20, // Blur radius bayangan
-            spreadRadius: 3, // Luas bayangan
+            color: Colors.black26,
+            offset: Offset(0, 4),
+            blurRadius: 20,
+            spreadRadius: 3,
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20.0), // Padding dalam kontainer
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
             Row(
               children: [
-                // Avatar pengguna dengan gambar dari asset
                 const CircleAvatar(
-                  radius: 35, // Ukuran avatar
+                  radius: 35,
                   backgroundImage: AssetImage('assets/logo/logoflex.png'),
                 ),
-                const SizedBox(width: 10), // Jarak antar avatar dan teks
+                const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Text(
-                      "AmbatuJawir", // Nama pengguna
+                      "AmbatuJawir",
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
                         fontSize: 18,
                       ),
                     ),
                     Text(
-                      "Farhan Kebab", // Deskripsi pengguna
+                      "Farhan Kebab",
                       style: TextStyle(
                         color: Colors.white70,
                         fontFamily: 'Inter',
@@ -152,31 +148,29 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ],
                 ),
-                const Spacer(), // Ruang kosong untuk push ikon notifikasi
+                const Spacer(),
                 const Padding(
-                  padding: EdgeInsets.only(right: 20.0), // Margin kanan ikon
+                  padding: EdgeInsets.only(right: 20.0),
                   child: Icon(
-                    Icons.notifications, // Ikon notifikasi
+                    Icons.notifications,
                     color: Colors.white,
-                    size: 40, // Ukuran ikon
+                    size: 40,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10), // Jarak elemen
-
-            // Kontainer putih dengan ikon di dalamnya
+            const SizedBox(height: 10),
             Container(
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9), // Latar putih
+                color: Colors.white.withOpacity(0.9),
                 borderRadius: BorderRadius.all(Radius.circular(20)),
                 boxShadow: const [
                   BoxShadow(
-                    color: Colors.black26, // Bayangan
-                    offset: Offset(0, 4), // Posisi bayangan
-                    blurRadius: 20, // Blur radius bayangan
-                    spreadRadius: 3, // Luas bayangan
+                    color: Colors.black26,
+                    offset: Offset(0, 4),
+                    blurRadius: 20,
+                    spreadRadius: 3,
                   ),
                 ],
               ),
@@ -186,7 +180,7 @@ class _HomeViewState extends State<HomeView> {
                 children: [
                   _buildCircularIconButton(
                     Icons.confirmation_num_outlined,
-                    'Data', // Menggunakan Inter font
+                    'Data',
                     'Tiket',
                     const Color(0xffFFAF00),
                     Colors.white,
@@ -196,24 +190,22 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   _buildCircularIconButton(
                     Icons.bar_chart,
-                    'Riwayat', // Menggunakan Inter font
+                    'Riwayat',
                     'Penjualan',
                     const Color(0xff5475F9),
                     Colors.white,
                     onTap: () {
-                      Get.offAllNamed(Routes
-                          .SALES_HISTORY); // sementara masih manggil pages yg sama
+                      Get.offAllNamed(Routes.SALES_HISTORY);
                     },
                   ),
                   _buildCircularIconButton(
                     CupertinoIcons.cube_box,
                     'Data',
-                    'Barang', // Menggunakan Inter font
+                    'Barang',
                     const Color(0xffF95454),
                     Colors.white,
                     onTap: () {
-                      Get.toNamed(Routes
-                          .DAFTAR_PRODUK); // sementara masih manggil pages yg sama
+                      Get.toNamed(Routes.DAFTAR_PRODUK);
                     },
                   ),
                 ],
@@ -225,107 +217,200 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  // Bagian bawah dengan latar putih dan ikon besar
   Widget _buildBottomSection() {
     return Expanded(
       child: Container(
-        width: double.infinity, // Lebar penuh
+        width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9), // Latar belakang putih
+          color: Colors.white.withOpacity(0.9),
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(37), // Sudut atas kiri melengkung
-            topRight: Radius.circular(37), // Sudut atas kanan melengkung
+            topLeft: Radius.circular(37),
+            topRight: Radius.circular(37),
           ),
           boxShadow: [
             BoxShadow(
-              color:
-              Colors.black.withOpacity(0.1), // Warna dan transparansi shadow
-              spreadRadius: 2, // Sebar bayangan
-              blurRadius: 8, // Blur bayangan
-              offset: const Offset(0, -3), // Arah bayangan (x, y)
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 8,
+              offset: const Offset(0, -3),
             ),
           ],
         ),
-        child: Column(
+        child: Obx(() {
+          if (homeController.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (homeController.barChartData.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 25.0),
+                  child: Icon(
+                    CupertinoIcons.cube_box,
+                    size: 150,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Text(
+                    'Tidak ada daftar produk yang dapat ditampilkan. Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return _buildLineChart();
+          }
+        }),
+      ),
+    );
+  }
 
-          crossAxisAlignment: CrossAxisAlignment.center, // Rata tengah
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 25.0),
-              child: Icon(
-                CupertinoIcons.cube_box, // Ikon besar
-                size: 150,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 10), // Jarak dengan teks
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 50.0),
-              child: Text(
-                'Tidak ada daftar produk yang dapat ditampilkan. Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
-                textAlign: TextAlign.center, // Rata tengah
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.italic,
+
+  Widget _buildLineChart() {
+    return Padding(
+      padding: const EdgeInsets.all(40.0),
+      child: Transform.translate(
+        offset: const Offset(-10, 20), // Move left by 20 and down by 20
+        child: Flexible(
+          child: LineChart(
+            LineChartData(
+              lineBarsData: [
+                LineChartBarData(
+                  spots: homeController.barChartData.map((groupData) {
+                    return FlSpot(groupData.x.toDouble(), groupData.barRods.first.toY);
+                  }).toList(),
+                  isCurved: true,
+                  color: Colors.blueAccent,
+                  barWidth: 4,
+                  isStrokeCapRound: true,
+                  dotData: FlDotData(show: false),
+                  belowBarData: BarAreaData(
+                    show: true,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.blueAccent.withOpacity(0.3),
+                        Colors.blueAccent.withOpacity(0.1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
+              ],
+              borderData: FlBorderData(
+                show: false,
+                border: Border(
+                  left: BorderSide(color: Colors.black, width: 1),
+                  bottom: BorderSide(color: Colors.black, width: 1),
+                  right: BorderSide(color: Colors.transparent),
+                  top: BorderSide(color: Colors.transparent),
                 ),
               ),
+              gridData: FlGridData(
+                show: false,
+              ),
+              titlesData: FlTitlesData(
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    interval: 100000,
+                    getTitlesWidget: (value, meta) {
+                      return Text(
+                        '${(value / 1000).toInt()}K',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                    reservedSize: 50,
+                  ),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(
+                          homeController.monthLabels[value.toInt()],
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              minY: 0,
+              maxY: 500000,
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  // Widget untuk tombol dengan ikon lingkaran
   Widget _buildCircularIconButton(
-    IconData icon,
-    String label1,
-    String label2,
-    Color circleColor,
-    Color iconColor, {
-    VoidCallback? onTap, // Parameter opsional untuk fungsi onTap
-  }) {
+      IconData icon,
+      String label1,
+      String label2,
+      Color circleColor,
+      Color iconColor, {
+        VoidCallback? onTap,
+      }) {
     return GestureDetector(
-      onTap: onTap, // Menangani event klik
+      onTap: onTap,
       child: Column(
-        mainAxisSize: MainAxisSize.min, // Ukuran minimum kolom
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 70, // Lebar kontainer
-            height: 70, // Tinggi kontainer
+            width: 70,
+            height: 70,
             decoration: BoxDecoration(
-              shape: BoxShape.circle, // Bentuk lingkaran
-              color: circleColor, // Warna latar
+              color: circleColor,
+              shape: BoxShape.circle,
             ),
-            padding: const EdgeInsets.all(10.0), // Padding dalam
             child: Icon(
-              icon, // Ikon yang diterima
+              icon,
+              color: iconColor,
               size: 35,
-              color: iconColor, // Warna ikon
             ),
           ),
-          const SizedBox(height: 4), // Jarak dengan teks
-          Column(
-            children: [
-              Text(
-                label1,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Inter', // Menggunakan Inter font
-                  fontStyle: FontStyle.normal, // Menggunakan normal style
-                ),
-              ),
-              Text(
-                label2,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Inter', // Menggunakan Inter font
-                  fontStyle: FontStyle.normal, // Menggunakan normal style
-                ),
-              ),
-            ],
+          const SizedBox(height: 5),
+          Text(
+            label1,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontFamily: 'Inter',
+            ),
+          ),
+          Text(
+            label2,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontFamily: 'Inter',
+            ),
           ),
         ],
       ),
