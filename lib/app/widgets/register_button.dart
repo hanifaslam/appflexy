@@ -30,28 +30,41 @@ class _RegisterBtnState extends State<RegisterBtn> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        _changeColor();
+    return Obx(() => ElevatedButton(
+      onPressed: controller.isLoading.value
+          ? null
+          : () {
+        _changeColor(); // Visual feedback
+        controller.register(); // Call registration method
       },
-
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-        backgroundColor: _buttonColor, // Use dynamic button color
+        backgroundColor: controller.isLoading.value
+            ? _buttonColor.withOpacity(0.5)
+            : _buttonColor, // Disabled look when loading
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
       ),
-      child: const Text(
+      child: controller.isLoading.value
+          ? const SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(
+          color: Colors.white,
+          strokeWidth: 3,
+        ),
+      )
+          : const Text(
         'Daftar',
         style: TextStyle(
           fontFamily: 'Inter',
           fontSize: 16,
           fontStyle: FontStyle.normal,
           fontWeight: FontWeight.bold,
-          color: Colors.white, // Use Colors.white instead of Color.white
+          color: Colors.white,
         ),
       ),
-    );
+    ));
   }
 }

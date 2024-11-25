@@ -88,7 +88,7 @@ class LoginView extends GetView<LoginController> {
                           controller: controller.passwordController,
                           obscureText: controller.isPasswordHidden.value,
                           decoration: InputDecoration(
-                            hintText: "Password",
+                            hintText: "Kata Sandi",
                             hintStyle: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 16,

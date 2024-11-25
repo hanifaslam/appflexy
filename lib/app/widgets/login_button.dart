@@ -75,7 +75,7 @@ class _ProfileBtnState extends State<ProfileBtn> {
         ),
       ),
       child: const Text(
-        'Login',
+        'Masuk',
         style: TextStyle(
           fontFamily: 'Inter',
           fontSize: 16,
