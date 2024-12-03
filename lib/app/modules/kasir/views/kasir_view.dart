@@ -21,9 +21,9 @@ class KasirView extends StatefulWidget {
 class _KasirViewState extends State<KasirView> {
   final KasirController controller = Get.put(KasirController());
   final SalesHistoryController salesHistoryController =
-  Get.put(SalesHistoryController());
+      Get.put(SalesHistoryController());
   final PembayaranCashController pembayaranCashController =
-  Get.put(PembayaranCashController());
+      Get.put(PembayaranCashController());
   String? selectedPaymentMethod;
 
   @override
@@ -36,7 +36,7 @@ class _KasirViewState extends State<KasirView> {
   @override
   Widget build(BuildContext context) {
     final NumberFormat currencyFormat =
-    NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
+        NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
     return Scaffold(
       appBar: AppBar(
@@ -96,23 +96,23 @@ class _KasirViewState extends State<KasirView> {
                             double.tryParse(item['price'].toString()) ?? 0;
                         final String namaProduk = item['name'] ?? '';
                         final String formattedPrice =
-                        currencyFormat.format(hargaJual);
+                            currencyFormat.format(hargaJual);
 
                         return Card(
                           elevation: 2,
                           margin: EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
                             leading: (item['image'] != null &&
-                                File(item['image']).existsSync())
+                                    File(item['image']).existsSync())
                                 ? ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: Image.file(
-                                File(item['image']),
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            )
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.file(
+                                      File(item['image']),
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
                                 : Icon(Icons.image, size: 50),
                             title: Text(namaProduk),
                             subtitle: Text('Harga: $formattedPrice'),
@@ -149,10 +149,10 @@ class _KasirViewState extends State<KasirView> {
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold)),
                       Obx(() => Text(
-                        currencyFormat.format(controller.total),
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      )),
+                            currencyFormat.format(controller.total),
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          )),
                     ],
                   ),
                 ),
@@ -185,16 +185,16 @@ class _KasirViewState extends State<KasirView> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.qr_code_scanner, size: 40),
-                          color: selectedPaymentMethod == 'qris'
+                          color: selectedPaymentMethod == 'E-Wallet'
                               ? Colors.green
                               : Colors.grey,
                           onPressed: () {
                             setState(() {
-                              selectedPaymentMethod = 'qris';
+                              selectedPaymentMethod = 'E-Wallet';
                             });
                           },
                         ),
-                        Text('QRIS'),
+                        Text('E-Wallet'),
                       ],
                     ),
                   ],
@@ -223,7 +223,7 @@ class _KasirViewState extends State<KasirView> {
                               'name': item['name'],
                               'quantity': controller
                                   .localQuantities[
-                              widget.pesananList.indexOf(item)]
+                                      widget.pesananList.indexOf(item)]
                                   .value,
                               'price': item['price'],
                               'time': DateTime.now().toString(),
@@ -235,12 +235,8 @@ class _KasirViewState extends State<KasirView> {
                           // Proceed with payment flow
                           if (selectedPaymentMethod == 'cash') {
                             Get.to(PembayaranCashView());
-                          } else if (selectedPaymentMethod == 'qris') {
-                            Get.snackbar(
-                              'Pembayaran QRIS',
-                              'Proses pembayaran QRIS berhasil',
-                              snackPosition: SnackPosition.BOTTOM,
-                            );
+                          } else if (selectedPaymentMethod == 'E-Wallet') {
+                            Get.to(PembayaranCashView());
                           }
                         }
                       }

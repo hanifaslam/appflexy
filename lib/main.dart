@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Application",
-      initialRoute: Routes.HOME,
+      initialRoute: Routes.DAFTAR_KASIR,
       getPages: AppPages.routes,
     );
     return FutureBuilder(
