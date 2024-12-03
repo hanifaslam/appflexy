@@ -54,44 +54,63 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
             Obx(() => _buildList(controller.filteredTiketList, 'tiket')),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Color(0xff181681),
-          onPressed: () {
-            if (controller.pesananList.isEmpty) {
-              Get.snackbar(
-                'Pesanan Kosong',
-                'Tambahkan produk atau tiket ke pesanan terlebih dahulu',
-                snackPosition: SnackPosition.BOTTOM,
-              );
-            } else {
-              Get.to(() => KasirView(pesananList: controller.pesananList));
-            }
-          },
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Icon(
-                Icons.shopping_cart,
-                color: Colors.white,
-              ),
-              if (controller.pesananCount > 0)
-                Positioned(
-                  right: 0,
-                  child: CircleAvatar(
-                    radius: 8.0,
-                    backgroundColor: Colors.red,
-                    child: Text(
-                      controller.pesananCount.toString(),
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.white,
+        floatingActionButton: SizedBox(
+          width: 65, // Perluas area tombol untuk fleksibilitas
+          height: 65,
+          child: FloatingActionButton(
+            backgroundColor: Color(0xff181681),
+            onPressed: () {
+              if (controller.pesananList.isEmpty) {
+                Get.snackbar(
+                  'Pesanan Kosong',
+                  'Tambahkan produk atau tiket ke pesanan terlebih dahulu',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              } else {
+                Get.to(() => KasirView(pesananList: controller.pesananList));
+              }
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                Obx(() {
+                  return controller.pesananCount > 0
+                      ? Positioned(
+                    right: 0, // Notifikasi bergeser keluar
+                    top: 0, // Notifikasi bergeser ke atas
+                    child: Container(
+                      padding: EdgeInsets.all(4), // Padding notifikasi
+                      decoration: BoxDecoration(
+                        color: Colors.red, // Warna notifikasi
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 20, // Ukuran minimum notifikasi
+                        minHeight: 10,
+                      ),
+                      child: Text(
+                        controller.pesananCount.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-                ),
-            ],
+                  )
+                      : SizedBox.shrink(); // Tidak tampil jika pesananCount 0
+                }),
+              ],
+            ),
           ),
         ),
+
       ),
     );
   }
