@@ -106,13 +106,17 @@ class Profileuser2View extends StatelessWidget {
                             }),
                             menuItem('Ganti Password', Icons.lock, () {
                               // Navigate to change password
-                              // Get.toNamed(Routes.GANTI_PASSWORD);
+                              Get.toNamed(Routes.GANTI_PASSWORD);
+                            }),
+                            menuItem('Edit / Tambah QR Code', Icons.lock, () {
+                              // Navigate to change password
+                              Get.toNamed(Routes.GANTI_PASSWORD);
                             }),
                             menuItem('Syarat & Ketentuan', Icons.description, () {
                               // Navigate to terms and conditions
                               // Get.toNamed(Routes.SYARAT_KETENTUAN);
                             }),
-                            menuItem('Hapus Akun', Icons.delete, () {
+                            menuItem('Keluar', Icons.delete, () {
                               // Navigate to delete account
                               // Get.toNamed(Routes.HAPUS_AKUN);
                             }, Colors.red),
