@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:apptiket/app/modules/pembayaran_cash/controllers/pembayaran_cash_controller.dart';
 import 'package:apptiket/app/modules/pembayaran_cash/views/pembayaran_cash_view.dart';
+import 'package:apptiket/app/modules/qrisPayment/views/qris_payment_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -217,26 +218,11 @@ class _KasirViewState extends State<KasirView> {
                         final success = await controller.submitOrder();
 
                         if (success) {
-                          // Save to sales history after successful API submission
-                          widget.pesananList.forEach((item) {
-                            salesHistoryController.addSale({
-                              'name': item['name'],
-                              'quantity': controller
-                                  .localQuantities[
-                                      widget.pesananList.indexOf(item)]
-                                  .value,
-                              'price': item['price'],
-                              'time': DateTime.now().toString(),
-                              'total': controller.total,
-                              'paymentMethod': selectedPaymentMethod,
-                            });
-                          });
-
                           // Proceed with payment flow
                           if (selectedPaymentMethod == 'cash') {
                             Get.to(PembayaranCashView());
                           } else if (selectedPaymentMethod == 'E-Wallet') {
-                            Get.to(PembayaranCashView());
+                            Get.to(QrisPaymentView());
                           }
                         }
                       }

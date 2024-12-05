@@ -24,6 +24,8 @@ abstract class Routes {
   static const EDIT_TIKET = _Paths.EDIT_TIKET;
   static const GANTI_PASSWORD = _Paths.GANTI_PASSWORD;
   static const REGISTRASI = _Paths.REGISTRASI;
+  static const QRIS_PAYMENT = _Paths.QRIS_PAYMENT;
+  static const SETTING_Q_R_I_S = _Paths.SETTING_Q_R_I_S;
 }
 
 abstract class _Paths {
@@ -49,4 +51,6 @@ abstract class _Paths {
   static const EDIT_TIKET = '/edit-tiket';
   static const GANTI_PASSWORD = '/ganti-password';
   static const REGISTRASI = '/registrasi';
+  static const QRIS_PAYMENT = '/qris-payment';
+  static const SETTING_Q_R_I_S = '/setting-q-r-i-s';
 }

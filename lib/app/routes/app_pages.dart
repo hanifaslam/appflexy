@@ -28,10 +28,14 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/profileuser2/bindings/profileuser2_binding.dart';
 import '../modules/profileuser2/views/profileuser2_view.dart';
+import '../modules/qrisPayment/bindings/qris_payment_binding.dart';
+import '../modules/qrisPayment/views/qris_payment_view.dart';
 import '../modules/registrasi/bindings/registrasi_binding.dart';
 import '../modules/registrasi/views/registrasi_view.dart';
 import '../modules/sales_history/bindings/sales_history_binding.dart';
 import '../modules/sales_history/views/sales_history_view.dart';
+import '../modules/settingQRIS/bindings/setting_q_r_i_s_binding.dart';
+import '../modules/settingQRIS/views/setting_q_r_i_s_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/struk/bindings/struk_binding.dart';
@@ -155,8 +159,18 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.REGISTRASI,
-      page: () =>  RegistrasiView(),
+      page: () => RegistrasiView(),
       binding: RegistrasiBinding(),
+    ),
+    GetPage(
+      name: _Paths.QRIS_PAYMENT,
+      page: () => QrisPaymentView(),
+      binding: QrisPaymentBinding(),
+    ),
+    GetPage(
+      name: _Paths.SETTING_Q_R_I_S,
+      page: () => const SettingQRISView(),
+      binding: SettingQRISBinding(),
     ),
   ];
 }

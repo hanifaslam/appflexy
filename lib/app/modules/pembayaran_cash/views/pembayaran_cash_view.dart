@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../widgets/struk_pembayaran.dart';
 import '../controllers/pembayaran_cash_controller.dart';
 import 'package:apptiket/app/modules/kasir/controllers/kasir_controller.dart';
+import 'package:apptiket/app/modules/sales_history/controllers/sales_history_controller.dart';
 
 class PembayaranCashView extends StatefulWidget {
   @override
@@ -14,8 +15,9 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
   final TextEditingController cashController = TextEditingController();
   final PembayaranCashController pembayaranController =
       Get.put(PembayaranCashController());
-
   final KasirController kasirController = Get.find<KasirController>();
+  final SalesHistoryController salesHistoryController =
+      Get.find<SalesHistoryController>();
 
   // Currency formatter
   final NumberFormat currencyFormat =
@@ -166,17 +168,31 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                 final jumlahUang = double.tryParse(cashController.text
                         .replaceAll(RegExp(r'[^0-9]'), '')) ??
                     0.0;
-                final totalHarga =
-                    kasirController.total; // Use total from KasirController
+                final totalHarga = kasirController.total;
 
                 if (jumlahUang < totalHarga) {
+                  // Menampilkan snackbar untuk pembayaran gagal
                   Get.snackbar(
-                    'Uang Tidak Cukup',
+                    'Pembayaran Gagal',
                     'Jumlah uang tidak cukup untuk membayar total',
                     snackPosition: SnackPosition.BOTTOM,
                   );
                 } else {
                   final kembalian = jumlahUang - totalHarga;
+
+                  // Menyimpan riwayat penjualan
+                  pembayaranController.pesananList.forEach((item) {
+                    salesHistoryController.addSale({
+                      'name': item['nama'],
+                      'quantity': item['quantity'],
+                      'price': item['price'],
+                      'time': DateTime.now().toString(),
+                      'total': totalHarga,
+                      'paymentMethod': 'cash',
+                    });
+                  });
+
+                  // Menampilkan struk pembayaran
                   showDialog(
                     context: context,
                     builder: (context) => StrukPembayaran(
@@ -184,6 +200,13 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                       uangTunai: jumlahUang,
                       kembalian: kembalian,
                     ),
+                  );
+
+                  // Menampilkan snackbar untuk pembayaran berhasil
+                  Get.snackbar(
+                    'Pembayaran Berhasil',
+                    'Pembayaran berhasil diproses. Kembalian: ${currencyFormat.format(kembalian)}',
+                    snackPosition: SnackPosition.BOTTOM,
                   );
                 }
               },
@@ -195,7 +218,7 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),

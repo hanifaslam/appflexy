@@ -110,9 +110,10 @@ class Profileuser2View extends StatelessWidget {
                             }),
                             menuItem('Edit / Tambah QR Code', Icons.lock, () {
                               // Navigate to change password
-                              Get.toNamed(Routes.GANTI_PASSWORD);
+                              Get.toNamed(Routes.SETTING_Q_R_I_S);
                             }),
-                            menuItem('Syarat & Ketentuan', Icons.description, () {
+                            menuItem('Syarat & Ketentuan', Icons.description,
+                                () {
                               // Navigate to terms and conditions
                               // Get.toNamed(Routes.SYARAT_KETENTUAN);
                             }),
@@ -178,7 +179,8 @@ class Profileuser2View extends StatelessWidget {
   }
 
   // Menu item widget
-  Widget menuItem(String title, IconData icon, Function onTap, [Color? textColor]) {
+  Widget menuItem(String title, IconData icon, Function onTap,
+      [Color? textColor]) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: GestureDetector(
@@ -202,7 +204,8 @@ class Profileuser2View extends StatelessWidget {
               Row(
                 children: [
                   Icon(icon, color: textColor ?? Colors.black),
-                  SizedBox(width: 10), // Add some space between the icon and text
+                  SizedBox(
+                      width: 10), // Add some space between the icon and text
                   Text(
                     title,
                     style: TextStyle(
