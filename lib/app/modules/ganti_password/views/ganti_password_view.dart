@@ -12,50 +12,75 @@ class GantiPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ganti Password'),
+        title: Text('Ganti Password',style: TextStyle(color: Colors.white),),
         backgroundColor: const Color(0xFF213F84),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              onChanged: (value) => controller.passwordLama.value = value,
-              obscureText: true,
-              decoration: new InputDecoration(
-                labelText: "Password Saat Ini",
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xFF213F84),
-                    width: 0.5,
-                  )
-                )
-              ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              onChanged: (value) => controller.passwordBaru.value = value,
-              obscureText: true,
-              decoration: new InputDecoration(
-                labelText: "Password Baru",
-                enabledBorder: OutlineInputBorder(
-                  borderSide:  BorderSide(
-                    color: Color(0xFF213F84),
-                    width: 0.5,
+            ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Container(
+                      height: 250,
+                      width: 250,
+                      child: FittedBox(
+                        alignment: Alignment.center,
+                        fit: BoxFit.fill,
+                        child: Image.asset("assets/logo/lupa.png"),
+                      ),
+                    ),
                   ),
-                )
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                onChanged: (value) => controller.passwordLama.value = value,
+                obscureText: true,
+                decoration: new InputDecoration(
+                  labelText: "Password Saat Ini",
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius:BorderRadius.circular(15) ,
+                    borderSide: BorderSide(
+                      color: Color(0xFF213F84),
+                      width: 0.5,
+                    )
+                  )
+                ),
               ),
             ),
             SizedBox(height: 16),
-            TextField(
-              onChanged: (value) => controller.passwordBaru.value = value,
-              obscureText: true,
-              decoration: new InputDecoration(
-                labelText: "Konfirmasi Password Baru",
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xFF213F84),
-                    width: 0.5,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                onChanged: (value) => controller.passwordBaru.value = value,
+                obscureText: true,
+                decoration: new InputDecoration(
+                  labelText: "Password Baru",
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius:BorderRadius.circular(15) ,
+                    borderSide:  BorderSide(
+                      color: Color(0xFF213F84),
+                      width: 0.5,
+                    ),
+                  )
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                onChanged: (value) => controller.passwordBaru.value = value,
+                obscureText: true,
+                decoration: new InputDecoration(
+                  labelText: "Konfirmasi Password Baru",
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius:BorderRadius.circular(15) ,
+                    borderSide: BorderSide(
+                      color: Color(0xFF213F84),
+                      width: 0.5,
+                    ),
                   ),
                 ),
               ),

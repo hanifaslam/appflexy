@@ -26,23 +26,23 @@ class LoginView extends GetView<LoginController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center, // Align items to the center horizontally
                 children: [
-                  const SizedBox(height: 50), // Add space from top
+                  const SizedBox(height: 40), // Add space from top
 
                   // Logo image
                   ClipRRect(
                     borderRadius: BorderRadius.circular(25),
                     child: Container(
-                      height: 100,
-                      width: 100,
+                      height: 250,
+                      width: 250,
                       child: FittedBox(
                         alignment: Alignment.center,
                         fit: BoxFit.fill,
-                        child: Image.asset("assets/logo/logoflex.png"),
+                        child: Image.asset("assets/logo/login.png"),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 40), // Spacing between logo and text
+                  const SizedBox(height: 30), // Spacing between logo and text
                   Text(
                   "Buka tiket Anda untuk pengalaman luar biasa!",
                     style: TextStyle(
@@ -59,7 +59,7 @@ class LoginView extends GetView<LoginController> {
 
                   // Email input field
                   Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: TextField(
                     controller: controller.emailController,
                     decoration: InputDecoration(
@@ -79,11 +79,11 @@ class LoginView extends GetView<LoginController> {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 15),
 
                   // Password input field
                   Obx(() => Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: TextField(
                           controller: controller.passwordController,
                           obscureText: controller.isPasswordHidden.value,
