@@ -196,7 +196,7 @@ class _HomeViewState extends State<HomeView> {
                   _buildCircularIconButton(
                     CupertinoIcons.cube_box,
                     'Data',
-                    'Barang',
+                    'Produk',
                     const Color(0xffF95454),
                     Colors.white,
                     onTap: () {

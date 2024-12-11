@@ -101,8 +101,7 @@ class RegistrasiController extends GetxController {
         passwordController.clear();
         confirmPasswordController.clear();
 
-        Get.offAllNamed('/login');
-
+        Get.offAllNamed('/profile');
       } else {
         // Tangani error dari server
         final Map<String, dynamic> errorData = json.decode(response.body);
