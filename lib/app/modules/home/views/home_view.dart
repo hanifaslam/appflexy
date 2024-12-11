@@ -151,11 +151,6 @@ class _HomeViewState extends State<HomeView> {
                 const Spacer(),
                 const Padding(
                   padding: EdgeInsets.only(right: 20.0),
-                  child: Icon(
-                    Icons.notifications,
-                    color: Colors.white,
-                    size: 40,
-                  ),
                 ),
               ],
             ),
@@ -275,7 +270,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-
   Widget _buildLineChart() {
     return Padding(
       padding: const EdgeInsets.all(40.0),
@@ -287,7 +281,8 @@ class _HomeViewState extends State<HomeView> {
               lineBarsData: [
                 LineChartBarData(
                   spots: homeController.barChartData.map((groupData) {
-                    return FlSpot(groupData.x.toDouble(), groupData.barRods.first.toY);
+                    return FlSpot(
+                        groupData.x.toDouble(), groupData.barRods.first.toY);
                   }).toList(),
                   isCurved: true,
                   color: Colors.blueAccent,
@@ -323,7 +318,7 @@ class _HomeViewState extends State<HomeView> {
                 leftTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
-                    interval: 100000,
+                    interval: 300000,
                     getTitlesWidget: (value, meta) {
                       return Text(
                         '${(value / 1000).toInt()}K',
@@ -361,7 +356,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               minY: 0,
-              maxY: 500000,
+              maxY: 1200000,
             ),
           ),
         ),
@@ -370,13 +365,13 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildCircularIconButton(
-      IconData icon,
-      String label1,
-      String label2,
-      Color circleColor,
-      Color iconColor, {
-        VoidCallback? onTap,
-      }) {
+    IconData icon,
+    String label1,
+    String label2,
+    Color circleColor,
+    Color iconColor, {
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Column(

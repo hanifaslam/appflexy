@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 class KasirController extends GetxController {
   final DaftarKasirController daftarKasirController =
-  Get.find<DaftarKasirController>();
+      Get.find<DaftarKasirController>();
   final NumberFormat currencyFormat = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp',
@@ -27,7 +27,7 @@ class KasirController extends GetxController {
   void initializeLocalQuantities() {
     localQuantities.value = List.generate(
       daftarKasirController.pesananList.length,
-          (index) =>
+      (index) =>
           RxInt(daftarKasirController.pesananList[index]['quantity'] ?? 1),
     );
   }
@@ -36,12 +36,12 @@ class KasirController extends GetxController {
       daftarKasirController.pesananList;
 
   double get total => pesananList.fold(0.0, (sum, item) {
-    final price = double.tryParse(item['price'].toString()) ?? 0.0;
-    final quantity = localQuantities.isNotEmpty
-        ? localQuantities[pesananList.indexOf(item)].value
-        : 1;
-    return sum + (price * quantity);
-  });
+        final price = double.tryParse(item['price'].toString()) ?? 0.0;
+        final quantity = localQuantities.isNotEmpty
+            ? localQuantities[pesananList.indexOf(item)].value
+            : 1;
+        return sum + (price * quantity);
+      });
 
   Future<bool> submitOrder() async {
     print('submitOrder function called');
@@ -110,13 +110,6 @@ class KasirController extends GetxController {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 201) {
-
-        Get.snackbar(
-          'Success',
-          'Order has been processed successfully',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
         return true;
       } else {
         throw Exception(

@@ -45,7 +45,7 @@ class _ProfileBtnState extends State<ProfileBtn> {
 
           if (response['status'] == 'success') {
             // If login is successful, navigate to the profile page
-            Get.offAllNamed(Routes.PROFILE);
+            Get.offAllNamed(Routes.HOME);
           } else {
             // If login fails, show an error message
             Get.snackbar(

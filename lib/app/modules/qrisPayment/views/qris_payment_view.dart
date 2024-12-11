@@ -1,5 +1,8 @@
 import 'dart:io';
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class QrisPaymentView extends StatelessWidget {
@@ -47,6 +50,7 @@ class QrisPaymentView extends StatelessWidget {
                   const SizedBox(height: 20), // Spasi antara gambar dan tombol
                   ElevatedButton(
                     onPressed: () {
+                      Get.offAllNamed(Routes.DAFTAR_KASIR);
                       // Logika untuk verifikasi pembayaran
                       // Misalnya menampilkan pesan atau mengarahkan ke halaman lain
                       print("Verifikasi Pembayaran Dimulai");
@@ -56,7 +60,8 @@ class QrisPaymentView extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 24, vertical: 12),
-                      backgroundColor: Colors.green, // Tombol berwarna hijau
+                      backgroundColor:
+                          Color(0xff181681), // Tombol berwarna hijau
                     ),
                   ),
                 ],
