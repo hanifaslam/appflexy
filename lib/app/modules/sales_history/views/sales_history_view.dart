@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/sales_history_controller.dart';
 import '../../../routes/app_pages.dart';
 
-class SalesHistoryPage extends StatelessWidget {
+class SalesHistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SalesHistoryController salesController = Get.find<SalesHistoryController>();

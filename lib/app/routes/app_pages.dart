@@ -97,7 +97,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.DAFTAR_PRODUK,
-      page: () => DaftarProdukView(), // Disesuaikan dengan kode Anda
+      page: () => DaftarProdukView(),
       binding: DaftarProdukBinding(),
     ),
     GetPage(
@@ -107,7 +107,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.SALES_HISTORY,
-      page: () => SalesHistoryPage(),
+      page: () => SalesHistoryView(),
       binding: SalesHistoryBinding(),
     ),
     GetPage(
@@ -139,12 +139,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.EDIT_PRODUK,
-      page: () => EditProdukView(
-          // Di sini, 'produk' dan 'index' tidak dapat digunakan
-          // karena mereka tidak didefinisikan dalam konteks ini.
-          // Jika Anda ingin menerima parameter di EditProdukView,
-          // Anda perlu menggunakan Get.arguments untuk mengambil data yang relevan.
-          ),
+      page: () => EditProdukView(),
       binding: EditProdukBinding(),
     ),
     GetPage(
