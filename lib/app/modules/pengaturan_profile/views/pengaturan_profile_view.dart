@@ -12,7 +12,7 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      controller.setCompanyLogo(image.path); // Simpan path logo
+      controller.companyLogo.value = image.path; // Simpan path logo
     }
   }
 
@@ -24,7 +24,7 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
           padding: EdgeInsets.only(top: 0),
           child: Text(
             'Pengaturan Profil Toko',
-            style: TextStyle(fontFamily: 'mon', ),
+            style: TextStyle(fontFamily: 'mon'),
           ),
         ),
         leading: IconButton(
@@ -57,59 +57,72 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                       ),
                       child: controller.companyLogo.value.isEmpty
                           ? const Icon(
-                              Icons.add_photo_alternate,
-                              size: 50,
-                              color: Colors.grey,
-                            )
+                        Icons.add_photo_alternate,
+                        size: 50,
+                        color: Colors.grey,
+                      )
                           : ClipRRect(
-                              borderRadius: BorderRadius.circular(500),
-                              child: Image.file(
-                                File(controller.companyLogo.value),
-                                fit: BoxFit.cover, // Gambar memenuhi container
-                                width: 150,
-                                height: 150,
-                              ),
-                            ),
+                        borderRadius: BorderRadius.circular(500),
+                        child: Image.file(
+                          File(controller.companyLogo.value),
+                          fit: BoxFit.cover,
+                          width: 150,
+                          height: 150,
+                        ),
+                      ),
                     );
                   }),
                 ),
                 const Gap(50),
 
                 // Informasi Toko
-                TextField(
-                  onChanged: (value) => controller.setCompanyName(value),
-                  decoration: InputDecoration(
-                    hintText: 'Nama Toko',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                Obx(() {
+                  return TextField(
+                    controller: TextEditingController(
+                        text: controller.companyName.value),
+                    onChanged: (value) => controller.companyName.value = value,
+                    decoration: InputDecoration(
+                      hintText: 'Nama Toko',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
                 const SizedBox(height: 40),
 
                 // Bidang Usaha
-                TextField(
-                  onChanged: (value) => controller.companyType(value),
-                  decoration: InputDecoration(
-                    hintText: 'Bidang Usaha',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                Obx(() {
+                  return TextField(
+                    controller: TextEditingController(
+                        text: controller.companyType.value),
+                    onChanged: (value) => controller.companyType.value = value,
+                    decoration: InputDecoration(
+                      hintText: 'Bidang Usaha',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
                 const SizedBox(height: 40),
 
                 // Alamat Toko
-                TextField(
-                  onChanged: (value) => controller.companyAddress(value),
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    hintText: 'Alamat',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                Obx(() {
+                  return TextField(
+                    controller: TextEditingController(
+                        text: controller.companyAddress.value),
+                    onChanged: (value) =>
+                    controller.companyAddress.value = value,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      hintText: 'Alamat',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
                 const SizedBox(height: 40),
 
                 // Tombol Simpan
@@ -119,21 +132,23 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                         controller.companyType.value.isNotEmpty &&
                         controller.companyAddress.value.isNotEmpty &&
                         controller.companyLogo.value.isNotEmpty) {
-                      Get.offAllNamed(Routes.PROFILEUSER2); // Navigasi ke halaman Profileuser2
+                      controller.updateStore(); // Memperbarui profil
                     } else {
                       Get.snackbar(
                         'Peringatan',
                         'Harap isi semua kolom',
-                        backgroundColor: const Color(0xFF5C8FDA).withOpacity(0.2),
+                        backgroundColor:
+                        const Color(0xFF5C8FDA).withOpacity(0.2),
                         colorText: const Color(0xFF2B47CA),
-                        margin: const EdgeInsets.all(16), // Margin untuk memberi jarak
-                        borderRadius: 8, // Sudut melengkung
-                        snackStyle: SnackStyle.FLOATING, // Snackbar tipe floating
+                        margin: const EdgeInsets.all(16),
+                        borderRadius: 8,
+                        snackStyle: SnackStyle.FLOATING,
                       );
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 100, vertical: 20),
                     backgroundColor: const Color(0xff181681),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),

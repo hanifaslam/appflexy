@@ -15,7 +15,7 @@ class ManajemenTiketView extends StatefulWidget {
 
 class _ManajemenTiketView extends State<ManajemenTiketView> {
   final NumberFormat currencyFormat =
-      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
+  NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
   final box = GetStorage();
   List<Map<String, dynamic>> tiketList = [];
   List<Map<String, dynamic>> filteredTiketList = [];
@@ -30,7 +30,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
   Future<void> _loadTiketList() async {
     try {
       final response =
-          await http.get(Uri.parse('http://10.0.2.2:8000/api/tikets'));
+      await http.get(Uri.parse('http://10.0.2.2:8000/api/tikets'));
       if (response.statusCode == 200) {
         List<dynamic> tiketData = json.decode(response.body);
         setState(() {
@@ -50,7 +50,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
       searchQuery = query;
       filteredTiketList = tiketList
           .where((tiket) =>
-              tiket['namaTiket'].toLowerCase().contains(query.toLowerCase()))
+          tiket['namaTiket'].toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -69,7 +69,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                 onTap: () {
                   setState(() {
                     filteredTiketList.sort(
-                        (a, b) => a['namaTiket'].compareTo(b['namaTiket']));
+                            (a, b) => a['namaTiket'].compareTo(b['namaTiket']));
                   });
                   Navigator.of(context).pop();
                 },
@@ -79,7 +79,7 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
                 onTap: () {
                   setState(() {
                     filteredTiketList.sort(
-                        (a, b) => b['namaTiket'].compareTo(a['namaTiket']));
+                            (a, b) => b['namaTiket'].compareTo(a['namaTiket']));
                   });
                   Navigator.of(context).pop();
                 },
@@ -199,108 +199,108 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
       ),
       body: filteredTiketList.isEmpty
           ? Container(
-            color: Colors.white24,
-            child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Bootstrap.box,
-                      size: 100,
-                      color: Colors.grey,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Tidak ada daftar tiket yang dapat ditampilkan.',
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+        color: Colors.white24,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Bootstrap.box,
+                size: 100,
+                color: Colors.grey,
               ),
-          )
+              SizedBox(height: 16),
+              Text(
+                'Tidak ada daftar tiket yang dapat ditampilkan.',
+                style: TextStyle(color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      )
           : Container(
-            color: Colors.white24,
-            child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
+        color: Colors.white24,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.all(8.0),
+            child: ListView.builder(
+              itemCount: filteredTiketList.length,
+              itemBuilder: (context, index) {
+                final tiket = filteredTiketList[index];
+                double hargaJual =
+                    double.tryParse(tiket['hargaJual'].toString()) ?? 0.0;
+
+                return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3), // warna bayangan dengan opacity
+                        spreadRadius: 2, // jarak sebaran bayangan
+                        blurRadius: 6, // tingkat blur bayangan
+                        offset: Offset(6, 10), // posisi bayangan (x, y)
+                      ),
+                    ],
                   ),
-                  padding: EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    itemCount: filteredTiketList.length,
-                    itemBuilder: (context, index) {
-                      final tiket = filteredTiketList[index];
-                      double hargaJual =
-                          double.tryParse(tiket['hargaJual'].toString()) ?? 0.0;
-
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3), // warna bayangan dengan opacity
-                              spreadRadius: 2, // jarak sebaran bayangan
-                              blurRadius: 6, // tingkat blur bayangan
-                              offset: Offset(6, 10), // posisi bayangan (x, y)
-                            ),
-                          ],
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        title: Text(tiket['namaTiket'],
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(
+                          'Stok: ${tiket['stok']} |  ${currencyFormat.format(hargaJual)}',
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: Card(
-                            color: Colors.white,
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: ListTile(
-                              title: Text(tiket['namaTiket'],
-                                  style: TextStyle(fontWeight: FontWeight.bold)),
-                              subtitle: Text(
-                                'Stok: ${tiket['stok']} |  ${currencyFormat.format(hargaJual)}',
-                              ),
-                              trailing: PopupMenuButton<String>(
-                                onSelected: (value) {
-                                  if (value == 'edit') {
-                                    _editTiket(index, tiket);
-                                  } else if (value == 'delete') {
-                                    _showDeleteDialog(index, tiket['id']);
-                                  }
-                                },
-                                itemBuilder: (BuildContext context) => [
-                                  PopupMenuItem(
-                                    value: 'edit',
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.edit),
-                                        SizedBox(width: 8),
-                                        Text('Edit Tiket'),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'delete',
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.delete),
-                                        SizedBox(width: 8),
-                                        Text('Hapus Tiket'),
-                                      ],
-                                    ),
-                                  ),
+                        trailing: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                              _editTiket(index, tiket);
+                            } else if (value == 'delete') {
+                              _showDeleteDialog(index, tiket['id']);
+                            }
+                          },
+                          itemBuilder: (BuildContext context) => [
+                            PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit),
+                                  SizedBox(width: 8),
+                                  Text('Edit Tiket'),
                                 ],
                               ),
                             ),
-                          ),
+                            PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete),
+                                  SizedBox(width: 8),
+                                  Text('Hapus Tiket'),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
+            ),
           ),
+        ),
+      ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),

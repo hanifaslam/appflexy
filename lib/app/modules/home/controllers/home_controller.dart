@@ -3,29 +3,30 @@ import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:convert'; // For JSON decoding
 import 'package:http/http.dart' as http; // For API requests
-import 'package:intl/intl.dart'; // For date formatting
 
 class HomeController extends GetxController {
   var isLoading = false.obs;
-  var barChartData = <BarChartGroupData>[].obs;
-  var monthLabels = <String>[].obs;
+  var pieChartData = <PieChartSectionData>[].obs;
+  var totalOrders = 0.obs;
+  var selectedFilter = 'Harian'.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchBarChartData();
+    fetchPieChartData(selectedFilter.value);
   }
 
   // Function to fetch data from the API
-  Future<void> fetchBarChartData() async {
+  Future<void> fetchPieChartData(String filter) async {
     isLoading.value = true;
-    final url = Uri.parse('http://10.0.2.2:8000/api/orders');
+    final url = Uri.parse('http://10.0.2.2:8000/api/orders?filter=$filter');
 
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        processChartData(data);
+        print('Fetched data: $data'); // Log fetched data
+        processPieChartData(data);
       } else {
         print('Failed to load data');
       }
@@ -36,44 +37,45 @@ class HomeController extends GetxController {
     }
   }
 
-  // Function to process and format data for the chart
-  void processChartData(List<dynamic> data) {
-    barChartData.clear(); // Clear previous data
-    monthLabels.clear(); // Clear previous labels
+  // Function to process and format data for the pie chart
+  void processPieChartData(List<dynamic> data) {
+    pieChartData.clear(); // Clear previous data
+    totalOrders.value = 0; // Reset total orders
 
-    // Define the fixed x-axis labels
-    List<String> fixedLabels = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
-    Map<int, double> monthlyTotals = {};
-
-    // Get the current year
-    int currentYear = DateTime.now().year;
+    Map<String, double> orderCounts = {};
 
     for (var order in data) {
-      DateTime date = DateTime.parse(order['created_at']);
-      if (date.year == currentYear) {
-        int month = date.month;
-        double total = double.parse(order['total'].toString()); // Parse the total to double
+      var orderItems = order['items'] as List<dynamic>?;
+      if (orderItems != null) {
+        for (var item in orderItems) {
+          String? itemName = item['name'];
+          double? itemPrice = item['total_item_price'] != null ? double.tryParse(item['total_item_price'].toString()) : null;
 
-        monthlyTotals.update(month, (sum) => sum + total, ifAbsent: () => total);
+          if (itemName != null && itemPrice != null) {
+            orderCounts.update(itemName, (sum) => sum + itemPrice, ifAbsent: () => itemPrice);
+            totalOrders.value += itemPrice.toInt();
+          }
+        }
       }
     }
 
-    for (int i = 1; i <= 12; i++) {
-      double total = monthlyTotals[i] ?? 0.0;
-      barChartData.add(
-        BarChartGroupData(
-          x: i - 1,
-          barRods: [
-            BarChartRodData(
-              toY: total,
-              color: Colors.blueAccent,
-              width: 15,
-            ),
-          ],
-          showingTooltipIndicators: [0],
+    double total = totalOrders.value.toDouble();
+    print('Processed order counts: $orderCounts'); // Log processed order counts
+    print('Total orders: $totalOrders'); // Log total orders
+
+    pieChartData.addAll(orderCounts.entries.map((entry) {
+      return PieChartSectionData(
+        color: Colors.primaries[orderCounts.keys.toList().indexOf(entry.key) % Colors.primaries.length],
+        value: (entry.value / total) * 100,
+        title: '${(entry.value / total * 100).toStringAsFixed(1)}%',
+        radius: 50,
+        titleStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
         ),
       );
-      monthLabels.add(fixedLabels[i - 1]);
-    }
+    }).toList());
+    print('Pie chart data: $pieChartData'); // Log pie chart data
   }
 }

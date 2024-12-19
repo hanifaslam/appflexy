@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:apptiket/app/widgets/navbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
+import 'package:intl/intl.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -28,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    homeController.fetchBarChartData(); // Fetch chart data when initializing
+    homeController.fetchPieChartData(homeController.selectedFilter.value); // Fetch pie chart data when initializing
   }
 
   @override
@@ -95,7 +94,7 @@ class _HomeViewState extends State<HomeView> {
         children: [
           _buildUserInfoSection(),
           const SizedBox(height: 20),
-          _buildBottomSection(),
+          _buildPieChartSection(),
         ],
       ),
     );
@@ -212,7 +211,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildBottomSection() {
+  Widget _buildPieChartSection() {
     return Expanded(
       child: Container(
         width: double.infinity,
@@ -234,7 +233,7 @@ class _HomeViewState extends State<HomeView> {
         child: Obx(() {
           if (homeController.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
-          } else if (homeController.barChartData.isEmpty) {
+          } else if (homeController.pieChartData.isEmpty) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -250,7 +249,7 @@ class _HomeViewState extends State<HomeView> {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50.0),
                   child: Text(
-                    'Tidak ada daftar produk yang dapat ditampilkan. Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
+                    'Tidak ada data pesanan yang dapat ditampilkan.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
@@ -263,115 +262,101 @@ class _HomeViewState extends State<HomeView> {
               ],
             );
           } else {
-            return _buildLineChart();
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Catatan Penjualan',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      DropdownButton<String>(
+                        value: homeController.selectedFilter.value,
+                        items: <String>['Harian', 'Mingguan', 'Bulanan'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          homeController.selectedFilter.value = newValue!;
+                          homeController.fetchPieChartData(newValue); // Fetch data based on the selected filter
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                _buildPieChart(),
+              ],
+            );
           }
         }),
       ),
     );
   }
 
-  Widget _buildLineChart() {
+  Widget _buildPieChart() {
     return Padding(
-      padding: const EdgeInsets.all(40.0),
-      child: Transform.translate(
-        offset: const Offset(-10, 20), // Move left by 20 and down by 20
-        child: Flexible(
-          child: LineChart(
-            LineChartData(
-              lineBarsData: [
-                LineChartBarData(
-                  spots: homeController.barChartData.map((groupData) {
-                    return FlSpot(
-                        groupData.x.toDouble(), groupData.barRods.first.toY);
-                  }).toList(),
-                  isCurved: true,
-                  color: Colors.blueAccent,
-                  barWidth: 4,
-                  isStrokeCapRound: true,
-                  dotData: FlDotData(show: false),
-                  belowBarData: BarAreaData(
-                    show: true,
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.blueAccent.withOpacity(0.3),
-                        Colors.blueAccent.withOpacity(0.1),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+      padding: const EdgeInsets.all(0.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 75),
+          SizedBox(
+            width: 200,
+            height: 200,
+            child: Stack(
+              children: [
+                PieChart(
+                  PieChartData(
+                    sections: homeController.pieChartData.map((data) {
+                      return PieChartSectionData(
+                        color: data.color,
+                        value: data.value,
+                        title: '${data.value.toStringAsFixed(1)}%',
+                        radius: 50, // Reduced radius
+                        titleStyle: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    }).toList(),
+                    sectionsSpace: 2,
+                    centerSpaceRadius: 90, // Increased center space radius
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    'Total\nPesanan:\nRp. ${NumberFormat.currency(locale: 'id', symbol: '', decimalDigits: 0).format(homeController.totalOrders.value)}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
-              borderData: FlBorderData(
-                show: false,
-                border: Border(
-                  left: BorderSide(color: Colors.black, width: 1),
-                  bottom: BorderSide(color: Colors.black, width: 1),
-                  right: BorderSide(color: Colors.transparent),
-                  top: BorderSide(color: Colors.transparent),
-                ),
-              ),
-              gridData: FlGridData(
-                show: false,
-              ),
-              titlesData: FlTitlesData(
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    interval: 300000,
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        '${(value / 1000).toInt()}K',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    },
-                    reservedSize: 50,
-                  ),
-                ),
-                rightTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                topTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Text(
-                          homeController.monthLabels[value.toInt()],
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              minY: 0,
-              maxY: 1200000,
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildCircularIconButton(
-    IconData icon,
-    String label1,
-    String label2,
-    Color circleColor,
-    Color iconColor, {
-    VoidCallback? onTap,
-  }) {
+      IconData icon,
+      String label1,
+      String label2,
+      Color circleColor,
+      Color iconColor, {
+        VoidCallback? onTap,
+      }) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
