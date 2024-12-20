@@ -38,6 +38,8 @@ import '../modules/settingQRIS/bindings/setting_q_r_i_s_binding.dart';
 import '../modules/settingQRIS/views/setting_q_r_i_s_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
+import '../modules/snk/bindings/snk_binding.dart';
+import '../modules/snk/views/snk_view.dart';
 import '../modules/struk/bindings/struk_binding.dart';
 import '../modules/struk/views/struk_view.dart';
 import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
@@ -166,6 +168,11 @@ class AppPages {
       name: _Paths.SETTING_Q_R_I_S,
       page: () => const SettingQRISView(),
       binding: SettingQRISBinding(),
+    ),
+    GetPage(
+      name: _Paths.SNK,
+      page: () => const SnkView(),
+      binding: SnkBinding(),
     ),
   ];
 }

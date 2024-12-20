@@ -118,8 +118,23 @@ class _SettingQRISViewState extends State<SettingQRISView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pengaturan QRIS'),
+        backgroundColor: Color(0xff181681),
+        title: Text(
+          'Pengaturan QRIS',
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+              color: Colors.white), // Tombol back (arrow)
+          onPressed: () {
+            Navigator.of(context).pop(); // Kembali ke halaman sebelumnya
+          },
+        ),
       ),
       body: Center(
         child: Padding(

@@ -27,7 +27,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    homeController.fetchPieChartData(homeController.selectedFilter.value); // Fetch pie chart data when initializing
+    homeController.fetchPieChartData(homeController
+        .selectedFilter.value); // Fetch pie chart data when initializing
   }
 
   @override
@@ -265,7 +266,8 @@ class _HomeViewState extends State<HomeView> {
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+                  padding:
+                      const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -278,7 +280,8 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       DropdownButton<String>(
                         value: homeController.selectedFilter.value,
-                        items: <String>['Harian', 'Mingguan', 'Bulanan'].map((String value) {
+                        items: <String>['Harian', 'Mingguan', 'Bulanan']
+                            .map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -286,7 +289,8 @@ class _HomeViewState extends State<HomeView> {
                         }).toList(),
                         onChanged: (newValue) {
                           homeController.selectedFilter.value = newValue!;
-                          homeController.fetchPieChartData(newValue); // Fetch data based on the selected filter
+                          homeController.fetchPieChartData(
+                              newValue); // Fetch data based on the selected filter
                         },
                       ),
                     ],
@@ -350,13 +354,13 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildCircularIconButton(
-      IconData icon,
-      String label1,
-      String label2,
-      Color circleColor,
-      Color iconColor, {
-        VoidCallback? onTap,
-      }) {
+    IconData icon,
+    String label1,
+    String label2,
+    Color circleColor,
+    Color iconColor, {
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Column(

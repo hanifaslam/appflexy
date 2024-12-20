@@ -26,6 +26,7 @@ abstract class Routes {
   static const REGISTRASI = _Paths.REGISTRASI;
   static const QRIS_PAYMENT = _Paths.QRIS_PAYMENT;
   static const SETTING_Q_R_I_S = _Paths.SETTING_Q_R_I_S;
+  static const SNK = _Paths.SNK;
 }
 
 abstract class _Paths {
@@ -53,4 +54,5 @@ abstract class _Paths {
   static const REGISTRASI = '/registrasi';
   static const QRIS_PAYMENT = '/qris-payment';
   static const SETTING_Q_R_I_S = '/setting-q-r-i-s';
+  static const SNK = '/snk';
 }
