@@ -18,7 +18,7 @@ Future<Map<String, dynamic>> fetchCompanyDetails() async {
     if (data.isNotEmpty) {
       return {
         'nama_usaha': data[0]
-        ['nama_usaha'], // Ambil nama usaha dari store pertama
+            ['nama_usaha'], // Ambil nama usaha dari store pertama
         'gambar': data[0]['gambar'], // Ambil gambar
       };
     } else {
@@ -64,7 +64,7 @@ class Profileuser2View extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF213F84),
+        backgroundColor: Color(0xff181681),
       ),
       body: SingleChildScrollView(
         child: Stack(
@@ -72,7 +72,7 @@ class Profileuser2View extends StatelessWidget {
             // Background decoration
             Container(
               height: 400,
-              color: Color(0xFF213F84),
+              color: Color(0xff181681),
             ),
             // Profile container
             Padding(
@@ -128,7 +128,7 @@ class Profileuser2View extends StatelessWidget {
                             // Sales Info
                             Padding(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 16.0),
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 20, horizontal: 10),
@@ -168,7 +168,7 @@ class Profileuser2View extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius:
-                                            BorderRadius.circular(15),
+                                                BorderRadius.circular(15),
                                             boxShadow: [
                                               BoxShadow(
                                                 color: Colors.grey.shade300,
@@ -184,10 +184,10 @@ class Profileuser2View extends StatelessWidget {
                                                 FutureBuilder<
                                                     Map<String, dynamic>>(
                                                   future:
-                                                  fetchOrdersWithTotalSales(),
+                                                      fetchOrdersWithTotalSales(),
                                                   builder: (context, snapshot) {
                                                     if (snapshot
-                                                        .connectionState ==
+                                                            .connectionState ==
                                                         ConnectionState
                                                             .waiting) {
                                                       return CircularProgressIndicator();
@@ -200,18 +200,18 @@ class Profileuser2View extends StatelessWidget {
                                                       );
                                                     } else {
                                                       final totalSales =
-                                                      snapshot.data![
-                                                      'total_sales']
-                                                      as double;
+                                                          snapshot.data![
+                                                                  'total_sales']
+                                                              as double;
                                                       return Text(
                                                         'Total Penjualan: Rp ${totalSales.toStringAsFixed(0)}',
                                                         style: TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
-                                                          FontWeight.bold,
+                                                              FontWeight.bold,
                                                           fontFamily: 'Inter',
                                                           fontStyle:
-                                                          FontStyle.italic,
+                                                              FontStyle.italic,
                                                         ),
                                                       );
                                                     }
@@ -242,13 +242,73 @@ class Profileuser2View extends StatelessWidget {
                               Get.toNamed(Routes.SETTING_Q_R_I_S);
                             }),
                             menuItem('Syarat & Ketentuan', Icons.description,
-                                    () {
-                                  // Navigate to terms and conditions
-                                  // Get.toNamed(Routes.SYARAT_KETENTUAN);
-                                }),
+                                () {
+                              // Navigate to terms and conditions
+                              Get.toNamed(Routes.SNK);
+                            }),
                             menuItem('Keluar', Icons.delete, () {
-                              // Navigate to delete account
-                              Get.toNamed(Routes.LOGIN);
+                              // Tampilkan dialog konfirmasi
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          12.0), // Rounded corners
+                                    ),
+                                    title: Center(
+                                      child: Text(
+                                        'Apakah anda yakin?',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    content: Text(
+                                      'Apakah Anda yakin ingin keluar? Anda perlu masuk kembali untuk mengakses akun Anda.',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    actionsAlignment: MainAxisAlignment
+                                        .center, // Center the buttons
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // Menutup dialog jika "Cancel"
+                                        },
+                                        style: TextButton.styleFrom(
+                                          foregroundColor:
+                                              Colors.black, // Text color
+                                          textStyle: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        child: Text('Batal'),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // Menutup dialog
+                                          Get.toNamed(Routes
+                                              .LOGIN); // Pindah ke halaman login
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors
+                                              .red, // Tombol "Delete" warna merah muda
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                8.0), // Rounded button
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Keluar',
+                                          style: TextStyle(
+                                              color: Colors
+                                                  .white), // Warna teks putih
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                             }, Colors.red),
                           ],
                         ),
@@ -293,9 +353,9 @@ class Profileuser2View extends StatelessWidget {
                                           CircularProgressIndicator(),
                                       errorWidget: (context, url, error) =>
                                           Image.asset(
-                                            'assets/logo/logoflex.png', // Gambar fallback jika error
-                                            fit: BoxFit.cover,
-                                          ),
+                                        'assets/logo/logoflex.png', // Gambar fallback jika error
+                                        fit: BoxFit.cover,
+                                      ),
                                       fit: BoxFit.cover,
                                       width: 110,
                                       height: 110,
