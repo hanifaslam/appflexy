@@ -11,7 +11,6 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.3.3
   qr_flutter: ^4.0.0
-
   cupertino_icons: ^1.0.8
   get: ^4.6.6
   curved_navigation_bar: ^1.0.3
@@ -24,8 +23,8 @@ dependencies:
   cached_network_image: ^3.2.3
   flutter_cached_manager: ^1.0.1
   fl_chart: ^0.69.0
-  printing: ^5.13.4
   pdf: ^3.11.1
+  printing: ^5.13.4
 
 dev_dependencies:
   flutter_test:
