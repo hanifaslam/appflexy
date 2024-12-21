@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 
 import '../../../routes/app_pages.dart';
 
-
 class TambahProdukController extends GetxController {
   final TextEditingController namaProdukController = TextEditingController();
   final TextEditingController kodeProdukController = TextEditingController();

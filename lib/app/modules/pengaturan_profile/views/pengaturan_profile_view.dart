@@ -86,14 +86,25 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                   ),
                   onChanged: (value) => controller.companyName.value = value,
                   decoration: InputDecoration(
-                    hintText: 'Nama Toko',
+                    hintText: 'Nama Toko', // Ganti labelText dengan hintText
                     border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Sesuaikan border radius
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(13),
+                      borderSide:
+                          BorderSide(color: Color(0xff181681), width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
+                      borderSide:
+                          BorderSide(color: Color(0xff181681), width: 0.5),
                     ),
                   ),
                 );
               }),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
               // Bidang Usaha
               Obx(() {
@@ -108,14 +119,25 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                   ),
                   onChanged: (value) => controller.companyType.value = value,
                   decoration: InputDecoration(
-                    hintText: 'Bidang Usaha',
+                    hintText: 'Bidang Usaha', // Petunjuk untuk input
                     border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Border yang melengkung
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(13),
+                      borderSide:
+                          BorderSide(color: Color(0xff181681), width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
+                      borderSide:
+                          BorderSide(color: Color(0xff181681), width: 0.5),
                     ),
                   ),
                 );
               }),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
               // Alamat Toko
               Obx(() {
@@ -129,16 +151,27 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                     ),
                   ),
                   onChanged: (value) => controller.companyAddress.value = value,
-                  maxLines: 2,
+                  maxLines: 2, // Membatasi input hingga dua baris
                   decoration: InputDecoration(
-                    hintText: 'Alamat',
+                    hintText: 'Alamat', // Petunjuk untuk input
                     border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Border yang melengkung
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(13),
+                      borderSide:
+                          BorderSide(color: Color(0xff181681), width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
+                      borderSide:
+                          BorderSide(color: Color(0xff181681), width: 0.5),
                     ),
                   ),
                 );
               }),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
               // Tombol Simpan
               ElevatedButton(
@@ -159,15 +192,15 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                 },
                 style: ElevatedButton.styleFrom(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   backgroundColor: Color(0xff181681),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 child: const Text(
                   'Simpan',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],

@@ -124,7 +124,7 @@ class Profileuser2View extends StatelessWidget {
                                 }
                               },
                             ),
-                            SizedBox(height: 30),
+                            SizedBox(height: 15),
                             // Sales Info
                             Padding(
                               padding:
@@ -146,7 +146,7 @@ class Profileuser2View extends StatelessWidget {
                                 child: Center(
                                   child: Column(
                                     children: [
-                                      Icon(Icons.arrow_downward,
+                                      Icon(Icons.trending_up,
                                           color: Colors.green, size: 30),
                                       SizedBox(height: 5),
                                       Text(
@@ -158,7 +158,7 @@ class Profileuser2View extends StatelessWidget {
                                             fontFamily: 'Inter',
                                             fontStyle: FontStyle.italic),
                                       ),
-                                      SizedBox(height: 5),
+                                      SizedBox(height: 10),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 16.0),

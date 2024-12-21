@@ -21,6 +21,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
   final TextEditingController hargaJualController = TextEditingController();
   final TextEditingController keteranganController = TextEditingController();
   bool isLoading = false; // Loading state
+  String errorMessage = ''; // Error message to show above button
 
   @override
   void initState() {
@@ -62,7 +63,6 @@ class _TambahTiketViewState extends State<TambahTiketView> {
     );
 
     if (response.statusCode == 200) {
-      // Tambahkan ID ke tiketData untuk konsistensi
       tiketData['id'] = id;
       Get.back(result: tiketData);
     } else {
@@ -97,6 +97,19 @@ class _TambahTiketViewState extends State<TambahTiketView> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                // Error message display
+                if (errorMessage.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Text(
+                      errorMessage,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 TextField(
                   controller: namaTiketController,
                   decoration: InputDecoration(
@@ -173,40 +186,40 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                   onPressed: isLoading
                       ? null
                       : () {
+                          // Validasi semua field
                           if (namaTiketController.text.isEmpty ||
                               stokController.text.isEmpty ||
-                              hargaJualController.text.isEmpty) {
-                            Get.snackbar("Error",
-                                "Nama, Stok, dan Harga Jual harus diisi!");
+                              hargaJualController.text.isEmpty ||
+                              keteranganController.text.isEmpty) {
+                            setState(() {
+                              errorMessage =
+                                  "Semua kolom harus diisi!"; // Pesan kesalahan
+                            });
                             return;
                           }
 
                           setState(() {
                             isLoading = true;
+                            errorMessage = ''; // Clear error message
                           });
 
-                          // Perbolehkan `keterangan` kosong
                           Map<String, dynamic> tiketData = {
                             'namaTiket': namaTiketController.text,
                             'stok': int.tryParse(stokController.text) ?? 0,
                             'hargaJual':
                                 double.tryParse(hargaJualController.text) ??
                                     0.0,
-                            'keterangan': keteranganController.text.isNotEmpty
-                                ? keteranganController.text
-                                : null,
+                            'keterangan': keteranganController.text,
                           };
 
                           try {
                             if (widget.tiket == null) {
-                              // Tambah tiket baru jika `widget.tiket` null
                               addTiket(tiketData).whenComplete(() {
                                 setState(() {
                                   isLoading = false;
                                 });
                               });
                             } else {
-                              // Pastikan ID tersedia untuk update
                               final tiketId = widget.tiket?['id'];
                               if (tiketId != null) {
                                 updateTiket(tiketId, tiketData)
@@ -216,9 +229,9 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                                   });
                                 });
                               } else {
-                                Get.snackbar("Error",
-                                    "ID Tiket tidak valid untuk update.");
                                 setState(() {
+                                  errorMessage =
+                                      "ID Tiket tidak valid untuk update.";
                                   isLoading = false;
                                 });
                               }

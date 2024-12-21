@@ -137,7 +137,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               decoration: BoxDecoration(
                                 border:
-                                Border.all(color: Colors.grey, width: 2),
+                                    Border.all(color: Colors.grey, width: 2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Padding(
@@ -148,13 +148,13 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                                   children: [
                                     controller.selectedImage != null
                                         ? Image.file(
-                                      controller.selectedImage!,
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    )
+                                            controller.selectedImage!,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
                                         : const Icon(Bootstrap.image,
-                                        size: 50, color: Color(0xff181681)),
+                                            size: 50, color: Color(0xff181681)),
                                     const SizedBox(width: 8),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(

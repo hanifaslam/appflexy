@@ -163,7 +163,10 @@ class _SettingQRISViewState extends State<SettingQRISView> {
                           style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                            horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        elevation: 4,
                         backgroundColor: Colors.red,
                       ),
                     )
@@ -173,8 +176,11 @@ class _SettingQRISViewState extends State<SettingQRISView> {
                           style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                        backgroundColor: Colors.blue,
+                            horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        elevation: 4,
+                        backgroundColor: Color(0xff181681),
                       ),
                     ),
             ],

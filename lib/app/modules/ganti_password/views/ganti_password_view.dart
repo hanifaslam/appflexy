@@ -15,7 +15,7 @@ class GantiPasswordView extends StatelessWidget {
           backgroundColor: const Color(0xff181681),
           elevation: 1,
           title: const Text(
-            'Ganti Password',
+            'Pengaturan Password',
             style: TextStyle(
               fontFamily: 'Inter',
               fontWeight: FontWeight.bold,
@@ -47,51 +47,93 @@ class GantiPasswordView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
                   child: TextField(
                     onChanged: (value) => controller.passwordLama.value = value,
                     obscureText: true,
-                    decoration: new InputDecoration(
-                        labelText: "Password Saat Ini",
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(
-                              color: Color(0xff181681),
-                              width: 0.5,
-                            ))),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: TextField(
-                    onChanged: (value) => controller.passwordBaru.value = value,
-                    obscureText: true,
-                    decoration: new InputDecoration(
-                        labelText: "Password Baru",
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(
-                            color: Color(0xff181681),
-                            width: 0.5,
-                          ),
-                        )),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: TextField(
-                    onChanged: (value) => controller.passwordBaru.value = value,
-                    obscureText: true,
-                    decoration: new InputDecoration(
-                      labelText: "Konfirmasi Password Baru",
+                    decoration: InputDecoration(
+                      hintText:
+                          'Password Saat Ini', // Ganti labelText dengan hintText agar tampilan serupa
+                      prefixIcon: Icon(
+                        Icons
+                            .lock, // Menambahkan icon kunci untuk representasi password
+                        color: Color(0xff181681),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                            13), // Sesuaikan dengan border radius yang diinginkan
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(11),
+                        borderSide:
+                            BorderSide(color: Color(0xff181681), width: 2.0),
+                      ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(
-                          color: Color(0xff181681),
-                          width: 0.5,
-                        ),
+                        borderSide:
+                            BorderSide(color: Color(0xff181681), width: 0.5),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  child: TextField(
+                    onChanged: (value) => controller.passwordBaru.value = value,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText:
+                          'Password Baru', // Ganti labelText dengan hintText
+                      prefixIcon: Icon(
+                        Icons
+                            .lock, // Menambahkan icon kunci untuk representasi password
+                        color: Color(0xff181681),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                            13), // Sesuaikan dengan border radius yang diinginkan
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(11),
+                        borderSide:
+                            BorderSide(color: Color(0xff181681), width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide:
+                            BorderSide(color: Color(0xff181681), width: 0.5),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  child: TextField(
+                    onChanged: (value) => controller.passwordBaru.value = value,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText:
+                          'Konfirmasi Password Baru', // Ganti labelText dengan hintText
+                      prefixIcon: Icon(
+                        Icons
+                            .lock, // Menambahkan icon kunci untuk representasi password
+                        color: Color(0xff181681),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                            13), // Sesuaikan dengan border radius yang diinginkan
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(11),
+                        borderSide:
+                            BorderSide(color: Color(0xff181681), width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide:
+                            BorderSide(color: Color(0xff181681), width: 0.5),
                       ),
                     ),
                   ),
