@@ -39,41 +39,62 @@ class PDFPreviewPage extends StatelessWidget {
 
     pdf.addPage(
       pw.Page(
-        pageFormat: format,
+        pageFormat: format.copyWith(marginBottom: 20, marginTop: 20),
         build: (context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text("Struk Pembayaran",
+              pw.Center(
+                child: pw.Text(
+                  "Struk Pembayaran",
                   style: pw.TextStyle(
-                      fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                    fontSize: 24,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+              ),
               pw.SizedBox(height: 10),
-              pw.Text("Tanggal Pesanan: $orderDate",
-                  style: pw.TextStyle(fontStyle: pw.FontStyle.italic)),
-              pw.Divider(thickness: 1.5),
-              pw.Text("Detail Pembayaran",
+              pw.Center(
+                child: pw.Text(
+                  "Tanggal: $orderDate",
                   style: pw.TextStyle(
-                      fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                    fontStyle: pw.FontStyle.italic,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              pw.Divider(thickness: 1),
+              pw.Text(
+                "Detail Pembelian",
+                style: pw.TextStyle(
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              pw.SizedBox(height: 10),
               ...orderItems.map((item) {
                 return pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
                     pw.Text("${item.name} x${item.quantity}"),
-                    pw.Text(
-                        currencyFormat.format(item.price * item.quantity)),
+                    pw.Text(currencyFormat.format(item.price * item.quantity)),
                   ],
                 );
-              }),
-              pw.Divider(thickness: 1.5),
-              _buildPdfRow(
-                  "Total Pembelian", currencyFormat.format(totalPembelian)),
+              }).toList(),
+              pw.Divider(thickness: 1),
+              pw.SizedBox(height: 10),
+              _buildPdfRow("Total Pembelian", currencyFormat.format(totalPembelian)),
               _buildPdfRow("Uang Tunai", currencyFormat.format(uangTunai)),
               _buildPdfRow("Kembalian", currencyFormat.format(kembalian)),
-              pw.Divider(thickness: 1.5),
+              pw.SizedBox(height: 20),
               pw.Center(
-                child: pw.Text("Terima Kasih!",
-                    style: pw.TextStyle(
-                        fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                child: pw.Text(
+                  "Terima Kasih!",
+                  style: pw.TextStyle(
+                    fontSize: 16,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           );

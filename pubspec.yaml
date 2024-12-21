@@ -24,12 +24,18 @@ dependencies:
   flutter_cached_manager: ^1.0.1
   fl_chart: ^0.69.0
   pdf: ^3.11.1
-  printing: ^5.13.4
+  printing: ^5.13.4   # Use an older version that works with esc_pos_utils
+
+  blue_thermal_printer: ^1.2.3
+  image: ^4.3.0
+
+
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
