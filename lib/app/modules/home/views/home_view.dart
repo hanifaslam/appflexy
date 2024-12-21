@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:apptiket/app/widgets/navbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -122,31 +126,88 @@ class _HomeViewState extends State<HomeView> {
           children: [
             Row(
               children: [
-                const CircleAvatar(
-                  radius: 35,
-                  backgroundImage: AssetImage('assets/logo/logoflex.png'),
+                FutureBuilder<Map<String, dynamic>>(
+                  future: fetchCompanyDetails(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const CircleAvatar(
+                        radius: 55,
+                        backgroundImage: AssetImage('assets/logo/logoflex.png'),
+                      );
+                    } else {
+                      final imageUrl = snapshot.data?['gambar'];
+                      if (imageUrl == null || imageUrl.isEmpty) {
+                        return const CircleAvatar(
+                          radius: 35,
+                          backgroundImage:
+                              AssetImage('assets/logo/logoflex.png'),
+                        );
+                      }
+                      return CircleAvatar(
+                        radius: 35,
+                        backgroundColor: Colors.grey.shade200,
+                        child: ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: imageUrl.startsWith('http')
+                                ? imageUrl
+                                : 'http://10.0.2.2:8000/storage/images/$imageUrl',
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/logo/logoflex.png',
+                              fit: BoxFit.cover,
+                            ),
+                            fit: BoxFit.cover,
+                            width: 110,
+                            height: 110,
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "AmbatuJawir",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                        fontSize: 18,
-                      ),
-                    ),
-                    Text(
-                      "Farhan Kebab",
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
+                FutureBuilder<Map<String, dynamic>>(
+                  future: fetchCompanyDetails(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const Text(
+                        'Gagal memuat nama perusahaan',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Inter',
+                          fontSize: 18,
+                        ),
+                      );
+                    } else {
+                      return Text.rich(
+                        TextSpan(
+                          text: 'Selamat Datang, ', // Teks biasa
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Inter',
+                            fontSize: 18,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: snapshot.data?['nama_usaha'] ??
+                                  'Nama tidak ditemukan', // Nama toko bold
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontFamily: 'Inter',
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
                 ),
                 const Spacer(),
                 const Padding(
@@ -159,7 +220,7 @@ class _HomeViewState extends State<HomeView> {
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
@@ -310,7 +371,7 @@ class _HomeViewState extends State<HomeView> {
       padding: const EdgeInsets.all(0.0),
       child: Column(
         children: [
-          const SizedBox(height: 75),
+          const SizedBox(height: 38),
           SizedBox(
             width: 200,
             height: 200,
@@ -332,7 +393,7 @@ class _HomeViewState extends State<HomeView> {
                       );
                     }).toList(),
                     sectionsSpace: 2,
-                    centerSpaceRadius: 90, // Increased center space radius
+                    centerSpaceRadius: 75, // Increased center space radius
                   ),
                 ),
                 Center(
@@ -399,5 +460,24 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
     );
+  }
+}
+
+Future<Map<String, dynamic>> fetchCompanyDetails() async {
+  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/stores'));
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+
+    if (data.isNotEmpty) {
+      return {
+        'nama_usaha': data[0]['nama_usaha'], // Nama toko
+        'gambar': data[0]['gambar'], // URL gambar toko
+      };
+    } else {
+      throw Exception('No stores found');
+    }
+  } else {
+    throw Exception('Failed to load company details');
   }
 }

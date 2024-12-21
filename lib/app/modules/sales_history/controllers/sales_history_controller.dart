@@ -4,11 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class SalesHistoryController extends GetxController {
-  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
+  final NumberFormat currencyFormat =
+      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
 
   RxList<Map<String, dynamic>> salesHistory = <Map<String, dynamic>>[].obs;
-  RxList<Map<String, dynamic>> filteredSalesHistory = <Map<String, dynamic>>[].obs;
-  RxString filterType = 'All'.obs;
+  RxList<Map<String, dynamic>> filteredSalesHistory =
+      <Map<String, dynamic>>[].obs;
+  RxString filterType = 'Semua'.obs;
 
   @override
   void onInit() {
@@ -20,10 +22,12 @@ class SalesHistoryController extends GetxController {
   // Method to fetch sales history from API
   Future<void> fetchSalesHistory() async {
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/orders'));
+      final response =
+          await http.get(Uri.parse('http://10.0.2.2:8000/api/orders'));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        salesHistory.value = data.map((item) => item as Map<String, dynamic>).toList();
+        salesHistory.value =
+            data.map((item) => item as Map<String, dynamic>).toList();
         applyFilter();
       } else {
         throw Exception('Failed to load sales history');
@@ -40,7 +44,8 @@ class SalesHistoryController extends GetxController {
   }
 
   String formatCurrency(dynamic value) {
-    double doubleValue = value is String ? double.tryParse(value) ?? 0.0 : value.toDouble();
+    double doubleValue =
+        value is String ? double.tryParse(value) ?? 0.0 : value.toDouble();
     return currencyFormat.format(doubleValue);
   }
 
@@ -52,13 +57,14 @@ class SalesHistoryController extends GetxController {
     DateTime now = DateTime.now();
     filteredSalesHistory.value = salesHistory.where((sale) {
       DateTime saleDate = DateTime.parse(sale['time']);
-      if (filterType.value == 'Weekly') {
+      if (filterType.value == 'Mingguan') {
         DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
         DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
-        return saleDate.isAfter(startOfWeek) && saleDate.isBefore(endOfWeek.add(Duration(days: 1)));
-      } else if (filterType.value == 'Monthly') {
+        return saleDate.isAfter(startOfWeek) &&
+            saleDate.isBefore(endOfWeek.add(Duration(days: 1)));
+      } else if (filterType.value == 'Bulanan') {
         return saleDate.month == now.month && saleDate.year == now.year;
-      } else if (filterType.value == 'Yearly') {
+      } else if (filterType.value == 'Tahunan') {
         return saleDate.year == now.year;
       } else {
         return true;
@@ -76,7 +82,7 @@ class SalesHistoryController extends GetxController {
 //   DateTime now = DateTime.now();
 //   salesHistory.addAll([
 //     {
-//       'customer': 'Customer Weekly',
+//       'customer': 'Customer Mingguan',
 //       'time': now.subtract(Duration(days: 3)).toIso8601String(),
 //       'payment_method': 'Cash',
 //       'total': 100000,
