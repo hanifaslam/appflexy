@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
-import 'pdfpreview_page.dart';
+import 'pdfpreview_page.dart' as pdf;
 
 
 class StrukPembayaran extends StatelessWidget {
   final double totalPembelian;
   final double uangTunai;
   final double kembalian;
-  final List<OrderItem> orderItems;
+  final List<pdf.OrderItem> orderItems; // Use the prefix here
   final String orderDate;
 
   StrukPembayaran({
@@ -21,7 +21,8 @@ class StrukPembayaran extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
+    final NumberFormat currencyFormat =
+        NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
     return AlertDialog(
       title: Center(
@@ -48,7 +49,7 @@ class StrukPembayaran extends StatelessWidget {
                 "${item.name} x${item.quantity}",
                 currencyFormat.format(item.price * item.quantity),
               );
-            }),
+            }).toList(),
             Divider(thickness: 1.5),
             _buildRow("Total Pembelian", currencyFormat.format(totalPembelian)),
             _buildRow("Uang Tunai", currencyFormat.format(uangTunai)),
@@ -72,29 +73,16 @@ class StrukPembayaran extends StatelessWidget {
         ),
         ElevatedButton.icon(
           onPressed: () {
-            Get.to(() => PDFPreviewPage(
-              totalPembelian: totalPembelian,
-              uangTunai: uangTunai,
-              kembalian: kembalian,
-              orderItems: orderItems,
-              orderDate: orderDate,
-            ));
+            Get.to(() => pdf.PDFPreviewPage(
+                  totalPembelian: totalPembelian,
+                  uangTunai: uangTunai,
+                  kembalian: kembalian,
+                  orderItems: orderItems,
+                  orderDate: orderDate,
+                ));
           },
           icon: Icon(Icons.picture_as_pdf),
           label: Text('PDF'),
-        ),
-        ElevatedButton.icon(
-          onPressed: () {
-            Get.to(() => (
-              totalPembelian: totalPembelian,
-              uangTunai: uangTunai,
-              kembalian: kembalian,
-              orderItems: orderItems,
-              orderDate: orderDate,
-            ));
-          },
-          icon: Icon(Icons.print),
-          label: Text('Cetak Struk'),
         ),
       ],
     );
@@ -107,7 +95,8 @@ class StrukPembayaran extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: TextStyle(fontSize: 16)),
-          Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(value,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         ],
       ),
     );
