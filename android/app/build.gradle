@@ -13,7 +13,7 @@ dependencies{
 android {
     namespace = "com.cokicoki.apptiket"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = 26
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

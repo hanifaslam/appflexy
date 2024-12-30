@@ -1,9 +1,11 @@
 import 'dart:typed_data';
+import 'package:apptiket/app/modules/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:get/get.dart';
 
 class PDFPreviewPage extends StatelessWidget {
   final double totalPembelian;
@@ -37,6 +39,9 @@ class PDFPreviewPage extends StatelessWidget {
     final NumberFormat currencyFormat =
     NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
+    // Ambil data perusahaan dari ProfileController
+    final ProfileController profileController = Get.put(ProfileController());
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat(80 * PdfPageFormat.mm, double.infinity),
@@ -46,13 +51,27 @@ class PDFPreviewPage extends StatelessWidget {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
+                // Nama dan alamat perusahaan
                 pw.Center(
-                  child: pw.Text(
-                    "Struk Pembayaran",
-                    style: pw.TextStyle(
-                      fontSize: 20,
-                      fontWeight: pw.FontWeight.bold,
-                    ),
+                  child: pw.Column(
+                    children: [
+                      pw.Text(
+                        profileController.companyName.value,
+                        style: pw.TextStyle(
+                          fontSize: 16,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                      pw.SizedBox(height: 4),
+                      pw.Text(
+                        profileController.companyAddress.value,
+                        style: pw.TextStyle(
+                          fontSize: 12,
+                          fontStyle: pw.FontStyle.italic,
+                        ),
+                        textAlign: pw.TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
                 pw.SizedBox(height: 10),
@@ -78,14 +97,18 @@ class PDFPreviewPage extends StatelessWidget {
                   return pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
-                      pw.Text("${item.name} x${item.quantity}", style: pw.TextStyle(fontSize: 12)),
-                      pw.Text(currencyFormat.format(item.price * item.quantity), style: pw.TextStyle(fontSize: 12)),
+                      pw.Text("${item.name} x${item.quantity}",
+                          style: pw.TextStyle(fontSize: 12)),
+                      pw.Text(
+                          currencyFormat.format(item.price * item.quantity),
+                          style: pw.TextStyle(fontSize: 12)),
                     ],
                   );
                 }).toList(),
                 pw.Divider(thickness: 1),
                 pw.SizedBox(height: 10),
-                _buildPdfRow("Total Pembelian", currencyFormat.format(totalPembelian)),
+                _buildPdfRow(
+                    "Total Pembelian", currencyFormat.format(totalPembelian)),
                 _buildPdfRow("Uang Tunai", currencyFormat.format(uangTunai)),
                 _buildPdfRow("Kembalian", currencyFormat.format(kembalian)),
                 pw.SizedBox(height: 20),
@@ -113,7 +136,8 @@ class PDFPreviewPage extends StatelessWidget {
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
         pw.Text(label, style: pw.TextStyle(fontSize: 12)),
-        pw.Text(value, style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
+        pw.Text(value,
+            style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
       ],
     );
   }

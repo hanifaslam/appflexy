@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
+import '../modules/profile/controllers/profile_controller.dart';
 import 'pdfpreview_page.dart' as pdf;
-
 
 class StrukPembayaran extends StatelessWidget {
   final double totalPembelian;
   final double uangTunai;
   final double kembalian;
-  final List<pdf.OrderItem> orderItems; // Use the prefix here
+  final List<pdf.OrderItem> orderItems;
   final String orderDate;
 
   StrukPembayaran({
@@ -24,17 +24,30 @@ class StrukPembayaran extends StatelessWidget {
     final NumberFormat currencyFormat =
         NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
+    final ProfileController profileController = Get.put(ProfileController());
+
     return AlertDialog(
-      title: Center(
-        child: Text(
-          'Struk Pembayaran',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-      ),
       content: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    profileController.companyName.value,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    profileController.companyAddress.value,
+                    style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            Divider(thickness: 1.5),
             Text(
               "Tanggal Pesanan: $orderDate",
               style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
