@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:intl/intl.dart'; // Import the intl package for currency formatting
+import 'package:intl/intl.dart';
 
 class PembayaranCashController extends GetxController {
   // Observable list to store orders with item details
@@ -27,6 +27,12 @@ class PembayaranCashController extends GetxController {
 
     // Recalculate the total after updating quantities
     calculateTotal();
+  }
+
+  // Function to clear the pesananList and reset the total
+  void clear() {
+    pesananList.clear();
+    total.value = 0.0;
   }
 
   // Method to format currency

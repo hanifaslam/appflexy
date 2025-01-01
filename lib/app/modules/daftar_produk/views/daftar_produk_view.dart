@@ -27,9 +27,10 @@ class CustomCacheManager {
 
 class DaftarProdukView extends StatelessWidget {
   final NumberFormat currencyFormat =
-  NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
+      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
   final DaftarProdukController controller = Get.put(DaftarProdukController());
-  final EditProdukController editProdukController = Get.put(EditProdukController());
+  final EditProdukController editProdukController =
+      Get.put(EditProdukController());
 
   @override
   Widget build(BuildContext context) {
@@ -220,8 +221,8 @@ class DaftarProdukView extends StatelessWidget {
       if (produk['image'].toString().startsWith('http')) {
         return produk['image'];
       }
-      final baseUrl = '10.0.2.2';
-      return 'http://$baseUrl:8000/storage/products/${produk['image']}';
+      final baseUrl = 'https://cheerful-distinct-fox.ngrok-free.app';
+      return '$baseUrl/storage/products/${produk['image']}';
     } catch (e) {
       print('Error generating image URL: $e');
       return '';
@@ -252,7 +253,7 @@ class DaftarProdukView extends StatelessWidget {
         cacheKey: imageUrl,
         httpHeaders: const {
           'Connection': 'keep-alive',
-          'Keep-Alive': 'timeout=5, max=1000'
+          'Keep-Alive': 'timeout=100, max=1000'
         },
       ),
     );
@@ -397,6 +398,9 @@ class DaftarProdukView extends StatelessWidget {
   }
 
   void _editProduk(int index, Map<String, dynamic> produk) {
-    Get.to(() => EditProdukView(produk: produk, index: index));
+    Get.to(() => EditProdukView(produk: produk, index: index))?.then((_) {
+      // Refresh the product list after editing a product
+      controller.fetchProducts();
+    });
   }
 }

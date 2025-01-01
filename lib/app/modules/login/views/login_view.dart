@@ -1,3 +1,4 @@
+import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
 import 'package:apptiket/app/widgets/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,9 @@ import '../controllers/login_controller.dart';
 class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<DaftarKasirController>()) {
+      Get.put(DaftarKasirController());
+    }
     return Scaffold(
       body: GestureDetector(
         onTap: () {
@@ -24,7 +28,8 @@ class LoginView extends GetView<LoginController> {
                 vertical: 80.0, // Adjust top padding if needed
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center, // Align items to the center horizontally
+                crossAxisAlignment: CrossAxisAlignment
+                    .center, // Align items to the center horizontally
                 children: [
                   const SizedBox(height: 40), // Add space from top
 
@@ -44,36 +49,36 @@ class LoginView extends GetView<LoginController> {
 
                   const SizedBox(height: 30), // Spacing between logo and text
                   Text(
-                  "Buka tiket Anda untuk pengalaman luar biasa!",
+                    "Buka tiket Anda untuk pengalaman luar biasa!",
                     style: TextStyle(
-                    fontFamily: 'Inter', // Custom font family
-                    fontSize: 16,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
+                      fontFamily: 'Inter', // Custom font family
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                      textAlign: TextAlign.center,
-                ),
 
-                  
-                  const SizedBox(height: 30), // Spacing between text and input fields
+                  const SizedBox(
+                      height: 30), // Spacing between text and input fields
 
                   // Email input field
                   Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: TextField(
-                    controller: controller.emailController,
-                    decoration: InputDecoration(
-                      hintText: "Email",
-                      hintStyle: const TextStyle(
-                        fontFamily: 'Inter', // Apply custom font
-                        fontSize: 16,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.bold,
-                        
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: const BorderSide(color: Color(0xFF84AFC2)),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: TextField(
+                      controller: controller.emailController,
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        labelStyle: const TextStyle(
+                          fontFamily: 'Inter', // Apply custom font
+                          fontSize: 16,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide:
+                              const BorderSide(color: Color(0xFF84AFC2)),
                         ),
                       ),
                     ),
@@ -88,14 +93,12 @@ class LoginView extends GetView<LoginController> {
                           controller: controller.passwordController,
                           obscureText: controller.isPasswordHidden.value,
                           decoration: InputDecoration(
-                            hintText: "Kata Sandi",
-                            hintStyle: TextStyle(
+                            labelText: "Kata Sandi",
+                            labelStyle: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 16,
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.bold,
-                              
-
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
@@ -112,7 +115,8 @@ class LoginView extends GetView<LoginController> {
                         ),
                       )),
 
-                  const SizedBox(height: 40), // Spacing between password input and button
+                  const SizedBox(
+                      height: 40), // Spacing between password input and button
                   // Button
                   ProfileBtn(),
 
@@ -122,13 +126,22 @@ class LoginView extends GetView<LoginController> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Belum punya akun?', style: TextStyle(fontSize: 16),),
-                        SizedBox(width: 7,),
+                        Text(
+                          'Belum punya akun?',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
                         GestureDetector(
                             onTap: () {
                               Get.to(() => RegistrasiView());
                             },
-                            child: Text('Daftar disini', style: TextStyle(color: Colors.blue, fontSize: 16),)),
+                            child: Text(
+                              'Daftar disini',
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 16),
+                            )),
                       ],
                     ),
                   )

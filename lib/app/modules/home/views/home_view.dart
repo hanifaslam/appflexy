@@ -5,9 +5,11 @@ import 'package:apptiket/app/widgets/navbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,6 +35,7 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     homeController.fetchPieChartData(homeController
         .selectedFilter.value); // Fetch pie chart data when initializing
+    homeController.fetchCompanyDetails(); // Fetch store data when initializing
   }
 
   @override
@@ -93,14 +96,22 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildContent() {
-    return Container(
-      margin: const EdgeInsets.only(top: 10),
-      child: Column(
-        children: [
-          _buildUserInfoSection(),
-          const SizedBox(height: 20),
-          _buildPieChartSection(),
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        // Refresh the data when the user pulls down to refresh
+        await homeController.fetchCompanyDetails();
+        await homeController
+            .fetchPieChartData(homeController.selectedFilter.value);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 10),
+        child: Column(
+          children: [
+            _buildUserInfoSection(),
+            const SizedBox(height: 20),
+            _buildPieChartSection(),
+          ],
+        ),
       ),
     );
   }
@@ -126,92 +137,50 @@ class _HomeViewState extends State<HomeView> {
           children: [
             Row(
               children: [
-                FutureBuilder<Map<String, dynamic>>(
-                  future: fetchCompanyDetails(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return const CircleAvatar(
-                        radius: 55,
-                        backgroundImage: AssetImage('assets/logo/logoflex.png'),
-                      );
-                    } else {
-                      final imageUrl = snapshot.data?['gambar'];
-                      if (imageUrl == null || imageUrl.isEmpty) {
-                        return const CircleAvatar(
-                          radius: 35,
-                          backgroundImage:
-                              AssetImage('assets/logo/logoflex.png'),
-                        );
-                      }
-                      return CircleAvatar(
-                        radius: 35,
-                        backgroundColor: Colors.grey.shade200,
-                        child: ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: imageUrl.startsWith('http')
-                                ? imageUrl
-                                : 'http://10.0.2.2:8000/storage/images/$imageUrl',
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => Image.asset(
-                              'assets/logo/logoflex.png',
-                              fit: BoxFit.cover,
-                            ),
-                            fit: BoxFit.cover,
-                            width: 110,
-                            height: 110,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                Obx(() {
+                  if (homeController.isLoading.value) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  final storeData = homeController.storeData.value;
+                  final imageUrl = storeData?['gambar'];
+
+                  return _buildProductImage(imageUrl ?? '');
+                }),
                 const SizedBox(width: 10),
-                FutureBuilder<Map<String, dynamic>>(
-                  future: fetchCompanyDetails(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                Expanded(
+                  child: Obx(() {
+                    if (homeController.isLoading.value) {
                       return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return const Text(
-                        'Gagal memuat nama perusahaan',
-                        style: TextStyle(
+                    }
+
+                    final storeData = homeController.storeData.value;
+                    print('Store data: $storeData'); // Debug print
+                    return Text.rich(
+                      TextSpan(
+                        text: 'Selamat Datang, ',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'Inter',
                           fontSize: 18,
                         ),
-                      );
-                    } else {
-                      return Text.rich(
-                        TextSpan(
-                          text: 'Selamat Datang, ', // Teks biasa
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Inter',
-                            fontSize: 18,
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: snapshot.data?['nama_usaha'] ??
-                                  'Nama tidak ditemukan', // Nama toko bold
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontFamily: 'Inter',
-                                fontSize: 18,
-                              ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: storeData?['nama_usaha'] ??
+                                'Nama tidak ditemukan',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFamily: 'Inter',
+                              fontSize: 18,
                             ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.only(right: 20.0),
+                          ),
+                        ],
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    );
+                  }),
                 ),
               ],
             ),
@@ -349,9 +318,7 @@ class _HomeViewState extends State<HomeView> {
                           );
                         }).toList(),
                         onChanged: (newValue) {
-                          homeController.selectedFilter.value = newValue!;
-                          homeController.fetchPieChartData(
-                              newValue); // Fetch data based on the selected filter
+                          homeController.onFilterChanged(newValue!);
                         },
                       ),
                     ],
@@ -461,23 +428,96 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
-}
 
-Future<Map<String, dynamic>> fetchCompanyDetails() async {
-  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/stores'));
-
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-
-    if (data.isNotEmpty) {
-      return {
-        'nama_usaha': data[0]['nama_usaha'], // Nama toko
-        'gambar': data[0]['gambar'], // URL gambar toko
-      };
-    } else {
-      throw Exception('No stores found');
+  Widget _buildProductImage(String imageUrl) {
+    if (imageUrl.isEmpty) {
+      return _buildPlaceholderImage();
     }
-  } else {
-    throw Exception('Failed to load company details');
+
+    final token = homeController.getToken();
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15),
+      child: CachedNetworkImage(
+        imageUrl: imageUrl.startsWith('http')
+            ? imageUrl
+            : 'https://cheerful-distinct-fox.ngrok-free.app/storage/$imageUrl',
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => _buildLoadingPlaceholder(),
+        errorWidget: (context, url, error) {
+          print('Error loading image: $error');
+          return _buildErrorImage();
+        },
+        cacheManager: CacheManager(
+          Config(
+            'customCacheKey',
+            stalePeriod: const Duration(days: 7),
+            maxNrOfCacheObjects: 100,
+            repo: JsonCacheInfoRepository(databaseName: 'customCacheKey'),
+            fileService: HttpFileService(httpClient: http.Client()),
+          ),
+        ) as BaseCacheManager?,
+        fadeInDuration: const Duration(milliseconds: 500),
+        fadeOutDuration: const Duration(milliseconds: 500),
+        useOldImageOnUrlChange: true,
+        cacheKey: imageUrl,
+        httpHeaders: {
+          'Authorization': 'Bearer $token',
+          'Connection': 'keep-alive',
+          'Keep-Alive': 'timeout=100, max=1000'
+        },
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderImage() {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Icon(
+        Icons.image,
+        size: 30,
+        color: Colors.grey[600],
+      ),
+    );
+  }
+
+  Widget _buildLoadingPlaceholder() {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[600]!),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Icon(
+        Icons.broken_image,
+        size: 30,
+        color: Colors.grey[600],
+      ),
+    );
   }
 }

@@ -12,7 +12,7 @@ class ProfileView extends GetView<ProfileController> {
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      controller.setCompanyLogo(image.path); // Simpan path logo toko
+      controller.imagePath.value = (image.path); // Simpan path logo toko
     }
   }
 
@@ -54,7 +54,7 @@ class ProfileView extends GetView<ProfileController> {
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(500),
                       ),
-                      child: controller.companyLogoPath.value.isEmpty
+                      child: controller.imagePath.value.isEmpty
                           ? const Icon(
                               Icons.add_photo_alternate,
                               size: 50,
@@ -63,7 +63,7 @@ class ProfileView extends GetView<ProfileController> {
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(500),
                               child: Image.file(
-                                File(controller.companyLogoPath.value),
+                                File(controller.imagePath.value),
                                 fit: BoxFit.cover, // Gambar memenuhi container
                                 width: 150,
                                 height: 150,
@@ -76,7 +76,7 @@ class ProfileView extends GetView<ProfileController> {
 
                 // Informasi Toko
                 TextField(
-                  onChanged: (value) => controller.setCompanyName(value),
+                  onChanged: (value) => controller.companyName(value),
                   decoration: InputDecoration(
                     hintText: 'Nama Toko',
                     border: OutlineInputBorder(

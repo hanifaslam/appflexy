@@ -1,13 +1,18 @@
+import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
+import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginController extends GetxController {
   var isPasswordHidden = true.obs;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final DaftarKasirController daftarKasirController =
+      Get.find<DaftarKasirController>();
+
   var users = <Map<String, dynamic>>[].obs;
   var currentUser = <String, dynamic>{}.obs;
 
@@ -16,15 +21,19 @@ class LoginController extends GetxController {
     isPasswordHidden.value = !isPasswordHidden.value;
   }
 
-  // Save token in shared preferences
-  Future<void> saveToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
+  // Save token and user_id in GetStorage
+  Future<void> saveTokenAndUserId(String token, int userId) async {
+    final box = GetStorage();
+    await box.write('token', token);
+    await box.write('user_id', userId);
   }
 
   // Handle login API request
   Future<Map<String, dynamic>> login(String email, String password) async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/login');
+    final url =
+        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/login');
+
+    daftarKasirController.clearData();
 
     if (email.isEmpty || password.isEmpty) {
       return {
@@ -57,11 +66,14 @@ class LoginController extends GetxController {
   Future<Map<String, dynamic>> _handleLoginSuccess(
       http.Response response) async {
     final data = json.decode(response.body);
-    if (data['access_token'] != null) {
+    if (data['access_token'] != null && data['user_id'] != null) {
       final token = data['access_token'];
-      await saveToken(token);
+      final userId = data['user_id'];
+      await saveTokenAndUserId(token, userId);
       await fetchCurrentUser(token);
-      Get.offAllNamed('/profile');
+      // Setelah login berhasil, perbarui data toko
+      HomeController.to.fetchCompanyDetails();
+      Get.offAllNamed('/home');
       return {'status': 'success', 'message': 'Login successful'};
     } else {
       return {'status': 'error', 'message': 'Respons server tidak valid.'};
@@ -85,7 +97,8 @@ class LoginController extends GetxController {
 
   // Fetch current user data from the API
   Future<void> fetchCurrentUser(String token) async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/user');
+    final url =
+        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/user');
 
     try {
       final response = await http.get(
@@ -108,29 +121,6 @@ class LoginController extends GetxController {
       } else {
         Get.snackbar('Error',
             'Gagal mengambil data pengguna. Kode status: ${response.statusCode}',
-            snackPosition: SnackPosition.BOTTOM,
-            duration: const Duration(seconds: 3));
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Terjadi kesalahan: $e',
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 3));
-    }
-  }
-
-  // Fetch users from the API
-  Future<void> fetchUsers() async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/users');
-
-    try {
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        users.value =
-            List<Map<String, dynamic>>.from(json.decode(response.body));
-      } else {
-        Get.snackbar('Error',
-            'Gagal mengambil pengguna. Kode status: ${response.statusCode}',
             snackPosition: SnackPosition.BOTTOM,
             duration: const Duration(seconds: 3));
       }

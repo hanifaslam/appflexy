@@ -1,62 +1,83 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
-final box = GetStorage();
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Profileuser2Controller extends GetxController {
-  // Observable untuk data penjualan dan pengeluaran
-  var penjualan = 4000000.obs;
-  var pengeluaran = 1500000.obs;
+  final box = GetStorage();
 
-  // Observable untuk nama perusahaan dan path logo
+  // Observable for company details
   var companyName = ''.obs;
-  var companyLogo = ''.obs; // Path untuk logo
+  var companyLogo = ''.obs; // Path for logo
 
   @override
   void onInit() {
     super.onInit();
-    // Membaca data yang tersimpan, jika tidak ada maka menggunakan default value
-    var storedName = box.read('companyName') ?? 'Aqua Bliss Pool';
-    var storedLogo = box.read('companyLogo') ?? '';
-
-    // Memperbarui data controller dengan data dari penyimpanan
-    setCompanyDetails(storedName, storedLogo);
+    fetchCompanyDetails();
   }
 
-  // Fungsi untuk mengupdate nama dan logo
-  void setCompanyDetails(String name, String logoPath) {
-    companyName.value = name;
-    companyLogo.value = logoPath;
+  // Fetch company details from the API
+  Future<void> fetchCompanyDetails() async {
+    try {
+      final response = await http.get(
+          Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/stores'));
 
-    // Simpan ke GetStorage untuk persistensinya
-    box.write('companyName', name);
-    box.write('companyLogo', logoPath);
+      if (response.statusCode == 200) {
+        final dynamic responseData = jsonDecode(response.body);
+        print('Fetched store data: $responseData'); // Debug print
+
+        if (responseData is Map<String, dynamic> &&
+            responseData['data'] is List) {
+          final List<dynamic> data = responseData['data'];
+          final userId = box.read('user_id').toString();
+          final userStore = data.firstWhere(
+            (store) => store['user_id'].toString() == userId,
+            orElse: () => null,
+          );
+
+          if (userStore != null) {
+            companyName.value =
+                userStore['nama_usaha'] ?? 'Nama tidak ditemukan';
+            companyLogo.value = userStore['gambar'] ?? '';
+          } else {
+            companyName.value = 'Nama tidak ditemukan';
+            companyLogo.value = '';
+          }
+        } else {
+          throw Exception('Unexpected response format');
+        }
+      } else {
+        throw Exception('Failed to load store details');
+      }
+    } catch (e) {
+      print('Error fetching store details: $e');
+      Get.snackbar('Error', 'Failed to load store details');
+    }
   }
 
-  // Fungsi untuk memperbarui nama perusahaan
+  // Function to update company name
   void setCompanyName(String name) {
     companyName.value = name;
-
-    // Simpan perubahan ke penyimpanan
     box.write('companyName', name);
-    // Notifikasi perubahan
     Get.snackbar('Perubahan Disimpan', 'Nama perusahaan berhasil diperbarui');
   }
 
-  // Fungsi untuk memperbarui logo perusahaan
+  // Function to update company logo
   void setCompanyLogo(String logoPath) {
     companyLogo.value = logoPath;
-
-    // Simpan path logo ke penyimpanan
     box.write('companyLogo', logoPath);
-    // Notifikasi perubahan
     Get.snackbar('Perubahan Disimpan', 'Logo perusahaan berhasil diperbarui');
   }
 
-  // Fungsi untuk mengambil logo dari penyimpanan
+  // Function to get logo file path
   String getLogoFilePath() {
     return companyLogo.value.isEmpty
-        ? 'assets/images/default_logo.png' // Logo default jika tidak ada
-        : companyLogo.value; // Path logo dari penyimpanan
+        ? 'assets/images/default_logo.png' // Default logo if none
+        : companyLogo.value; // Logo path from storage
+  }
+
+  // Function to get token
+  String getToken() {
+    return box.read('token') ?? '';
   }
 }
