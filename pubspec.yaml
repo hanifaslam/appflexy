@@ -24,10 +24,11 @@ dependencies:
   flutter_cached_manager: ^1.0.1
   fl_chart: ^0.69.0
   pdf: ^3.11.1
-  printing: ^5.13.4 # Use an older version that works with esc_pos_utils
+  printing: ^5.13.4 
   image: ^4.3.0
   badges: ^3.1.2
   collection: ^1.18.0
+
 
 dev_dependencies:
   flutter_test:
