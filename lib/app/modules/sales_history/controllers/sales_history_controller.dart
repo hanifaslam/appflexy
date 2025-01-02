@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class SalesHistoryController extends GetxController {
+  final box = GetStorage();
   final NumberFormat currencyFormat =
       NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
 
@@ -20,20 +22,43 @@ class SalesHistoryController extends GetxController {
   }
 
   // Method to fetch sales history from API
+  String? getToken() => box.read('token');
+  int? getUserId() => box.read('user_id');
+
   Future<void> fetchSalesHistory() async {
     try {
-      final response =
-          await http.get(Uri.parse('http://10.0.2.2:8000/api/orders'));
+      final token = getToken();
+      final userId = getUserId();
+
+      print('Fetching sales history');
+      print('Token: $token');
+      print('User ID: $userId');
+
+      if (token == null || userId == null) {
+        throw Exception('Authentication required');
+      }
+
+      final response = await http.get(
+        Uri.parse(
+            'https://cheerful-distinct-fox.ngrok-free.app/api/orders?user_id=$userId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        salesHistory.value =
-            data.map((item) => item as Map<String, dynamic>).toList();
+        salesHistory.value = data
+            .where((order) => order['user_id'] == userId)
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList();
+        filteredSalesHistory.value = List.from(salesHistory);
         applyFilter();
-      } else {
-        throw Exception('Failed to load sales history');
       }
     } catch (e) {
       print('Error fetching sales history: $e');
+      Get.snackbar('Error', 'Failed to load sales history');
     }
   }
 

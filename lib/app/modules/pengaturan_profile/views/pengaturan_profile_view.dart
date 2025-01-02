@@ -1,18 +1,84 @@
 import 'dart:io';
+import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../controllers/pengaturan_profile_controller.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:http/http.dart' as http;
 
 class PengaturanProfileView extends GetView<PengaturanProfileController> {
   final ImagePicker _picker = ImagePicker();
 
-  // Fungsi untuk memilih gambar dari galeri
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      controller.companyLogo.value = image.path; // Simpan path logo
+      controller.selectedImage.value = File(image.path);
+    }
+  }
+
+  Widget _buildImageWidget() {
+    if (controller.selectedImage.value != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(500),
+        child: Image.file(
+          controller.selectedImage.value!,
+          width: 150,
+          height: 150,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else if (controller.companyLogo.value.isNotEmpty) {
+      final token = controller.getToken();
+
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(500),
+        child: CachedNetworkImage(
+          imageUrl: controller.companyLogo.value.startsWith('http')
+              ? controller.companyLogo.value
+              : 'https://cheerful-distinct-fox.ngrok-free.app/storage/${controller.companyLogo.value}',
+          width: 150,
+          height: 150,
+          fit: BoxFit.cover,
+          cacheManager: CacheManager(
+            Config(
+              'customCacheKey',
+              stalePeriod: const Duration(days: 7),
+              maxNrOfCacheObjects: 100,
+              repo: JsonCacheInfoRepository(databaseName: 'customCacheKey'),
+              fileService: HttpFileService(httpClient: http.Client()),
+            ),
+          ),
+          fadeInDuration: const Duration(milliseconds: 500),
+          fadeOutDuration: const Duration(milliseconds: 500),
+          useOldImageOnUrlChange: true,
+          cacheKey: controller.companyLogo.value,
+          httpHeaders: {
+            'Authorization': 'Bearer $token',
+            'Connection': 'keep-alive',
+            'Keep-Alive': 'timeout=100, max=1000'
+          },
+          placeholder: (context, url) => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          errorWidget: (context, url, error) {
+            print('Image error: $error');
+            return const Icon(
+              Icons.error_outline,
+              size: 50,
+              color: Colors.red,
+            );
+          },
+        ),
+      );
+    } else {
+      return const Icon(
+        Icons.add_photo_alternate,
+        size: 50,
+        color: Colors.grey,
+      );
     }
   }
 
@@ -34,7 +100,9 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop(); // Kembali ke halaman sebelumnya
+            Get.back(result: true); // Pass true to indicate refresh needed
+            Get.find<HomeController>()
+                .fetchCompanyDetails(); // Refresh home data
           },
         ),
       ),
@@ -55,19 +123,7 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(500),
                     ),
-                    child: controller.companyLogo.value.isEmpty
-                        ? const Icon(
-                            Icons.add_photo_alternate,
-                            size: 50,
-                            color: Colors.grey,
-                          )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(500),
-                            child: Image.file(
-                              File(controller.companyLogo.value),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                    child: _buildImageWidget(),
                   );
                 }),
               ),
@@ -176,19 +232,18 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
               // Tombol Simpan
               ElevatedButton(
                 onPressed: () {
-                  if (controller.companyName.value.isNotEmpty &&
-                      controller.companyType.value.isNotEmpty &&
-                      controller.companyAddress.value.isNotEmpty &&
-                      controller.companyLogo.value.isNotEmpty) {
-                    controller.updateStore(); // Memperbarui profil
-                  } else {
+                  if (controller.companyName.value.trim().isEmpty ||
+                      controller.companyType.value.trim().isEmpty ||
+                      controller.companyAddress.value.trim().isEmpty) {
                     Get.snackbar(
-                      'Peringatan',
-                      'Harap isi semua kolom',
+                      'Error',
+                      'Semua field harus diisi',
                       backgroundColor: Colors.red.withOpacity(0.2),
                       colorText: Colors.red,
                     );
+                    return;
                   }
+                  controller.updateStore();
                 },
                 style: ElevatedButton.styleFrom(
                   padding:

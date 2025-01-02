@@ -1,10 +1,10 @@
 import 'dart:io';
+import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-
-import '../../../routes/app_pages.dart';
+import 'package:get_storage/get_storage.dart';
 
 class TambahProdukController extends GetxController {
   final TextEditingController namaProdukController = TextEditingController();
@@ -13,9 +13,11 @@ class TambahProdukController extends GetxController {
   final TextEditingController hargaJualController = TextEditingController();
   final TextEditingController keteranganController = TextEditingController();
   final TextEditingController kategoriController = TextEditingController();
+  final DaftarKasirController daftarKasirController = Get.find();
 
   File? selectedImage;
   final ImagePicker picker = ImagePicker();
+  final box = GetStorage(); // GetStorage instance
 
   void initializeProduk(Map<String, dynamic>? produk) {
     if (produk != null) {
@@ -56,7 +58,8 @@ class TambahProdukController extends GetxController {
 
   Future<void> addProduct() async {
     final Uri apiUrl = Uri.parse(
-        'http://10.0.2.2:8000/api/products'); // Ganti dengan endpoint API Anda
+        'https://cheerful-distinct-fox.ngrok-free.app/api/products'); // Ganti dengan endpoint API Anda
+    final userId = box.read('user_id'); // Get user_id from storage
 
     try {
       final request = http.MultipartRequest('POST', apiUrl);
@@ -68,6 +71,8 @@ class TambahProdukController extends GetxController {
       request.fields['hargaJual'] = hargaJualController.text;
       request.fields['keterangan'] = keteranganController.text;
       request.fields['kategori'] = kategoriController.text;
+      request.fields['user_id'] =
+          userId.toString(); // Include user_id in the product data
 
       // Add image if selected
       if (selectedImage != null) {
@@ -82,6 +87,8 @@ class TambahProdukController extends GetxController {
       final responseData = await http.Response.fromStream(response);
 
       if (response.statusCode == 201) {
+        // Produk berhasil ditambahkan
+        daftarKasirController.fetchProdukList(); // Refresh daftar produk
         Get.snackbar('Success', 'Product added successfully');
         clearFields();
       } else {

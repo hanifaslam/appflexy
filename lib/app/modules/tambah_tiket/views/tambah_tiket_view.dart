@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gap/gap.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:apptiket/app/modules/tambah_tiket/controllers/tambah_tiket_controller.dart';
 
 class TambahTiketView extends StatefulWidget {
   final Map<String, dynamic>? tiket;
@@ -20,8 +19,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
   final TextEditingController stokController = TextEditingController();
   final TextEditingController hargaJualController = TextEditingController();
   final TextEditingController keteranganController = TextEditingController();
-  bool isLoading = false; // Loading state
-  String errorMessage = ''; // Error message to show above button
+  final TambahTiketController controller = Get.put(TambahTiketController());
 
   @override
   void initState() {
@@ -31,43 +29,6 @@ class _TambahTiketViewState extends State<TambahTiketView> {
       stokController.text = widget.tiket!['stok'].toString();
       hargaJualController.text = widget.tiket!['hargaJual'].toString();
       keteranganController.text = widget.tiket!['keterangan'];
-    }
-  }
-
-  Future<void> addTiket(Map<String, dynamic> tiketData) async {
-    final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/tikets'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: json.encode(tiketData),
-    );
-
-    if (response.statusCode == 201) {
-      Get.back(result: tiketData);
-    } else {
-      Get.snackbar("Error", "Gagal menambahkan tiket: ${response.body}");
-      throw Exception('Failed to add tiket');
-    }
-  }
-
-  Future<void> updateTiket(int id, Map<String, dynamic> tiketData) async {
-    final response = await http.put(
-      Uri.parse('http://10.0.2.2:8000/api/tikets/$id'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: json.encode(tiketData),
-    );
-
-    if (response.statusCode == 200) {
-      tiketData['id'] = id;
-      Get.back(result: tiketData);
-    } else {
-      Get.snackbar("Error", "Gagal mengupdate tiket: ${response.body}");
-      throw Exception('Failed to update tiket');
     }
   }
 
@@ -97,19 +58,23 @@ class _TambahTiketViewState extends State<TambahTiketView> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Error message display
-                if (errorMessage.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Text(
-                      errorMessage,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                Obx(() {
+                  if (controller.errorMessage.isNotEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        controller.errorMessage.value,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                }),
                 TextField(
                   controller: namaTiketController,
                   decoration: InputDecoration(
@@ -183,25 +148,20 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                 ),
                 const Gap(70),
                 ElevatedButton(
-                  onPressed: isLoading
+                  onPressed: controller.isLoading.value
                       ? null
                       : () {
-                          // Validasi semua field
                           if (namaTiketController.text.isEmpty ||
                               stokController.text.isEmpty ||
                               hargaJualController.text.isEmpty ||
                               keteranganController.text.isEmpty) {
-                            setState(() {
-                              errorMessage =
-                                  "Semua kolom harus diisi!"; // Pesan kesalahan
-                            });
+                            controller.errorMessage.value =
+                                "Semua kolom harus diisi!";
                             return;
                           }
 
-                          setState(() {
-                            isLoading = true;
-                            errorMessage = ''; // Clear error message
-                          });
+                          final userId = controller.box
+                              .read('user_id'); // Get user_id from storage
 
                           Map<String, dynamic> tiketData = {
                             'namaTiket': namaTiketController.text,
@@ -210,45 +170,29 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                                 double.tryParse(hargaJualController.text) ??
                                     0.0,
                             'keterangan': keteranganController.text,
+                            'user_id': userId,
                           };
 
-                          try {
-                            if (widget.tiket == null) {
-                              addTiket(tiketData).whenComplete(() {
-                                setState(() {
-                                  isLoading = false;
-                                });
-                              });
+                          if (widget.tiket == null) {
+                            controller.addTiket(tiketData);
+                          } else {
+                            final tiketId = widget.tiket?['id'];
+                            if (tiketId != null) {
+                              controller.updateTiket(tiketId, tiketData);
                             } else {
-                              final tiketId = widget.tiket?['id'];
-                              if (tiketId != null) {
-                                updateTiket(tiketId, tiketData)
-                                    .whenComplete(() {
-                                  setState(() {
-                                    isLoading = false;
-                                  });
-                                });
-                              } else {
-                                setState(() {
-                                  errorMessage =
-                                      "ID Tiket tidak valid untuk update.";
-                                  isLoading = false;
-                                });
-                              }
+                              controller.errorMessage.value =
+                                  "ID Tiket tidak valid untuk update.";
                             }
-                          } catch (e) {
-                            Get.snackbar("Error", "Terjadi kesalahan: $e");
-                            setState(() {
-                              isLoading = false;
-                            });
                           }
                         },
-                  child: isLoading
+                  child: Obx(() => controller.isLoading.value
                       ? CircularProgressIndicator(color: Colors.white)
                       : Text(
-                          'Tambah Tiket',
+                          widget.tiket == null
+                              ? 'Tambah Tiket'
+                              : 'Update Tiket',
                           style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
+                        )),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff181681),
                     minimumSize: const Size(double.infinity, 50),

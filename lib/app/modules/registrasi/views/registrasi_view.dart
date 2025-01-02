@@ -1,11 +1,10 @@
+import 'package:apptiket/app/modules/registrasi/controllers/registrasi_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:apptiket/app/modules/registrasi/controllers/registrasi_controller.dart';
-import 'package:apptiket/app/widgets/register_button.dart'; // Import RegisterBtn widget
+import 'package:apptiket/app/widgets/register_button.dart';
 
 class RegistrasiView extends GetView<RegistrasiController> {
-  final RegistrasiController controller =
-  Get.put(RegistrasiController()); // Initialize the registration controller
+  final RegistrasiController controller = Get.put(RegistrasiController());
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,8 @@ class RegistrasiView extends GetView<RegistrasiController> {
           onPressed: () {
             Get.back();
           },
-        ), // Set the title of the page
+        ),
+        title: Text('Register'), // Set the title of the page
       ),
       body: GestureDetector(
         onTap: () {
@@ -34,7 +34,7 @@ class RegistrasiView extends GetView<RegistrasiController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-               // Add space from top
+                // Add space from top
                 ClipRRect(
                   borderRadius: BorderRadius.circular(25),
                   child: Container(
@@ -47,16 +47,14 @@ class RegistrasiView extends GetView<RegistrasiController> {
                     ),
                   ),
                 ),
-
-                
                 const SizedBox(
                     height: 30), // Spacing between text and input fields
-                // Name input field (New addition)
+                // Name input field
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: TextField(
                     controller:
-                    controller.nameController, // Use controller for name
+                        controller.nameController, // Use controller for name
                     decoration: InputDecoration(
                       labelText: 'Nama',
                       border: OutlineInputBorder(
@@ -67,13 +65,12 @@ class RegistrasiView extends GetView<RegistrasiController> {
                   ),
                 ),
                 SizedBox(height: 16),
-
                 // Email input field
                 Padding(
-                  padding: const EdgeInsets.symmetric (horizontal: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: TextField(
                     controller:
-                    controller.emailController, // Use controller for email
+                        controller.emailController, // Use controller for email
                     decoration: InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(
@@ -84,58 +81,57 @@ class RegistrasiView extends GetView<RegistrasiController> {
                   ),
                 ),
                 SizedBox(height: 16),
-
                 // Password input field with visibility toggle
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Obx(() => TextField(
-                    controller: controller
-                        .passwordController, // Use controller for password
-                    obscureText: controller.isPasswordHidden.value,
-                    decoration: InputDecoration(
-                      labelText: 'Kata Sandi',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide:
-                        const BorderSide(color: Color(0xFF84AFC2)),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(controller.isPasswordHidden.value
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: controller.togglePasswordVisibility,
-                      ),
-                    ),
-                  )),
+                        controller: controller
+                            .passwordController, // Use controller for password
+                        obscureText: controller.isPasswordHidden.value,
+                        decoration: InputDecoration(
+                          labelText: 'Kata Sandi',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide:
+                                const BorderSide(color: Color(0xFF84AFC2)),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(controller.isPasswordHidden.value
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: controller.togglePasswordVisibility,
+                          ),
+                        ),
+                      )),
                 ),
                 SizedBox(height: 16),
-
                 // Confirm Password input field with visibility toggle
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Obx(() => TextField(
-                    controller: controller
-                        .confirmPasswordController, // Use controller for confirm password
-                    obscureText: controller.isConfirmPasswordHidden.value,
-                    decoration: InputDecoration(
-                      labelText: 'Konfirmasi Kata Sandi',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide:
-                        const BorderSide(color: Color(0xFF84AFC2)),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(controller.isConfirmPasswordHidden.value
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: controller.toggleConfirmPasswordVisibility,
-                      ),
-                    ),
-                  )),
+                        controller: controller
+                            .confirmPasswordController, // Use controller for confirm password
+                        obscureText: controller.isConfirmPasswordHidden.value,
+                        decoration: InputDecoration(
+                          labelText: 'Konfirmasi Kata Sandi',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide:
+                                const BorderSide(color: Color(0xFF84AFC2)),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(controller.isConfirmPasswordHidden.value
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed:
+                                controller.toggleConfirmPasswordVisibility,
+                          ),
+                        ),
+                      )),
                 ),
                 SizedBox(height: 40),
                 // Register button that triggers registration logic
-                RegisterBtn(),
+                RegisterButton(),
               ],
             ),
           ),

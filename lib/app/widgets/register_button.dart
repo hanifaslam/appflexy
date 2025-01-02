@@ -1,29 +1,26 @@
+import 'package:apptiket/app/modules/registrasi/controllers/registrasi_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../modules/registrasi/controllers/registrasi_controller.dart';
-import '../routes/app_pages.dart';
-
-class RegisterBtn extends StatefulWidget {
+class RegisterButton extends StatefulWidget {
   @override
-  _RegisterBtnState createState() => _RegisterBtnState();
+  _RegisterButtonState createState() => _RegisterButtonState();
 }
 
-class _RegisterBtnState extends State<RegisterBtn> {
+class _RegisterButtonState extends State<RegisterButton> {
+  final RegistrasiController controller = Get.put(RegistrasiController());
   Color _buttonColor = const Color(0xff181681); // Initial button color
-  final RegistrasiController controller =
-  Get.find<RegistrasiController>(); // Retrieve the registration controller
 
   void _changeColor() {
     setState(() {
       _buttonColor = const Color(0xff181681)
-          .withOpacity(0.2); // Change color when button is pressed
+          .withOpacity(0.2); // Ubah warna saat tombol ditekan
     });
 
-    // Reset the button color to the original after 200 milliseconds
+    // Kembalikan warna tombol ke keadaan semula setelah 200 milidetik
     Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {
-        _buttonColor = const Color(0xff181681); // Original color
+        _buttonColor = const Color(0xff181681); // Warna semula
       });
     });
   }
@@ -31,40 +28,43 @@ class _RegisterBtnState extends State<RegisterBtn> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => ElevatedButton(
-      onPressed: controller.isLoading.value
-          ? null
-          : () {
-        _changeColor(); // Visual feedback
-        controller.register(); // Call registration method
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-        backgroundColor: controller.isLoading.value
-            ? _buttonColor.withOpacity(0.5)
-            : _buttonColor, // Disabled look when loading
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-      child: controller.isLoading.value
-          ? const SizedBox(
-        width: 24,
-        height: 24,
-        child: CircularProgressIndicator(
-          color: Colors.white,
-          strokeWidth: 3,
-        ),
-      )
-          : const Text(
-        'Daftar',
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 16,
-          fontStyle: FontStyle.normal,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    ));
+          onPressed: controller.isLoading.value
+              ? null
+              : () {
+                  _changeColor(); // Visual feedback
+                  // Ambil nilai dari controller
+                  final email = controller.emailController.text;
+                  final password = controller.passwordController.text;
+                  final confirmPassword =
+                      controller.confirmPasswordController.text;
+                  final name = controller.nameController.text;
+
+                  // Panggil metode register dengan argumen yang benar
+                  controller.register(email, password, confirmPassword, name);
+                },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+            backgroundColor: controller.isLoading.value
+                ? _buttonColor.withOpacity(0.5)
+                : _buttonColor, // Disabled look when loading
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+          child: controller.isLoading.value
+              ? CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                )
+              : const Text(
+                  'Daftar',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+        ));
   }
 }
