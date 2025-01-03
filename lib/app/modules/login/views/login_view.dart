@@ -68,7 +68,7 @@ class LoginView extends GetView<LoginController> {
                     child: TextField(
                       controller: controller.emailController,
                       decoration: InputDecoration(
-                        labelText: "Email",
+                        hintText: "Email",
                         labelStyle: const TextStyle(
                           fontFamily: 'Inter', // Apply custom font
                           fontSize: 16,
@@ -93,7 +93,7 @@ class LoginView extends GetView<LoginController> {
                           controller: controller.passwordController,
                           obscureText: controller.isPasswordHidden.value,
                           decoration: InputDecoration(
-                            labelText: "Kata Sandi",
+                            hintText: "Kata Sandi",
                             labelStyle: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 16,

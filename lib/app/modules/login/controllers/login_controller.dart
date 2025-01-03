@@ -42,6 +42,13 @@ class LoginController extends GetxController {
       };
     }
 
+    showDialog(
+        context: Get.context!,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(color: Color(0xff181681),),
+          );
+        });
     try {
       final response = await http.post(
         url,
@@ -53,11 +60,15 @@ class LoginController extends GetxController {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
+        Navigator.of(Get.context!).pop();
         return await _handleLoginSuccess(response);
+
       } else {
+        Navigator.of(Get.context!).pop();
         return _handleErrorResponse(response);
       }
     } catch (e) {
+      Navigator.of(Get.context!).pop();
       return {'status': 'error', 'message': 'Password atau email salah.'};
     }
   }

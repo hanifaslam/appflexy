@@ -33,26 +33,41 @@ class RegistrasiController extends GetxController {
         password.isEmpty ||
         confirmPassword.isEmpty ||
         name.isEmpty) {
-      Get.snackbar('Error', 'All fields are required.');
+      Get.snackbar('Error', 'All fields are required.',
+          icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3));
       return;
     }
 
     if (!GetUtils.isEmail(email)) {
-      Get.snackbar('Error', 'Invalid email address.');
+      Get.snackbar('Error', 'Invalid email address.',
+          icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3));
       return;
     }
 
     if (password.length < 8) {
-      Get.snackbar('Error', 'Password must be at least 8 characters.');
+      Get.snackbar('Error', 'Password must be at least 8 characters.',
+      icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3));
       return;
     }
 
     if (password != confirmPassword) {
-      Get.snackbar('Error', 'Password confirmation does not match.');
+      Get.snackbar('Error', 'Password confirmation does not match.',
+      icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3));
       return;
     }
 
-    isLoading(true);
+    showDialog(
+        context: Get.context!,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(color: Color(0xff181681),),
+          );
+        });
+
     try {
       var url = Uri.parse(
           'https://cheerful-distinct-fox.ngrok-free.app/api/register');
@@ -82,7 +97,9 @@ class RegistrasiController extends GetxController {
         print('Token: $token');
         print('User ID: $userId');
 
-        Get.snackbar('Success', 'Registration successful!');
+        Get.snackbar('Success', 'Registration successful!',
+        icon: Icon(Icons.check, color: Colors.green,),
+            duration: const Duration(seconds: 2));
 
         // Refresh data in DaftarKasirController
         final daftarKasirController = Get.find<DaftarKasirController>();
@@ -91,13 +108,17 @@ class RegistrasiController extends GetxController {
         // Arahkan ke halaman profil toko
         Get.offNamed(
             Routes.PROFILE); // Pastikan Anda memiliki route yang sesuai
+        Navigator.of(Get.context!).pop();
       } else {
         var errorData = json.decode(response.body);
-        Get.snackbar('Error', 'Registration failed: ${errorData.toString()}');
+        Get.snackbar('Error', 'Registration failed: ${errorData.toString()}',
+            duration: const Duration(seconds: 3));
       }
     } catch (e) {
       print('Error: $e');
-      Get.snackbar('Error', 'An error occurred: $e');
+      Get.snackbar('Error', 'An error occurred: $e',
+          duration: const Duration(seconds: 3));
+      Navigator.of(Get.context!).pop();
     } finally {
       isLoading(false);
     }

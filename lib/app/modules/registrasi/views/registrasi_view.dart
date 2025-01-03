@@ -56,7 +56,7 @@ class RegistrasiView extends GetView<RegistrasiController> {
                     controller:
                         controller.nameController, // Use controller for name
                     decoration: InputDecoration(
-                      labelText: 'Nama',
+                      hintText: 'Nama',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(color: Color(0xFF84AFC2)),
@@ -72,7 +72,7 @@ class RegistrasiView extends GetView<RegistrasiController> {
                     controller:
                         controller.emailController, // Use controller for email
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      hintText: 'Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(color: Color(0xFF84AFC2)),
@@ -89,7 +89,7 @@ class RegistrasiView extends GetView<RegistrasiController> {
                             .passwordController, // Use controller for password
                         obscureText: controller.isPasswordHidden.value,
                         decoration: InputDecoration(
-                          labelText: 'Kata Sandi',
+                          hintText: 'Kata Sandi',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:
@@ -113,7 +113,7 @@ class RegistrasiView extends GetView<RegistrasiController> {
                             .confirmPasswordController, // Use controller for confirm password
                         obscureText: controller.isConfirmPasswordHidden.value,
                         decoration: InputDecoration(
-                          labelText: 'Konfirmasi Kata Sandi',
+                          hintText: 'Konfirmasi Kata Sandi',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:

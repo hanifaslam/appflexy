@@ -51,11 +51,7 @@ class _RegisterButtonState extends State<RegisterButton> {
               borderRadius: BorderRadius.circular(15),
             ),
           ),
-          child: controller.isLoading.value
-              ? CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                )
-              : const Text(
+          child: const Text(
                   'Daftar',
                   style: TextStyle(
                     fontFamily: 'Inter',

@@ -5,6 +5,9 @@ import '../../../widgets/pdfpreview_page.dart';
 import '../../../widgets/struk_pembayaran.dart';
 import 'package:apptiket/app/modules/kasir/controllers/kasir_controller.dart';
 
+import '../../sales_history/controllers/sales_history_controller.dart';
+import '../controllers/pembayaran_cash_controller.dart';
+
 class PembayaranCashView extends StatefulWidget {
   @override
   _PembayaranCashViewState createState() => _PembayaranCashViewState();
