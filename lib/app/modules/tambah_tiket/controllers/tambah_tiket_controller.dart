@@ -1,4 +1,6 @@
 import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
+import 'package:apptiket/app/modules/manajemen_tiket/controllers/manajemen_tiket_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -21,15 +23,33 @@ class TambahTiketController extends GetxController {
       body: json.encode(tiketData),
     );
 
+    showDialog(
+        context: Get.context!,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(color: Color(0xff181681),),
+          );
+        });
+
+    // check if the response status code is 201
     if (response.statusCode == 201) {
       daftarKasirController.fetchTiketList(); // Refresh daftar tiket
-      Get.back(result: tiketData);
       Get.snackbar('Sukses', 'Tiket berhasil ditambahkan!',
-          snackPosition: SnackPosition.BOTTOM);
+          colorText: Colors.black.withOpacity(0.8),
+          barBlur: 15,
+          icon: Icon(Icons.check, color: Colors.green,),
+          duration: const Duration(seconds: 2),
+          snackPosition: SnackPosition.TOP);
+      Navigator.of(Get.context!).pop();
     } else {
       errorMessage.value = 'Gagal menambahkan tiket: ${response.body}';
       Get.snackbar('Error', errorMessage.value,
-          snackPosition: SnackPosition.BOTTOM);
+          colorText: Colors.black.withOpacity(0.8),
+          barBlur: 15,
+          icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3),
+          snackPosition: SnackPosition.TOP);
+      Navigator.of(Get.context!).pop();
     }
     isLoading.value = false;
   }
@@ -45,15 +65,32 @@ class TambahTiketController extends GetxController {
       body: json.encode(tiketData),
     );
 
+    showDialog(
+        context: Get.context!,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(color: Color(0xff181681),),
+          );
+        });
+
     if (response.statusCode == 200) {
       daftarKasirController.fetchTiketList(); // Refresh daftar tiket
-      Get.back(result: tiketData);
       Get.snackbar('Sukses', 'Tiket berhasil diperbarui!',
-          snackPosition: SnackPosition.BOTTOM);
+          colorText: Colors.black.withOpacity(0.8),
+          barBlur: 15,
+          icon: Icon(Icons.check, color: Colors.green,),
+          duration: const Duration(seconds: 2),
+          snackPosition: SnackPosition.TOP);
+      Navigator.of(Get.context!).pop();
     } else {
       errorMessage.value = 'Gagal mengupdate tiket: ${response.body}';
       Get.snackbar('Error', errorMessage.value,
-          snackPosition: SnackPosition.BOTTOM);
+          colorText: Colors.black.withOpacity(0.8),
+          barBlur: 15,
+          icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3),
+          snackPosition: SnackPosition.TOP);
+      Navigator.of(Get.context!).pop();
     }
     isLoading.value = false;
   }

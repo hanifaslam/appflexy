@@ -31,15 +31,12 @@ class _RegisterButtonState extends State<RegisterButton> {
           onPressed: controller.isLoading.value
               ? null
               : () {
-                  _changeColor(); // Visual feedback
-                  // Ambil nilai dari controller
+                  _changeColor();
                   final email = controller.emailController.text;
                   final password = controller.passwordController.text;
                   final confirmPassword =
                       controller.confirmPasswordController.text;
                   final name = controller.nameController.text;
-
-                  // Panggil metode register dengan argumen yang benar
                   controller.register(email, password, confirmPassword, name);
                 },
           style: ElevatedButton.styleFrom(

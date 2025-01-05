@@ -89,16 +89,31 @@ class TambahProdukController extends GetxController {
       if (response.statusCode == 201) {
         // Produk berhasil ditambahkan
         daftarKasirController.fetchProdukList(); // Refresh daftar produk
-        Get.snackbar('Success', 'Product added successfully');
+        Get.snackbar('Success', 'Product added successfully',
+            colorText: Colors.black.withOpacity(0.8),
+            barBlur: 15,
+            icon: Icon(Icons.check, color: Colors.green,),
+            duration: const Duration(seconds: 2),
+            snackPosition: SnackPosition.TOP);
         clearFields();
       } else {
         print('Failed with status: ${response.statusCode}');
         print('Response body: ${responseData.body}');
-        Get.snackbar('Error', 'Failed to add product: ${responseData.body}');
+        Get.snackbar('Error', 'Failed to add product: ${responseData.body}',
+            colorText: Colors.black.withOpacity(0.8),
+            barBlur: 15,
+            icon: Icon(Icons.error, color: Colors.red,),
+            duration: const Duration(seconds: 3),
+            snackPosition: SnackPosition.TOP);
       }
     } catch (error) {
       // Handle any other error
-      Get.snackbar('Error', 'An error occurred: $error');
+      Get.snackbar('Error', 'An error occurred: $error',
+          colorText: Colors.black.withOpacity(0.8),
+          barBlur: 15,
+          icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3),
+          snackPosition: SnackPosition.TOP);
     }
   }
 

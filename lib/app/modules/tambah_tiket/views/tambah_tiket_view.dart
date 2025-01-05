@@ -175,10 +175,12 @@ class _TambahTiketViewState extends State<TambahTiketView> {
 
                           if (widget.tiket == null) {
                             controller.addTiket(tiketData);
+                            Get.back(result: tiketData);
                           } else {
                             final tiketId = widget.tiket?['id'];
                             if (tiketId != null) {
                               controller.updateTiket(tiketId, tiketData);
+                              Get.back(result: tiketData);
                             } else {
                               controller.errorMessage.value =
                                   "ID Tiket tidak valid untuk update.";
