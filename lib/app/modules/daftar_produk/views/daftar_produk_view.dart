@@ -40,7 +40,7 @@ class DaftarProdukView extends StatelessWidget {
         toolbarHeight: 90,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.offAllNamed('/home'),
         ),
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),

@@ -6,6 +6,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../../../widgets/pdfpreview_page.dart';
+
 class ApiEndpoints {
   static const String baseUrl =
       'https://cheerful-distinct-fox.ngrok-free.app'; // Replace with your actual base URL
@@ -108,7 +110,6 @@ class KasirController extends GetxController {
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
         print('Order created: ${responseData['message']}');
-        Get.snackbar('Success', 'Order created successfully');
         return true;
       } else {
         print('Failed: ${response.statusCode} - ${response.body}');
@@ -236,4 +237,16 @@ class KasirController extends GetxController {
 
     return true;
   }
+
+  List<OrderItem> getOrderItems() {
+    return pesananList.map((item) {
+      final index = pesananList.indexOf(item);
+      return OrderItem(
+        name: item['type'] == 'product' ? item['namaProduk'] : item['namaTiket'],
+        quantity: localQuantities[index].value,
+        price: double.tryParse(item['hargaJual'].toString()) ?? 0.0,
+      );
+    }).toList();
+  }
+
 }

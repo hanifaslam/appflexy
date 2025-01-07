@@ -1,7 +1,7 @@
+import 'package:apptiket/app/modules/pengaturan_profile/controllers/pengaturan_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
-import '../modules/profile/controllers/profile_controller.dart';
 import 'pdfpreview_page.dart' as pdf;
 
 class StrukPembayaran extends StatelessWidget {
@@ -24,7 +24,7 @@ class StrukPembayaran extends StatelessWidget {
     final NumberFormat currencyFormat =
         NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
-    final ProfileController profileController = Get.put(ProfileController());
+    final PengaturanProfileController profileController = Get.put(PengaturanProfileController());
 
     return AlertDialog(
       content: SingleChildScrollView(
@@ -34,16 +34,20 @@ class StrukPembayaran extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  Text(
-                    profileController.companyName.value,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    profileController.companyAddress.value,
+                  Obx(() => Text(
+                    profileController.companyName.value.isNotEmpty
+                        ? profileController.companyName.value
+                        : 'Nama Perusahaan Tidak Tersedia',
+                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                  )),
+                  Obx(() => Text(
+                    profileController.companyAddress.value.isNotEmpty
+                        ? profileController.companyAddress.value
+                        : 'Alamat Tidak Tersedia',
                     style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
                     textAlign: TextAlign.center,
-                  ),
+                  )),
+
                 ],
               ),
             ),
@@ -114,4 +118,6 @@ class StrukPembayaran extends StatelessWidget {
       ),
     );
   }
+
 }
+

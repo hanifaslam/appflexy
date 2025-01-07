@@ -60,9 +60,6 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
             'Connection': 'keep-alive',
             'Keep-Alive': 'timeout=100, max=1000'
           },
-          placeholder: (context, url) => const Center(
-            child: CircularProgressIndicator(),
-          ),
           errorWidget: (context, url, error) {
             print('Image error: $error');
             return const Icon(

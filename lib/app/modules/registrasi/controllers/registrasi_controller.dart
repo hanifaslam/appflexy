@@ -101,18 +101,17 @@ class RegistrasiController extends GetxController {
         icon: Icon(Icons.check, color: Colors.green,),
             duration: const Duration(seconds: 2));
 
+        Get.offNamed(Routes.PROFILE);
+
         // Refresh data in DaftarKasirController
         final daftarKasirController = Get.find<DaftarKasirController>();
         daftarKasirController.refreshData();
-
-        // Arahkan ke halaman profil toko
-        Get.offNamed(
-            Routes.PROFILE); // Pastikan Anda memiliki route yang sesuai
-        Navigator.of(Get.context!).pop();
       } else {
         var errorData = json.decode(response.body);
         Get.snackbar('Error', 'Registration failed: ${errorData.toString()}',
+            icon: Icon(Icons.error, color: Colors.red,),
             duration: const Duration(seconds: 3));
+        Navigator.of(Get.context!).pop();
       }
     } catch (e) {
       print('Error: $e');

@@ -33,7 +33,7 @@ class _EditProdukViewState extends State<EditProdukView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Get.back();
           },
         ),
         title: Text(

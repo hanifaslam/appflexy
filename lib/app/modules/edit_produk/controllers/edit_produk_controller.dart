@@ -15,7 +15,7 @@ class EditProdukController extends GetxController {
 
   File? selectedImage;
   final ImagePicker picker = ImagePicker();
-  final box = GetStorage(); // GetStorage instance
+  final box = GetStorage();
   String? existingImage;
 
   void initializeProduk(Map<String, dynamic>? produk) {
@@ -50,7 +50,7 @@ class EditProdukController extends GetxController {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         selectedImage = File(pickedFile.path);
-        update(); // Refresh UI after selecting image
+        update();
       } else {
         Get.snackbar('No Image Selected', 'Please select an image');
       }
@@ -61,34 +61,39 @@ class EditProdukController extends GetxController {
 
   Future<void> updateProduct(int productId) async {
     final Uri apiUrl = Uri.parse(
-        'https://cheerful-distinct-fox.ngrok-free.app/api/products/$productId'); // Ganti dengan endpoint API Anda
-    final userId = box.read('user_id'); // Get user_id from storage
+        'https://cheerful-distinct-fox.ngrok-free.app/api/products/$productId');
+    final userId = box.read('user_id');
+
+    // Validasi input
+    if (namaProdukController.text.isEmpty) {
+      Get.snackbar('Error', 'Nama Produk tidak boleh kosong');
+      return;
+    }
 
     try {
       final request = http.MultipartRequest('POST', apiUrl);
 
-      // Add PUT method simulation
+      // Simulasi PUT
       request.fields['_method'] = 'PUT';
 
-      // Add text fields
+      // Tambah field teks
       request.fields['namaProduk'] = namaProdukController.text;
       request.fields['kodeProduk'] = kodeProdukController.text;
       request.fields['stok'] = stokController.text;
       request.fields['hargaJual'] = hargaJualController.text;
       request.fields['keterangan'] = keteranganController.text;
       request.fields['kategori'] = kategoriController.text;
-      request.fields['user_id'] =
-          userId.toString(); // Include user_id in the product data
+      request.fields['user_id'] = userId.toString();
 
-      // Add image if selected
+      // Tambahkan gambar jika ada
       if (selectedImage != null) {
         request.files.add(await http.MultipartFile.fromPath(
-          'image', // The key in your API for the image file
+          'image',
           selectedImage!.path,
         ));
       }
 
-      // Send the request
+      // Kirim request
       final response = await request.send();
       final responseData = await http.Response.fromStream(response);
 
@@ -100,7 +105,6 @@ class EditProdukController extends GetxController {
         Get.snackbar('Error', 'Failed to update product: ${responseData.body}');
       }
     } catch (error) {
-      // Handle any other error
       Get.snackbar('Error', 'An error occurred: $error');
     }
   }

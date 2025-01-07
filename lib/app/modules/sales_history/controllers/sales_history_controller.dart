@@ -101,39 +101,4 @@ class SalesHistoryController extends GetxController {
     filterType.value = type;
     applyFilter();
   }
-
-// Method to add dummy data
-// void addDummyData() {
-//   DateTime now = DateTime.now();
-//   salesHistory.addAll([
-//     {
-//       'customer': 'Customer Mingguan',
-//       'time': now.subtract(Duration(days: 3)).toIso8601String(),
-//       'payment_method': 'Cash',
-//       'total': 100000,
-//       'items': [
-//         {'name': 'Item 1', 'quantity': 1, 'total_item_price': 100000}
-//       ]
-//     },
-//     {
-//       'customer': 'Customer Monthly',
-//       'time': now.subtract(Duration(days: 15)).toIso8601String(),
-//       'payment_method': 'Credit Card',
-//       'total': 200000,
-//       'items': [
-//         {'name': 'Item 2', 'quantity': 2, 'total_item_price': 100000}
-//       ]
-//     },
-//     {
-//       'customer': 'Customer Yearly',
-//       'time': now.subtract(Duration(days: 200)).toIso8601String(),
-//       'payment_method': 'Debit Card',
-//       'total': 300000,
-//       'items': [
-//         {'name': 'Item 3', 'quantity': 3, 'total_item_price': 100000}
-//       ]
-//     },
-//   ]);
-//   applyFilter();
-// }
 }

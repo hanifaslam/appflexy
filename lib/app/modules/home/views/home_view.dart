@@ -230,7 +230,7 @@ class _HomeViewState extends State<HomeView> {
                     const Color(0xffF95454),
                     Colors.white,
                     onTap: () {
-                      Get.toNamed(Routes.DAFTAR_PRODUK);
+                      Get.offAllNamed(Routes.DAFTAR_PRODUK);
                     },
                   ),
                 ],

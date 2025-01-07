@@ -1,4 +1,5 @@
 import 'package:apptiket/app/modules/registrasi/controllers/registrasi_controller.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -48,6 +49,7 @@ class _RegisterButtonState extends State<RegisterButton> {
               borderRadius: BorderRadius.circular(15),
             ),
           ),
+
           child: const Text(
                   'Daftar',
                   style: TextStyle(

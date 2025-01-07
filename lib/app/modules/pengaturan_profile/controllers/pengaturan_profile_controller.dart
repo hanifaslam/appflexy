@@ -118,6 +118,14 @@ class PengaturanProfileController extends GetxController {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
 
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return Center(
+              child: CircularProgressIndicator(color: Color(0xff181681),),
+            );
+          });
+
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         if (responseData['success'] == true) {
@@ -128,6 +136,7 @@ class PengaturanProfileController extends GetxController {
             colorText: Colors.green,
           );
           await fetchStoreData();
+          Navigator.of(Get.context!).pop();
         } else {
           throw Exception(responseData['message'] ?? 'Update failed');
         }

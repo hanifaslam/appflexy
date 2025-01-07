@@ -96,6 +96,7 @@ class TambahProdukController extends GetxController {
             duration: const Duration(seconds: 2),
             snackPosition: SnackPosition.TOP);
         clearFields();
+        Get.offAllNamed('/daftar-produk');
       } else {
         print('Failed with status: ${response.statusCode}');
         print('Response body: ${responseData.body}');

@@ -1,5 +1,4 @@
 import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
-import 'package:apptiket/app/modules/manajemen_tiket/controllers/manajemen_tiket_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';

@@ -1,11 +1,11 @@
 import 'dart:typed_data';
-import 'package:apptiket/app/modules/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:get/get.dart';
+import '../modules/pengaturan_profile/controllers/pengaturan_profile_controller.dart';
 
 class PDFPreviewPage extends StatelessWidget {
   final double totalPembelian;
@@ -40,7 +40,7 @@ class PDFPreviewPage extends StatelessWidget {
     NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
     // Ambil data perusahaan dari ProfileController
-    final ProfileController profileController = Get.put(ProfileController());
+    final PengaturanProfileController profileController = Get.put(PengaturanProfileController());
 
     pdf.addPage(
       pw.Page(
@@ -56,7 +56,9 @@ class PDFPreviewPage extends StatelessWidget {
                   child: pw.Column(
                     children: [
                       pw.Text(
-                        profileController.companyName.value,
+                        profileController.companyName.value.isNotEmpty
+                            ? profileController.companyName.value
+                            : 'Nama Perusahaan Tidak Tersedia',
                         style: pw.TextStyle(
                           fontSize: 16,
                           fontWeight: pw.FontWeight.bold,
@@ -64,7 +66,9 @@ class PDFPreviewPage extends StatelessWidget {
                       ),
                       pw.SizedBox(height: 4),
                       pw.Text(
-                        profileController.companyAddress.value,
+                        profileController.companyAddress.value.isNotEmpty
+                            ? profileController.companyAddress.value
+                            : 'Alamat Tidak Tersedia',
                         style: pw.TextStyle(
                           fontSize: 12,
                           fontStyle: pw.FontStyle.italic,
@@ -74,7 +78,7 @@ class PDFPreviewPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                pw.SizedBox(height: 10),
+                pw.SizedBox(height: 6),
                 pw.Center(
                   child: pw.Text(
                     "Tanggal: $orderDate",
