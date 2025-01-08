@@ -174,7 +174,7 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                   showDialog(
                     context: context,
                     builder: (context) => StrukPembayaran(
-                      totalPembelian: kasirController.totalValue, // Mengambil total dari KasirController
+                      totalPembelian: totalHarga, // Mengambil total dari KasirController
                       uangTunai: jumlahUang,
                       kembalian: kembalian,
                       orderItems: kasirController.getOrderItems(), // Menggunakan metode getOrderItems
@@ -188,7 +188,6 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                     'Pembayaran berhasil diproses. Kembalian: ${currencyFormat.format(kembalian)}',
                     snackPosition: SnackPosition.BOTTOM,
                   );
-                  kasirController.clearOrder();
                   Get.back();
                 }
               },

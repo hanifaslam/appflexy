@@ -154,7 +154,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
         ),
       );
     } else {
-      return Icon(Icons.image, size: 50);
+      return SizedBox.shrink();
     }
   }
 

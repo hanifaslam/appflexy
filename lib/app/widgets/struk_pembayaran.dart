@@ -1,3 +1,4 @@
+import 'package:apptiket/app/modules/kasir/controllers/kasir_controller.dart';
 import 'package:apptiket/app/modules/pengaturan_profile/controllers/pengaturan_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +26,7 @@ class StrukPembayaran extends StatelessWidget {
         NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
     final PengaturanProfileController profileController = Get.put(PengaturanProfileController());
+    final KasirController kasirController = Get.find<KasirController>();
 
     return AlertDialog(
       content: SingleChildScrollView(
@@ -85,6 +87,7 @@ class StrukPembayaran extends StatelessWidget {
         TextButton(
           onPressed: () {
             Get.offAllNamed('/daftar-kasir');
+            kasirController.clearOrder();
           },
           child: Text('Tutup'),
         ),
