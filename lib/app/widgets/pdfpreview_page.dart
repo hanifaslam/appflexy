@@ -26,7 +26,7 @@ class PDFPreviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Preview Struk PDF'),
+        title: Text('Preview Struk'),
       ),
       body: PdfPreview(
         build: (format) => _generatePdf(format),
@@ -113,8 +113,10 @@ class PDFPreviewPage extends StatelessWidget {
                 pw.SizedBox(height: 10),
                 _buildPdfRow(
                     "Total Pembelian", currencyFormat.format(totalPembelian)),
-                _buildPdfRow("Uang Tunai", currencyFormat.format(uangTunai)),
-                _buildPdfRow("Kembalian", currencyFormat.format(kembalian)),
+                if (uangTunai > 0)
+                  _buildPdfRow("Uang Tunai", currencyFormat.format(uangTunai)),
+                if (uangTunai > 0)
+                  _buildPdfRow("Kembalian", currencyFormat.format(kembalian)),
                 pw.SizedBox(height: 20),
                 pw.Center(
                   child: pw.Text(

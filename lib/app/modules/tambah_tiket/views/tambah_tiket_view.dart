@@ -192,7 +192,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                       : Text(
                           widget.tiket == null
                               ? 'Tambah Tiket'
-                              : 'Update Tiket',
+                              : 'Edit Tiket',
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         )),
                   style: ElevatedButton.styleFrom(

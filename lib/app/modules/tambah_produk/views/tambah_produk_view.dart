@@ -232,6 +232,20 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                   padding: const EdgeInsets.all(20.0),
                   child: ElevatedButton(
                     onPressed: () async {
+                      if (controller.namaProdukController.text.isEmpty ||
+                          controller.kodeProdukController.text.isEmpty ||
+                          controller.kategoriController.text.isEmpty ||
+                          controller.stokController.text.isEmpty ||
+                          controller.hargaJualController.text.isEmpty) {
+                        Get.snackbar('Error', 'Semua field harus diisi',
+                            colorText: Colors.black.withOpacity(0.8),
+                            barBlur: 15,
+                            icon: const Icon(Icons.error, color: Colors.red),
+                            duration: const Duration(seconds: 3),
+                            snackPosition: SnackPosition.TOP);
+                        return;
+                      }
+
                       // Call the addProduct method to post the data
                       await controller.addProduct();
                     },

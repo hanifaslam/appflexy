@@ -171,16 +171,14 @@ class _PembayaranCashViewState extends State<PembayaranCashView> {
                 } else {
                   final kembalian = jumlahUang - totalHarga;
 
-                  showDialog(
-                    context: context,
-                    builder: (context) => StrukPembayaran(
-                      totalPembelian: totalHarga, // Mengambil total dari KasirController
-                      uangTunai: jumlahUang,
-                      kembalian: kembalian,
-                      orderItems: kasirController.getOrderItems(), // Menggunakan metode getOrderItems
-                      orderDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                    ),
-                  );
+                  Get.to(() => StrukPembayaranPage(
+                    totalPembelian: totalHarga,
+                    uangTunai: jumlahUang,
+                    kembalian: kembalian,
+                    orderItems: kasirController.getOrderItems(),
+                    orderDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                  ));
+
 
 
                   Get.snackbar(

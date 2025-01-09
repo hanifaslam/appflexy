@@ -29,7 +29,6 @@ dependencies:
   badges: ^3.1.2
   collection: ^1.18.0
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

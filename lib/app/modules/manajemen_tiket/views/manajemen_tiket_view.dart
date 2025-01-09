@@ -102,13 +102,15 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
   }
 
   Widget _buildTiketList() {
-    return Container(
-      color: Colors.white24,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: ListView.builder(
-          itemCount: controller.filteredTiketList.length,
-          itemBuilder: (context, index) => _buildTiketCard(index),
+    return Expanded(
+      child: Container(
+        color: Colors.white24,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView.builder(
+            itemCount: controller.filteredTiketList.length,
+            itemBuilder: (context, index) => _buildTiketCard(index),
+          ),
         ),
       ),
     );
