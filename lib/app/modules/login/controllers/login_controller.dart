@@ -101,7 +101,7 @@ class LoginController extends GetxController {
     } else {
       return {
         'status': 'error',
-        'message': 'Format respons tidak terduga dari server.'
+        'message': 'Email atau password salah.'
       };
     }
   }

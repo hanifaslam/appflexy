@@ -62,7 +62,7 @@ class SnkView extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => const DetailPage(
                     title: 'Kebijakan Privasi',
-                    content: 'tolong diisi',
+                    content: 'Flexy mengumpulkan informasi pribadi seperti nama, email, dan data transaksi untuk mengelola akun, memproses tiket, serta meningkatkan layanan. Data Anda dilindungi dengan teknologi keamanan dan tidak akan dibagikan tanpa izin kecuali untuk kepentingan hukum atau layanan pihak ketiga. Anda dapat mengakses, memperbarui, atau menghapus data pribadi Anda dengan menghubungi kami di support@flexy.com',
                   ),
                 ),
               );
@@ -85,7 +85,7 @@ class SnkView extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => const DetailPage(
                       title: 'Syarat & Ketentuan Flexy',
-                      content: 'tolong diisi'),
+                      content: 'Dengan menggunakan Flexy, Anda setuju untuk menggunakan aplikasi sesuai hukum, menjaga keamanan akun, dan tidak melakukan aktivitas yang merugikan atau ilegal. Flexy tidak bertanggung jawab atas kerugian akibat penggunaan aplikasi atau gangguan teknis. Semua konten aplikasi dilindungi oleh hak kekayaan intelektual, dan pelanggaran terhadap ketentuan dapat mengakibatkan penghapusan akun. Kami berhak mengubah atau menghentikan layanan kapan saja dengan pemberitahuan.'),
                 ),
               );
             },
