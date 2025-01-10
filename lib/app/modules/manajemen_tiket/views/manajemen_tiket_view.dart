@@ -77,7 +77,11 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
         return _buildEmptyState();
       }
 
-      return _buildTiketList();
+      return Column(
+        children: [
+          _buildTiketList(),
+        ],
+      );
     });
   }
 
@@ -102,12 +106,14 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
   }
 
   Widget _buildTiketList() {
-    return Expanded(
+    return Expanded(  // Changed from Flexible to Expanded
       child: Container(
         color: Colors.white24,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: ListView.builder(
+            shrinkWrap: false, // Add this
+            physics: const AlwaysScrollableScrollPhysics(), // Add this
             itemCount: controller.filteredTiketList.length,
             itemBuilder: (context, index) => _buildTiketCard(index),
           ),

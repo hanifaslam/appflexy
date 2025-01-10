@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:apptiket/app/modules/pengaturan_profile/controllers/pengaturan_profile_controller.dart';
+import 'bluetooth.dart';
 import 'pdfpreview_page.dart' as pdf;
 
 class StrukPembayaranPage extends StatelessWidget {
@@ -152,7 +153,7 @@ class StrukPembayaranPage extends StatelessWidget {
                         },
                         icon: Icon(Icons.description),
                         label: Text(
-                          "Cetak",
+                          "Simpan Sebagai PDF",
                           style: TextStyle(fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -164,6 +165,32 @@ class StrukPembayaranPage extends StatelessWidget {
                           foregroundColor: Colors.white,
                         ),
                       ),
+                      SizedBox(height: 16,),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Get.to(() => BluetoothPage(
+                            totalPembelian: totalPembelian,
+                            uangTunai: uangTunai,
+                            kembalian: kembalian,
+                            orderItems: orderItems,
+                            orderDate: orderDate,
+                          ));
+                        },
+                        icon: Icon(Icons.print, size: 20), // Ikon printer
+                        label: Text(
+                          "Cetak",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 55.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          backgroundColor: Color(0xff16812f),
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+
                       SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {

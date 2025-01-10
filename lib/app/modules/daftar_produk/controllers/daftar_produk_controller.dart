@@ -84,14 +84,14 @@ class DaftarProdukController extends GetxController {
         var jsonResponse = json.decode(responseData);
         products.add(jsonResponse['data']);
         filteredProdukList.add(jsonResponse['data']);
-        Get.snackbar('Success', 'Product added successfully');
+        Get.snackbar('Success', 'Produk berhasil diperbarui');
       } else {
         print('Error adding product: $responseData');
-        Get.snackbar('Error', 'Failed to add product');
+        Get.snackbar('Error', 'Gagal menambahkan produk');
       }
     } catch (e) {
       print('Exception adding product: $e');
-      Get.snackbar('Error', 'Failed to add product: $e');
+      Get.snackbar('Error', 'Gagal menambahkan produk: $e');
     }
   }
 

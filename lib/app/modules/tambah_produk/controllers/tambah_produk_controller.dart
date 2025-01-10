@@ -89,7 +89,7 @@ class TambahProdukController extends GetxController {
       if (response.statusCode == 201) {
         // Produk berhasil ditambahkan
         daftarKasirController.fetchProdukList(); // Refresh daftar produk
-        Get.snackbar('Success', 'Product added successfully',
+        Get.snackbar('Success', 'Produk berhasil ditambahkan',
             colorText: Colors.black.withOpacity(0.8),
             barBlur: 15,
             icon: Icon(Icons.check, color: Colors.green,),
@@ -100,7 +100,7 @@ class TambahProdukController extends GetxController {
       } else {
         print('Failed with status: ${response.statusCode}');
         print('Response body: ${responseData.body}');
-        Get.snackbar('Error', 'Failed to add product: ${responseData.body}',
+        Get.snackbar('Error', 'Gagal menambahkan produk: ${responseData.body}',
             colorText: Colors.black.withOpacity(0.8),
             barBlur: 15,
             icon: Icon(Icons.error, color: Colors.red,),
