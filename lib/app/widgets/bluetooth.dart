@@ -47,15 +47,34 @@ class _BluetoothPageState extends State<BluetoothPage> {
     initBluetoothPrintPlusListen();
   }
 
+  Future<void> disconnectDevice() async {
+    if (_device != null && _connectState == ConnectState.connected) {
+      try {
+        await BluetoothPrintPlus.disconnect();
+        setState(() {
+          _device = null;
+          _connectState = ConnectState.disconnected;
+        });
+        print('Successfully disconnected from device');
+      } catch (e) {
+        print('Error disconnecting device: $e');
+      }
+    }
+  }
+
   @override
   void dispose() {
-    super.dispose();
-    _isScanningSubscription.cancel();
-    _blueStateSubscription.cancel();
-    _connectStateSubscription.cancel();
-    _receivedDataSubscription.cancel();
-    _scanResultsSubscription.cancel();
-    _scanResults.clear();
+    // Disconnect the device before disposing
+    disconnectDevice().then((_) {
+      // Cancel all stream subscriptions
+      _isScanningSubscription.cancel();
+      _blueStateSubscription.cancel();
+      _connectStateSubscription.cancel();
+      _receivedDataSubscription.cancel();
+      _scanResultsSubscription.cancel();
+      _scanResults.clear();
+      super.dispose();
+    });
   }
 
   Future<void> initBluetoothPrintPlusListen() async {
