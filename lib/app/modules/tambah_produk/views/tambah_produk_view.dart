@@ -237,7 +237,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                           controller.kategoriController.text.isEmpty ||
                           controller.stokController.text.isEmpty ||
                           controller.hargaJualController.text.isEmpty) {
-                        Get.snackbar('Error', 'Semua field harus diisi',
+                        Get.snackbar('Error', 'Semua kolom harus diisi',
                             colorText: Colors.black.withOpacity(0.8),
                             barBlur: 15,
                             icon: const Icon(Icons.error, color: Colors.red),

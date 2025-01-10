@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:apptiket/app/modules/pembayaran_cash/controllers/pembayaran_cash_controller.dart';
 import 'package:apptiket/app/widgets/pdfpreview_page.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
 import '../modules/kasir/controllers/kasir_controller.dart';
+import '../modules/pembayaran_cash/views/pembayaran_cash_view.dart';
 import '../modules/pengaturan_profile/controllers/pengaturan_profile_controller.dart';
 
 class BluetoothPage extends StatefulWidget {
@@ -273,6 +275,13 @@ class _BluetoothPageState extends State<BluetoothPage> {
           PengaturanProfileController());
       final KasirController kasirController = Get.put(KasirController());
 
+      // Gunakan nilai uangTunai yang dikirim melalui constructor
+      final double uangTunai = widget.uangTunai;
+      final double totalPembelian = widget.totalPembelian;
+      final double kembalian = widget.kembalian;
+      final List<OrderItem> orderItems = widget.orderItems;
+      final String orderDate = widget.orderDate;
+
       final String companyName = profileController.companyName.value.isNotEmpty
           ? profileController.companyName.value
           : 'Nama Perusahaan Tidak Tersedia';
@@ -282,13 +291,6 @@ class _BluetoothPageState extends State<BluetoothPage> {
           ? profileController.companyAddress.value
           : 'Alamat Tidak Tersedia';
 
-      // Data transaksi
-      final List<OrderItem> orderItems = kasirController.getOrderItems();
-      final double totalPembelian = kasirController.total;
-      final double uangTunai = totalPembelian;
-      final double kembalian = uangTunai - totalPembelian;
-      final String orderDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
       // Format mata uang
       final NumberFormat currencyFormat = NumberFormat.currency(
           locale: 'id', symbol: 'Rp ', decimalDigits: 2);
@@ -297,11 +299,9 @@ class _BluetoothPageState extends State<BluetoothPage> {
       StringBuffer printData = StringBuffer();
 
       // Tambahkan nama perusahaan (tengah dan bold)
-      printData.writeln(
-          centerText("$companyName")); // Nama perusahaan bold
-      printData.writeln(
-          centerText("_$companyAddress")); // Alamat perusahaan italic
-      printData.writeln(""); // Spasi antar baris
+      printData.writeln(centerText("$companyName"));
+      printData.writeln(centerText("_$companyAddress"));
+      printData.writeln("");
 
       // Tanggal transaksi
       printData.writeln(centerText("Tanggal: $orderDate"));
@@ -316,7 +316,6 @@ class _BluetoothPageState extends State<BluetoothPage> {
         printData.writeln(row);
       });
 
-
       printData.writeln("--------------------------------");
       printData.writeln(rightAlignText("Total Pembelian: ", currencyFormat.format(totalPembelian)));
       if (uangTunai > 0) {
@@ -324,15 +323,10 @@ class _BluetoothPageState extends State<BluetoothPage> {
         printData.writeln(rightAlignText("Kembalian: ", currencyFormat.format(kembalian)));
       }
       printData.writeln("");
-
       printData.writeln("Terima Kasih Telah Berkunjung");
-
       printData.writeln("");
       printData.writeln("");
       printData.writeln("");
-
-      // Tambahkan tulisan "Terima Kasih!" (tengah) dengan ikon hati
-
 
       // Konversi string ke bytes
       List<int> bytes = utf8.encode(printData.toString());
