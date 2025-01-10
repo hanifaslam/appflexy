@@ -33,6 +33,7 @@ class BluetoothPage extends StatefulWidget {
 
 class _BluetoothPageState extends State<BluetoothPage> {
   BluetoothDevice? _device;
+  ConnectState _connectState = ConnectState.disconnected;
   late StreamSubscription<bool> _isScanningSubscription;
   late StreamSubscription<BlueState> _blueStateSubscription;
   late StreamSubscription<ConnectState> _connectStateSubscription;
@@ -58,7 +59,6 @@ class _BluetoothPageState extends State<BluetoothPage> {
   }
 
   Future<void> initBluetoothPrintPlusListen() async {
-    /// listen scanResults
     _scanResultsSubscription = BluetoothPrintPlus.scanResults.listen((event) {
       if (mounted) {
         setState(() {
@@ -67,7 +67,6 @@ class _BluetoothPageState extends State<BluetoothPage> {
       }
     });
 
-    /// listen isScanning
     _isScanningSubscription = BluetoothPrintPlus.isScanning.listen((event) {
       print('********** isScanning: $event **********');
       if (mounted) {
@@ -75,7 +74,6 @@ class _BluetoothPageState extends State<BluetoothPage> {
       }
     });
 
-    /// listen blue state
     _blueStateSubscription = BluetoothPrintPlus.blueState.listen((event) {
       print('********** blueState change: $event **********');
       if (mounted) {
@@ -83,36 +81,54 @@ class _BluetoothPageState extends State<BluetoothPage> {
       }
     });
 
-    /// listen connect state
     _connectStateSubscription = BluetoothPrintPlus.connectState.listen((event) {
       print('********** connectState change: $event **********');
-      switch (event) {
-        case ConnectState.connected:
-          setState(() {
-            if (_device == null) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('Terhubung ke perangkat ${_device!.name}')),
-            );
-          });
-          break;
-        case ConnectState.disconnected:
-          setState(() {
-            _device = null;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Perangkat terputus')),
-            );
-          });
-          break;
+      if (mounted) {
+        setState(() {
+          _connectState = event;
+          switch (event) {
+            case ConnectState.connected:
+              if (_device != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Terhubung ke perangkat ${_device!.name}')),
+                );
+              }
+              break;
+            case ConnectState.disconnected:
+              _device = null;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Perangkat terputus')),
+              );
+              break;
+          }
+        });
       }
     });
 
-    /// listen received data
     _receivedDataSubscription = BluetoothPrintPlus.receivedData.listen((data) {
       print('********** received data: $data **********');
-
-      /// do something...
     });
+  }
+
+  Future<void> handleConnect(BluetoothDevice device) async {
+    if (_connectState == ConnectState.connected && _device?.address == device.address) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sudah terhubung ke ${device.name}')),
+      );
+      return;
+    }
+
+    try {
+      setState(() {
+        _device = device;
+      });
+      await BluetoothPrintPlus.connect(device);
+    } catch (e) {
+      print('Connection error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal menghubungkan: $e')),
+      );
+    }
   }
 
   @override
@@ -124,65 +140,59 @@ class _BluetoothPageState extends State<BluetoothPage> {
       body: SafeArea(
         child: BluetoothPrintPlus.isBlueOn
             ? ListView(
-          children: _scanResults
-              .map(
-                (device) =>
-                Container(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: _scanResults.map((device) => Container(
+            padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(device.name),
-                            Text(
-                              device.address,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 12, color: Colors.grey),
-                            ),
-                            Divider(),
-                          ],
-                        ),
+                      Text(device.name),
+                      Text(
+                        device.address,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
-                      SizedBox(width: 10),
-                      OutlinedButton(
-                        onPressed: () async {
-                          _device = device;
-                          await BluetoothPrintPlus.connect(device);
-                        },
-                        child: const Text("Connect"),
-                      ),
+                      Divider(),
                     ],
                   ),
                 ),
-          )
-              .toList(),
+                SizedBox(width: 10),
+                OutlinedButton(
+                  onPressed: () => handleConnect(device),
+                  child: Text(
+                      _connectState == ConnectState.connected &&
+                          _device?.address == device.address
+                          ? "Connected"
+                          : "Connect"
+                  ),
+                ),
+              ],
+            ),
+          )).toList(),
         )
             : buildBlueOffWidget(),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (BluetoothPrintPlus.isBlueOn)
-            buildScanButton(context), // Tombol Scan
-
+          if (BluetoothPrintPlus.isBlueOn) buildScanButton(context),
           SizedBox(height: 10),
-
-          if (_device != null) // Hanya muncul jika ada perangkat yang terhubung
+          if (_device != null && _connectState == ConnectState.connected)
             FloatingActionButton(
               onPressed: testPrint,
               backgroundColor: Color(0xff181681),
-              child: Icon(Icons.print, color: Colors.white,),
+              child: Icon(Icons.print, color: Colors.white),
               tooltip: "Test Print",
             ),
         ],
       ),
-
     );
   }
+
+  // ... rest of the existing code remains the same ...
 
   Widget buildBlueOffWidget() {
     return Center(
