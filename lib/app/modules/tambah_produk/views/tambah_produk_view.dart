@@ -137,7 +137,7 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               decoration: BoxDecoration(
                                 border:
-                                Border.all(color: Colors.grey, width: 2),
+                                    Border.all(color: Colors.grey, width: 2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Padding(
@@ -148,13 +148,13 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                                   children: [
                                     controller.selectedImage != null
                                         ? Image.file(
-                                      controller.selectedImage!,
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    )
+                                            controller.selectedImage!,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
                                         : const Icon(Bootstrap.image,
-                                        size: 50, color: Color(0xff181681)),
+                                            size: 50, color: Color(0xff181681)),
                                     const SizedBox(width: 8),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -232,6 +232,20 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                   padding: const EdgeInsets.all(20.0),
                   child: ElevatedButton(
                     onPressed: () async {
+                      if (controller.namaProdukController.text.isEmpty ||
+                          controller.kodeProdukController.text.isEmpty ||
+                          controller.kategoriController.text.isEmpty ||
+                          controller.stokController.text.isEmpty ||
+                          controller.hargaJualController.text.isEmpty) {
+                        Get.snackbar('Error', 'Semua kolom harus diisi',
+                            colorText: Colors.black.withOpacity(0.8),
+                            barBlur: 15,
+                            icon: const Icon(Icons.error, color: Colors.red),
+                            duration: const Duration(seconds: 3),
+                            snackPosition: SnackPosition.TOP);
+                        return;
+                      }
+
                       // Call the addProduct method to post the data
                       await controller.addProduct();
                     },

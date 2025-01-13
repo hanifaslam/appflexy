@@ -1,14 +1,18 @@
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class SalesHistoryController extends GetxController {
-  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
+  final box = GetStorage();
+  final NumberFormat currencyFormat =
+      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
 
   RxList<Map<String, dynamic>> salesHistory = <Map<String, dynamic>>[].obs;
-  RxList<Map<String, dynamic>> filteredSalesHistory = <Map<String, dynamic>>[].obs;
-  RxString filterType = 'All'.obs;
+  RxList<Map<String, dynamic>> filteredSalesHistory =
+      <Map<String, dynamic>>[].obs;
+  RxString filterType = 'Semua'.obs;
 
   @override
   void onInit() {
@@ -18,18 +22,43 @@ class SalesHistoryController extends GetxController {
   }
 
   // Method to fetch sales history from API
+  String? getToken() => box.read('token');
+  int? getUserId() => box.read('user_id');
+
   Future<void> fetchSalesHistory() async {
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/orders'));
+      final token = getToken();
+      final userId = getUserId();
+
+      print('Fetching sales history');
+      print('Token: $token');
+      print('User ID: $userId');
+
+      if (token == null || userId == null) {
+        throw Exception('Authentication required');
+      }
+
+      final response = await http.get(
+        Uri.parse(
+            'https://cheerful-distinct-fox.ngrok-free.app/api/orders?user_id=$userId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        salesHistory.value = data.map((item) => item as Map<String, dynamic>).toList();
+        salesHistory.value = data
+            .where((order) => order['user_id'] == userId)
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList();
+        filteredSalesHistory.value = List.from(salesHistory);
         applyFilter();
-      } else {
-        throw Exception('Failed to load sales history');
       }
     } catch (e) {
       print('Error fetching sales history: $e');
+      Get.snackbar('Error', 'Failed to load sales history');
     }
   }
 
@@ -40,7 +69,8 @@ class SalesHistoryController extends GetxController {
   }
 
   String formatCurrency(dynamic value) {
-    double doubleValue = value is String ? double.tryParse(value) ?? 0.0 : value.toDouble();
+    double doubleValue =
+        value is String ? double.tryParse(value) ?? 0.0 : value.toDouble();
     return currencyFormat.format(doubleValue);
   }
 
@@ -52,13 +82,14 @@ class SalesHistoryController extends GetxController {
     DateTime now = DateTime.now();
     filteredSalesHistory.value = salesHistory.where((sale) {
       DateTime saleDate = DateTime.parse(sale['time']);
-      if (filterType.value == 'Weekly') {
+      if (filterType.value == 'Mingguan') {
         DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
         DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
-        return saleDate.isAfter(startOfWeek) && saleDate.isBefore(endOfWeek.add(Duration(days: 1)));
-      } else if (filterType.value == 'Monthly') {
+        return saleDate.isAfter(startOfWeek) &&
+            saleDate.isBefore(endOfWeek.add(Duration(days: 1)));
+      } else if (filterType.value == 'Bulanan') {
         return saleDate.month == now.month && saleDate.year == now.year;
-      } else if (filterType.value == 'Yearly') {
+      } else if (filterType.value == 'Tahunan') {
         return saleDate.year == now.year;
       } else {
         return true;
@@ -70,39 +101,4 @@ class SalesHistoryController extends GetxController {
     filterType.value = type;
     applyFilter();
   }
-
-// Method to add dummy data
-// void addDummyData() {
-//   DateTime now = DateTime.now();
-//   salesHistory.addAll([
-//     {
-//       'customer': 'Customer Weekly',
-//       'time': now.subtract(Duration(days: 3)).toIso8601String(),
-//       'payment_method': 'Cash',
-//       'total': 100000,
-//       'items': [
-//         {'name': 'Item 1', 'quantity': 1, 'total_item_price': 100000}
-//       ]
-//     },
-//     {
-//       'customer': 'Customer Monthly',
-//       'time': now.subtract(Duration(days: 15)).toIso8601String(),
-//       'payment_method': 'Credit Card',
-//       'total': 200000,
-//       'items': [
-//         {'name': 'Item 2', 'quantity': 2, 'total_item_price': 100000}
-//       ]
-//     },
-//     {
-//       'customer': 'Customer Yearly',
-//       'time': now.subtract(Duration(days: 200)).toIso8601String(),
-//       'payment_method': 'Debit Card',
-//       'total': 300000,
-//       'items': [
-//         {'name': 'Item 3', 'quantity': 3, 'total_item_price': 100000}
-//       ]
-//     },
-//   ]);
-//   applyFilter();
-// }
 }

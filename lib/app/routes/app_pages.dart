@@ -38,6 +38,8 @@ import '../modules/settingQRIS/bindings/setting_q_r_i_s_binding.dart';
 import '../modules/settingQRIS/views/setting_q_r_i_s_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
+import '../modules/snk/bindings/snk_binding.dart';
+import '../modules/snk/views/snk_view.dart';
 import '../modules/struk/bindings/struk_binding.dart';
 import '../modules/struk/views/struk_view.dart';
 import '../modules/tambah_produk/bindings/tambah_produk_binding.dart';
@@ -97,7 +99,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.DAFTAR_PRODUK,
-      page: () => DaftarProdukView(), // Disesuaikan dengan kode Anda
+      page: () => DaftarProdukView(),
       binding: DaftarProdukBinding(),
     ),
     GetPage(
@@ -107,7 +109,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.SALES_HISTORY,
-      page: () => SalesHistoryPage(),
+      page: () => SalesHistoryView(),
       binding: SalesHistoryBinding(),
     ),
     GetPage(
@@ -139,12 +141,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.EDIT_PRODUK,
-      page: () => EditProdukView(
-          // Di sini, 'produk' dan 'index' tidak dapat digunakan
-          // karena mereka tidak didefinisikan dalam konteks ini.
-          // Jika Anda ingin menerima parameter di EditProdukView,
-          // Anda perlu menggunakan Get.arguments untuk mengambil data yang relevan.
-          ),
+      page: () => EditProdukView(),
       binding: EditProdukBinding(),
     ),
     GetPage(
@@ -171,6 +168,11 @@ class AppPages {
       name: _Paths.SETTING_Q_R_I_S,
       page: () => const SettingQRISView(),
       binding: SettingQRISBinding(),
+    ),
+    GetPage(
+      name: _Paths.SNK,
+      page: () => const SnkView(),
+      binding: SnkBinding(),
     ),
   ];
 }

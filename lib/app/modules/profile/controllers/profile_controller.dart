@@ -1,96 +1,77 @@
+import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:get_storage/get_storage.dart';
 import 'dart:convert';
 
-final box = GetStorage();
-
 class ProfileController extends GetxController {
+  final box = GetStorage();
   var companyName = ''.obs;
   var companyType = ''.obs;
   var companyAddress = ''.obs;
-  var companyLogoPath = ''.obs; // Untuk menyimpan path logo toko
-
-  // Fungsi untuk menyimpan nama toko
-  void setCompanyName(String name) {
-    companyName.value = name;
-  }
-
-  // Fungsi untuk menyimpan bidang usaha
-  void setCompanyType(String type) {
-    companyType.value = type;
-  }
-
-  // Fungsi untuk menyimpan alamat toko
-  void setCompanyAddress(String address) {
-    companyAddress.value = address;
-  }
-
-  // Fungsi untuk menyimpan logo toko
-  void setCompanyLogo(String path) {
-    companyLogoPath.value = path; // Path gambar yang dipilih
-  }
-
-  // Simpan data ke GetStorage
-  void saveToStorage() {
-    box.write('companyName', companyName.value);
-    box.write('companyType', companyType.value);
-    box.write('companyAddress', companyAddress.value);
-    box.write('companyLogo', companyLogoPath.value);
-  }
-
-  // Baca data dari GetStorage
-  void loadFromStorage() {
-    companyName.value = box.read('companyName') ?? '';
-    companyType.value = box.read('companyType') ?? '';
-    companyAddress.value = box.read('companyAddress') ?? '';
-    companyLogoPath.value = box.read('companyLogo') ?? '';
-  }
-
-  @override
-  void onInit() {
-    loadFromStorage();
-    super.onInit();
-  }
+  var imagePath = ''.obs;
 
   Future<void> saveProfileToApi() async {
     try {
-      var url = Uri.parse(
-          'http://10.0.2.2:8000/api/stores'); // Ganti dengan URL API Anda
+      var url =
+          Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/stores');
       var request = http.MultipartRequest('POST', url);
 
-      // Tambahkan field ke dalam request dengan nama yang sesuai
-      request.fields['nama_usaha'] =
-          companyName.value; // Ganti dengan nama_usaha
-      request.fields['jenis_usaha'] =
-          companyType.value; // Ganti dengan jenis_usaha
-      request.fields['alamat'] = companyAddress.value; // Ganti dengan alamat
+      // Tambahkan header Authorization
+      final token = box.read('token');
+      final userId = box.read('user_id');
 
-      // Jika pengguna memilih logo, tambahkan ke request sebagai file
-      if (companyLogoPath.value.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'gambar', // Nama field untuk file logo di API
-          companyLogoPath.value,
-        ));
+      if (token == null || userId == null) {
+        throw Exception('Token or User ID is missing');
       }
 
-      // Kirim request ke API
-      var response = await request.send();
+      request.headers['Authorization'] = 'Bearer $token';
 
-      // Cek apakah request berhasil
+      // Debug print
+      print('Token: $token');
+      print('User ID: $userId');
+
+      request.fields['nama_usaha'] = companyName.value;
+      request.fields['jenis_usaha'] = companyType.value;
+      request.fields['alamat'] = companyAddress.value;
+      request.fields['user_id'] = userId.toString();
+
+      if (imagePath.value.isNotEmpty) {
+        try {
+          request.files.add(
+              await http.MultipartFile.fromPath('gambar', imagePath.value));
+        } catch (e) {
+          print('Error adding file: $e');
+        }
+      }
+
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+      print('Response body: $responseBody'); // Debug print
+
+      var responseData = json.decode(responseBody);
+
       if (response.statusCode == 201) {
-        var responseBody = await response.stream.bytesToString();
-        var responseData = json.decode(responseBody);
+        HomeController.to.fetchCompanyDetails();
+        saveToStorage();
         Get.snackbar('Success', 'Profile updated successfully!');
       } else {
-        // Tambahkan ini untuk menangkap respons error
-        var responseBody = await response.stream.bytesToString();
-        Get.snackbar('Error',
-            'Failed to update profile. Status: ${response.statusCode}, Response: $responseBody');
+        Get.snackbar(
+            'Error', 'Failed to update profile: ${responseData['message']}');
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred. Please try again.');
-      print(e);
+      print('Error: $e');
+      Get.snackbar('Error', 'An error occurred: $e');
+    }
+  }
+
+  void saveToStorage() {
+    // Simpan data yang diperlukan ke storage
+    box.write('companyName', companyName.value);
+    box.write('companyType', companyType.value);
+    box.write('companyAddress', companyAddress.value);
+    if (imagePath.value.isNotEmpty) {
+      box.write('imagePath', imagePath.value);
     }
   }
 }

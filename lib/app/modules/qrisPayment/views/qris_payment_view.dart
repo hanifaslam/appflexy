@@ -1,11 +1,18 @@
 import 'dart:io';
+import 'package:apptiket/app/modules/kasir/controllers/kasir_controller.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../widgets/struk_pembayaran.dart';
+
+
 class QrisPaymentView extends StatelessWidget {
+  final KasirController kasirController = Get.put(KasirController());
+
   // Fungsi untuk mengambil path gambar QR Code yang tersimpan di SharedPreferences
   Future<File?> getQrCodeImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,20 +57,27 @@ class QrisPaymentView extends StatelessWidget {
                   const SizedBox(height: 20), // Spasi antara gambar dan tombol
                   ElevatedButton(
                     onPressed: () {
-                      Get.offAllNamed(Routes.DAFTAR_KASIR);
-                      // Logika untuk verifikasi pembayaran
-                      // Misalnya menampilkan pesan atau mengarahkan ke halaman lain
-                      print("Verifikasi Pembayaran Dimulai");
+                      final double totalHarga = kasirController.total;
+                      final double jumlahUang = 0.0; // QRIS membayar tepat jumlah total
+                      final double kembalian = 0.0;
+
+                      // Ambil total harga dari controller
+                      // Navigasi ke halaman StrukPembayaran
+                      Get.to(() => StrukPembayaranPage(
+                        totalPembelian: totalHarga,
+                        uangTunai: jumlahUang,
+                        kembalian: kembalian,
+                        orderItems: kasirController.getOrderItems(),
+                        orderDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                      ));
                     },
-                    child: const Text('Verifikasi Pembayaran',
-                        style: TextStyle(color: Colors.white)),
+                    child: const Text('Verifikasi Pembayaran', style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      backgroundColor:
-                          Color(0xff181681), // Tombol berwarna hijau
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      backgroundColor: Color(0xff181681), // Tombol berwarna hijau
                     ),
                   ),
+
                 ],
               ),
             );

@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 
 class DaftarProdukController extends GetxController {
   var products = <Map<String, dynamic>>[].obs;
   var filteredProdukList = <Map<String, dynamic>>[].obs;
   var searchQuery = ''.obs;
   var isLoading = true.obs;
+  final box = GetStorage(); // GetStorage instance
 
   @override
   void onReady() {
@@ -18,14 +20,18 @@ class DaftarProdukController extends GetxController {
   Future<void> fetchProducts() async {
     try {
       isLoading.value = true;
+      final userId = box.read('user_id'); // Get user_id from storage
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/products'),
+        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/products'),
         headers: {'Accept': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         List<dynamic> productList = json.decode(response.body);
-        products.value = List<Map<String, dynamic>>.from(productList);
+        products.value = List<Map<String, dynamic>>.from(productList)
+            .where(
+                (product) => product['user_id'].toString() == userId.toString())
+            .toList();
         filteredProdukList.value = products;
         print('Fetched ${products.length} products');
       } else {
@@ -48,8 +54,12 @@ class DaftarProdukController extends GetxController {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://10.0.2.2:8000/api/products'),
+        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/products'),
       );
+
+      final userId = box.read('user_id'); // Get user_id from storage
+      request.fields['user_id'] =
+          userId.toString(); // Include user_id in the product data
 
       // Add all product data as fields
       request.fields['namaProduk'] = newProduct['namaProduk'];
@@ -74,14 +84,14 @@ class DaftarProdukController extends GetxController {
         var jsonResponse = json.decode(responseData);
         products.add(jsonResponse['data']);
         filteredProdukList.add(jsonResponse['data']);
-        Get.snackbar('Success', 'Product added successfully');
+        Get.snackbar('Success', 'Produk berhasil diperbarui');
       } else {
         print('Error adding product: $responseData');
-        Get.snackbar('Error', 'Failed to add product');
+        Get.snackbar('Error', 'Gagal menambahkan produk');
       }
     } catch (e) {
       print('Exception adding product: $e');
-      Get.snackbar('Error', 'Failed to add product: $e');
+      Get.snackbar('Error', 'Gagal menambahkan produk: $e');
     }
   }
 
@@ -91,8 +101,13 @@ class DaftarProdukController extends GetxController {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://10.0.2.2:8000/api/products/$productId'),
+        Uri.parse(
+            'https://cheerful-distinct-fox.ngrok-free.app/api/products/$productId'),
       );
+
+      final userId = box.read('user_id'); // Get user_id from storage
+      request.fields['user_id'] =
+          userId.toString(); // Include user_id in the product data
 
       // Add PUT method simulation
       request.fields['_method'] = 'PUT';
@@ -119,7 +134,7 @@ class DaftarProdukController extends GetxController {
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(responseData);
         int index =
-        products.indexWhere((product) => product['id'] == productId);
+            products.indexWhere((product) => product['id'] == productId);
         if (index != -1) {
           products[index] = jsonResponse['data'];
           filteredProdukList[index] = jsonResponse['data'];
@@ -139,7 +154,8 @@ class DaftarProdukController extends GetxController {
   Future<void> deleteProduct(int productId) async {
     try {
       final response = await http.delete(
-        Uri.parse('http://10.0.2.2:8000/api/products/$productId'),
+        Uri.parse(
+            'https://cheerful-distinct-fox.ngrok-free.app/api/products/$productId'),
         headers: {'Accept': 'application/json'},
       );
 
@@ -162,9 +178,9 @@ class DaftarProdukController extends GetxController {
     searchQuery.value = query;
     filteredProdukList.value = products
         .where((produk) => produk['namaProduk']
-        .toString()
-        .toLowerCase()
-        .contains(query.toLowerCase()))
+            .toString()
+            .toLowerCase()
+            .contains(query.toLowerCase()))
         .toList();
   }
 

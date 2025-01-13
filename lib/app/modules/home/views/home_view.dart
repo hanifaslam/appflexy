@@ -1,12 +1,17 @@
-// ignore_for_file: avoid_print
+import 'dart:convert';
 
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:apptiket/app/widgets/navbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -28,7 +33,9 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    homeController.fetchBarChartData(); // Fetch chart data when initializing
+    homeController.fetchPieChartData(homeController
+        .selectedFilter.value); // Fetch pie chart data when initializing
+    homeController.fetchCompanyDetails(); // Fetch store data when initializing
   }
 
   @override
@@ -89,14 +96,22 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildContent() {
-    return Container(
-      margin: const EdgeInsets.only(top: 10),
-      child: Column(
-        children: [
-          _buildUserInfoSection(),
-          const SizedBox(height: 20),
-          _buildBottomSection(),
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        // Refresh the data when the user pulls down to refresh
+        await homeController.fetchCompanyDetails();
+        await homeController
+            .fetchPieChartData(homeController.selectedFilter.value);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 10),
+        child: Column(
+          children: [
+            _buildUserInfoSection(),
+            const SizedBox(height: 20),
+            _buildPieChartSection(),
+          ],
+        ),
       ),
     );
   }
@@ -122,35 +137,50 @@ class _HomeViewState extends State<HomeView> {
           children: [
             Row(
               children: [
-                const CircleAvatar(
-                  radius: 35,
-                  backgroundImage: AssetImage('assets/logo/logoflex.png'),
-                ),
+                Obx(() {
+                  if (homeController.isLoading.value) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  final storeData = homeController.storeData.value;
+                  final imageUrl = storeData?['gambar'];
+
+                  return _buildProductImage(imageUrl ?? '');
+                }),
                 const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "AmbatuJawir",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                        fontSize: 18,
+                Expanded(
+                  child: Obx(() {
+                    if (homeController.isLoading.value) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    final storeData = homeController.storeData.value;
+                    print('Store data: $storeData'); // Debug print
+                    return Text.rich(
+                      TextSpan(
+                        text: 'Selamat Datang, ',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Inter',
+                          fontSize: 18,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: storeData?['nama_usaha'] ??
+                                'Nama tidak ditemukan',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFamily: 'Inter',
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      "Farhan Kebab",
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.only(right: 20.0),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    );
+                  }),
                 ),
               ],
             ),
@@ -159,7 +189,7 @@ class _HomeViewState extends State<HomeView> {
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
@@ -200,7 +230,7 @@ class _HomeViewState extends State<HomeView> {
                     const Color(0xffF95454),
                     Colors.white,
                     onTap: () {
-                      Get.toNamed(Routes.DAFTAR_PRODUK);
+                      Get.offAllNamed(Routes.DAFTAR_PRODUK);
                     },
                   ),
                 ],
@@ -212,7 +242,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildBottomSection() {
+  Widget _buildPieChartSection() {
     return Expanded(
       child: Container(
         width: double.infinity,
@@ -234,7 +264,7 @@ class _HomeViewState extends State<HomeView> {
         child: Obx(() {
           if (homeController.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
-          } else if (homeController.barChartData.isEmpty) {
+          } else if (homeController.pieChartData.isEmpty) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -250,7 +280,7 @@ class _HomeViewState extends State<HomeView> {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50.0),
                   child: Text(
-                    'Tidak ada daftar produk yang dapat ditampilkan. Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
+                    'Tidak ada data pesanan yang dapat ditampilkan.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
@@ -263,103 +293,90 @@ class _HomeViewState extends State<HomeView> {
               ],
             );
           } else {
-            return _buildLineChart();
+            return Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Catatan Penjualan',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      DropdownButton<String>(
+                        value: homeController.selectedFilter.value,
+                        items: <String>['Harian', 'Mingguan', 'Bulanan']
+                            .map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          homeController.onFilterChanged(newValue!);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                _buildPieChart(),
+              ],
+            );
           }
         }),
       ),
     );
   }
 
-  Widget _buildLineChart() {
+  Widget _buildPieChart() {
     return Padding(
-      padding: const EdgeInsets.all(40.0),
-      child: Transform.translate(
-        offset: const Offset(-10, 20), // Move left by 20 and down by 20
-        child: Flexible(
-          child: LineChart(
-            LineChartData(
-              lineBarsData: [
-                LineChartBarData(
-                  spots: homeController.barChartData.map((groupData) {
-                    return FlSpot(
-                        groupData.x.toDouble(), groupData.barRods.first.toY);
-                  }).toList(),
-                  isCurved: true,
-                  color: Colors.blueAccent,
-                  barWidth: 4,
-                  isStrokeCapRound: true,
-                  dotData: FlDotData(show: false),
-                  belowBarData: BarAreaData(
-                    show: true,
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.blueAccent.withOpacity(0.3),
-                        Colors.blueAccent.withOpacity(0.1),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+      padding: const EdgeInsets.all(0.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 38),
+          SizedBox(
+            width: 200,
+            height: 200,
+            child: Stack(
+              children: [
+                PieChart(
+                  PieChartData(
+                    sections: homeController.pieChartData.map((data) {
+                      return PieChartSectionData(
+                        color: data.color,
+                        value: data.value,
+                        title: '${data.value.toStringAsFixed(1)}%',
+                        radius: 50, // Reduced radius
+                        titleStyle: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    }).toList(),
+                    sectionsSpace: 2,
+                    centerSpaceRadius: 75, // Increased center space radius
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    'Total\nPesanan:\nRp. ${NumberFormat.currency(locale: 'id', symbol: '', decimalDigits: 0).format(homeController.totalOrders.value)}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
-              borderData: FlBorderData(
-                show: false,
-                border: Border(
-                  left: BorderSide(color: Colors.black, width: 1),
-                  bottom: BorderSide(color: Colors.black, width: 1),
-                  right: BorderSide(color: Colors.transparent),
-                  top: BorderSide(color: Colors.transparent),
-                ),
-              ),
-              gridData: FlGridData(
-                show: false,
-              ),
-              titlesData: FlTitlesData(
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    interval: 300000,
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        '${(value / 1000).toInt()}K',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    },
-                    reservedSize: 50,
-                  ),
-                ),
-                rightTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                topTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Text(
-                          homeController.monthLabels[value.toInt()],
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              minY: 0,
-              maxY: 1200000,
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -408,6 +425,98 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProductImage(String imageUrl) {
+    if (imageUrl.isEmpty) {
+      return _buildPlaceholderImage();
+    }
+
+    final token = homeController.getToken();
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15),
+      child: CachedNetworkImage(
+        imageUrl: imageUrl.startsWith('http')
+            ? imageUrl
+            : 'https://cheerful-distinct-fox.ngrok-free.app/storage/$imageUrl',
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => _buildLoadingPlaceholder(),
+        errorWidget: (context, url, error) {
+          print('Error loading image: $error');
+          return _buildErrorImage();
+        },
+        cacheManager: CacheManager(
+          Config(
+            'customCacheKey',
+            stalePeriod: const Duration(days: 7),
+            maxNrOfCacheObjects: 100,
+            repo: JsonCacheInfoRepository(databaseName: 'customCacheKey'),
+            fileService: HttpFileService(httpClient: http.Client()),
+          ),
+        ) as BaseCacheManager?,
+        fadeInDuration: const Duration(milliseconds: 500),
+        fadeOutDuration: const Duration(milliseconds: 500),
+        useOldImageOnUrlChange: true,
+        cacheKey: imageUrl,
+        httpHeaders: {
+          'Authorization': 'Bearer $token',
+          'Connection': 'keep-alive',
+          'Keep-Alive': 'timeout=100, max=1000'
+        },
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderImage() {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Icon(
+        Icons.image,
+        size: 30,
+        color: Colors.grey[600],
+      ),
+    );
+  }
+
+  Widget _buildLoadingPlaceholder() {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[600]!),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorImage() {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Icon(
+        Icons.broken_image,
+        size: 30,
+        color: Colors.grey[600],
       ),
     );
   }

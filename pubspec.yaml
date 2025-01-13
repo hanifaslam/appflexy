@@ -11,7 +11,6 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.3.3
   qr_flutter: ^4.0.0
-
   cupertino_icons: ^1.0.8
   get: ^4.6.6
   curved_navigation_bar: ^1.0.3
@@ -24,11 +23,26 @@ dependencies:
   cached_network_image: ^3.2.3
   flutter_cached_manager: ^1.0.1
   fl_chart: ^0.69.0
+  pdf: ^3.11.1
+  printing: ^5.13.4 
+  image: ^4.3.0
+  badges: ^3.1.2
+  collection: ^1.18.0
+  bluetooth_print_plus: ^2.4.1
+  flutter_launcher_icons: ^0.14.2
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo/splash.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/logo/splash.png"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true

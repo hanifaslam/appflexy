@@ -118,8 +118,23 @@ class _SettingQRISViewState extends State<SettingQRISView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pengaturan QRIS'),
+        backgroundColor: Color(0xff181681),
+        title: Text(
+          'Pengaturan QRIS',
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+              color: Colors.white), // Tombol back (arrow)
+          onPressed: () {
+            Navigator.of(context).pop(); // Kembali ke halaman sebelumnya
+          },
+        ),
       ),
       body: Center(
         child: Padding(
@@ -148,7 +163,10 @@ class _SettingQRISViewState extends State<SettingQRISView> {
                           style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                            horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        elevation: 4,
                         backgroundColor: Colors.red,
                       ),
                     )
@@ -158,8 +176,11 @@ class _SettingQRISViewState extends State<SettingQRISView> {
                           style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                        backgroundColor: Colors.blue,
+                            horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        elevation: 4,
+                        backgroundColor: Color(0xff181681),
                       ),
                     ),
             ],

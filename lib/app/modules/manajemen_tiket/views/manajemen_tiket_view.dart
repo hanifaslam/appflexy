@@ -1,162 +1,44 @@
-import 'dart:convert';
-import 'package:apptiket/app/modules/tambah_tiket/views/tambah_tiket_view.dart';
-import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
+import 'package:icons_plus/icons_plus.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
+import 'package:apptiket/app/modules/tambah_tiket/views/tambah_tiket_view.dart';
+import 'package:apptiket/app/modules/manajemen_tiket/controllers/manajemen_tiket_controller.dart';
 
-class ManajemenTiketView extends StatefulWidget {
-  @override
-  _ManajemenTiketView createState() => _ManajemenTiketView();
-}
+class ManajemenTiketView extends GetView<ManajemenTiketController> {
+  final NumberFormat currencyFormat = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+    decimalDigits: 2,
+  );
 
-class _ManajemenTiketView extends State<ManajemenTiketView> {
-  final NumberFormat currencyFormat =
-      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
-  final box = GetStorage();
-  List<Map<String, dynamic>> tiketList = [];
-  List<Map<String, dynamic>> filteredTiketList = [];
-  String searchQuery = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTiketList();
-  }
-
-  // Load Data Tiket
-  Future<void> _loadTiketList() async {
-    try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/tikets'));
-      if (response.statusCode == 200) {
-        List<dynamic> tiketData = json.decode(response.body);
-        setState(() {
-          tiketList = List<Map<String, dynamic>>.from(tiketData);
-          filteredTiketList = tiketList;
-        });
-      } else {
-        _showSnackBar('Gagal memuat data tiket.', Colors.red);
-      }
-    } catch (error) {
-      _showSnackBar('Terjadi kesalahan: $error', Colors.red);
-    }
-  }
-
-  // Search Tiket
-  void updateSearchQuery(String query) {
-    setState(() {
-      searchQuery = query;
-      filteredTiketList = tiketList
-          .where((tiket) =>
-              tiket['namaTiket'].toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
-  }
-
-  // Sortir Tiket
-  void _showSortDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Sort Tiket"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _sortOptionTile("A-Z (Ascending)", () {
-                _sortTiket((a, b) => a['namaTiket'].compareTo(b['namaTiket']));
-              }),
-              _sortOptionTile("Z-A (Descending)", () {
-                _sortTiket((a, b) => b['namaTiket'].compareTo(a['namaTiket']));
-              }),
-              _sortOptionTile("Urutan Terbaru", () {
-                _sortTiket((a, b) =>
-                    DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
-              }),
-              _sortOptionTile("Urutan Terlama", () {
-                _sortTiket((a, b) =>
-                    DateTime.parse(a['createdAt']).compareTo(DateTime.parse(b['createdAt'])));
-              }),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  ListTile _sortOptionTile(String title, VoidCallback onTap) {
-    return ListTile(
-      title: Text(title),
-      onTap: () {
-        onTap();
-        Navigator.of(context).pop();
-      },
-    );
-  }
-
-  void _sortTiket(Comparator<Map<String, dynamic>> comparator) {
-    setState(() {
-      filteredTiketList.sort(comparator);
-    });
-  }
-
-  // Hapus Tiket
-  Future<void> _deleteTiketFromDatabase(int tiketId, int index) async {
-    try {
-      final response =
-          await http.delete(Uri.parse('http://10.0.2.2:8000/api/tikets/$tiketId'));
-      if (response.statusCode == 200) {
-        setState(() {
-          tiketList.removeAt(index);
-          updateSearchQuery(searchQuery);
-        });
-        _showSnackBar('Tiket berhasil dihapus.', Colors.green);
-      } else {
-        _showSnackBar('Gagal menghapus tiket.', Colors.red);
-      }
-    } catch (error) {
-      _showSnackBar('Terjadi kesalahan: $error', Colors.red);
-    }
-  }
-
-  // Edit Tiket
-  void _editTiket(int index, Map<String, dynamic> tiket) async {
-    final result = await Get.to(TambahTiketView(tiket: tiket, index: index));
-    if (result != null) {
-      setState(() {
-        tiketList[index] = result;
-        updateSearchQuery(searchQuery);
-      });
-    }
-  }
-
-  void _showSnackBar(String message, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: color),
-    );
-  }
+  ManajemenTiketView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: _buildBody(),
-      floatingActionButton: _buildFloatingButton(),
+      floatingActionButton: _buildFloatingActionButton(context),
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Color(0xff181681),
+      backgroundColor: const Color(0xff181681),
       toolbarHeight: 90,
       leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.offAllNamed(Routes.HOME)),
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () => Get.offAllNamed(Routes.HOME),
+      ),
       title: _buildSearchField(),
-      actions: [_buildSortButton()],
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.more_vert, color: Colors.white),
+          onPressed: () => _showSortDialog(context),
+        ),
+      ],
     );
   }
 
@@ -164,92 +46,247 @@ class _ManajemenTiketView extends State<ManajemenTiketView> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
       child: TextField(
-        onChanged: updateSearchQuery,
+        onChanged: controller.updateSearchQuery,
         decoration: InputDecoration(
           hintText: 'Cari Nama Tiket',
-          prefixIcon: Icon(Icons.search_sharp),
-          fillColor: Colors.grey[350],
+          prefixIcon: const Icon(Icons.search_sharp),
+          hintStyle: TextStyle(color: const Color(0xff181681)),
+          border: InputBorder.none,
           filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-          focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+          fillColor: Colors.grey[350],
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.circular(50),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.circular(50),
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSortButton() {
-    return IconButton(
-      icon: Icon(Icons.more_vert, color: Colors.white),
-      onPressed: _showSortDialog,
     );
   }
 
   Widget _buildBody() {
-    return filteredTiketList.isEmpty
-        ? _buildEmptyView()
-        : ListView.builder(
-            itemCount: filteredTiketList.length,
-            itemBuilder: (context, index) {
-              final tiket = filteredTiketList[index];
-              return _buildTiketItem(tiket, index);
-            },
-          );
-  }
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-  Widget _buildEmptyView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      if (controller.filteredTiketList.isEmpty) {
+        return _buildEmptyState();
+      }
+
+      return Column(
         children: [
-          Icon(Bootstrap.box, size: 100, color: Colors.grey),
-          SizedBox(height: 16),
-          Text(
-            'Tidak ada daftar tiket yang dapat ditampilkan.',
-            style: TextStyle(color: Colors.grey),
-            textAlign: TextAlign.center,
-          ),
+          _buildTiketList(),
         ],
-      ),
-    );
+      );
+    });
   }
 
-  Widget _buildTiketItem(Map<String, dynamic> tiket, int index) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        title: Text(tiket['namaTiket'], style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(
-          'Stok: ${tiket['stok']} | ${currencyFormat.format(double.parse(tiket['hargaJual']))}',
-        ),
-        trailing: PopupMenuButton<String>(
-          onSelected: (value) {
-            if (value == 'edit') _editTiket(index, tiket);
-            if (value == 'delete') _deleteTiketFromDatabase(tiket['id'], index);
-          },
-          itemBuilder: (context) => [
-            PopupMenuItem(value: 'edit', child: Text("Edit Tiket")),
-            PopupMenuItem(value: 'delete', child: Text("Hapus Tiket")),
+  Widget _buildEmptyState() {
+    return Container(
+      color: Colors.white24,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Bootstrap.box, size: 100, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'Tidak ada daftar tiket yang dapat ditampilkan.',
+              style: TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFloatingButton() {
-    return FloatingActionButton(
-      backgroundColor: Color(0xff181681),
-      onPressed: () async {
-        final result = await Get.to(TambahTiketView());
-        if (result != null) {
-          setState(() {
-            tiketList.add(result);
-            updateSearchQuery(searchQuery);
-          });
+  Widget _buildTiketList() {
+    return Expanded(
+      child: Container(
+        color: Colors.white24,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView.builder(
+            itemCount: controller.filteredTiketList.length,
+            itemBuilder: (context, index) => _buildTiketCard(context, index),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTiketCard(BuildContext context, int index) {
+    final tiket = controller.filteredTiketList[index];
+    final double hargaJual =
+        double.tryParse(tiket['hargaJual'].toString()) ?? 0.0;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 6,
+            offset: const Offset(6, 10),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 5),
+        child: Card(
+          color: Colors.white,
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            title: Text(
+              tiket['namaTiket'],
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              'Stok: ${tiket['stok']} | ${currencyFormat.format(hargaJual)}',
+            ),
+            trailing: _buildPopupMenu(context, index, tiket),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPopupMenu(
+      BuildContext context, int index, Map<String, dynamic> tiket) {
+    return PopupMenuButton<String>(
+      onSelected: (value) {
+        if (value == 'edit') {
+          _editTiket(context, index, tiket);
+        } else if (value == 'delete') {
+          _showDeleteDialog(context, tiket['id']);
         }
       },
-      child: Icon(Icons.add, color: Colors.white),
+      itemBuilder: (BuildContext context) => [
+        const PopupMenuItem(
+          value: 'edit',
+          child: Row(
+            children: [
+              Icon(Icons.edit),
+              SizedBox(width: 8),
+              Text('Edit Tiket'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete),
+              SizedBox(width: 8),
+              Text('Hapus Tiket'),
+            ],
+          ),
+        ),
+      ],
     );
+  }
+
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      elevation: 4,
+      backgroundColor: const Color(0xff181681),
+      onPressed: () async {
+        final result = await Get.to(() => TambahTiketView());
+        if (result != null) {
+          controller.fetchTikets();
+        }
+      },
+      child: const Icon(Icons.add, color: Colors.white),
+    );
+  }
+
+  void _showSortDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Sort Tiket"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text("Ascending"),
+                onTap: () {
+                  controller.sortTikets(true);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: const Text("Descending"),
+                onTap: () {
+                  controller.sortTikets(false);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context, int tiketId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Konfirmasi"),
+          content: const Text("Apakah yakin ingin menghapus tiket ini?"),
+          actions: [
+            TextButton(
+              child: const Text("Batal"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                controller.deleteTiket(tiketId);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editTiket(
+      BuildContext context, int index, Map<String, dynamic> tiket) async {
+    if (tiket.isEmpty) return;
+
+    final int tiketId = tiket['id'];
+    final result =
+        await Get.to(() => TambahTiketView(tiket: tiket, index: index));
+
+    if (result != null) {
+      final updatedData = Map<String, dynamic>.from({
+        ...result,
+        'id': tiketId,
+      });
+
+      try {
+        await controller.updateTiket(tiketId, updatedData);
+      } catch (e) {
+        Get.snackbar(
+          'Error',
+          'Gagal mengupdate tiket: ${e.toString()}',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    }
   }
 }

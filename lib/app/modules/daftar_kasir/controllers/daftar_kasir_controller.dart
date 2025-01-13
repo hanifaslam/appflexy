@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:get_storage/get_storage.dart';
 
 class DaftarKasirController extends GetxController {
   var produkList = <Map<String, dynamic>>[].obs;
@@ -10,8 +11,10 @@ class DaftarKasirController extends GetxController {
   var pesananCount = 0.obs;
   var searchQuery = ''.obs;
   var isLoading = false.obs;
+  var selectedItems = <int>[].obs;
 
-  final String baseUrl = 'http://10.0.2.2:8000/api';
+  final String baseUrl = 'https://cheerful-distinct-fox.ngrok-free.app/api';
+  final box = GetStorage(); // GetStorage instance
 
   // Add filtered getters
   List<Map<String, dynamic>> get filteredProdukList {
@@ -50,117 +53,154 @@ class DaftarKasirController extends GetxController {
     super.onInit();
     fetchProdukList();
     fetchTiketList();
+    syncSelectedItems();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    clearPesananCount();
   }
 
   Future<void> fetchProdukList() async {
-    isLoading.value = true;
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/products'),
-        headers: {'Accept': 'application/json'},
-      );
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
-        produkList.value = List<Map<String, dynamic>>.from(data);
-      } else {
-        throw Exception('Failed to load products: ${response.statusCode}');
-      }
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to load products: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
+    await _fetchList('products', produkList);
   }
 
   Future<void> fetchTiketList() async {
+    await _fetchList('tikets', tiketList);
+  }
+
+  Future<void> _fetchList(
+      String endpoint, RxList<Map<String, dynamic>> list) async {
     isLoading.value = true;
     try {
+      final userId = box.read('user_id'); // Get user_id from storage
       final response = await http.get(
-        Uri.parse('$baseUrl/tikets'),
+        Uri.parse('$baseUrl/$endpoint'),
         headers: {'Accept': 'application/json'},
       );
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
-        tiketList.value = List<Map<String, dynamic>>.from(data);
+        list.value = List<Map<String, dynamic>>.from(data)
+            .where((item) => item['user_id'].toString() == userId.toString())
+            .toList();
       } else {
-        throw Exception('Failed to load tickets: ${response.statusCode}');
+        throw Exception('Failed to load $endpoint: ${response.statusCode}');
       }
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Failed to load tickets: $e',
+        'Failed to load $endpoint: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  void updateSearchQuery(String query) {
-    searchQuery.value = query.toLowerCase();
-  }
-
-  void addToPesanan(Map<String, dynamic> item) {
-    var existingItem = pesananList.firstWhereOrNull((pesanan) =>
-    pesanan['id'] == item['id'] &&
-        pesanan['type'] ==
-            (item.containsKey('namaProduk') ? 'produk' : 'tiket'));
-
-    if (existingItem != null) {
-      existingItem['quantity'] = (existingItem['quantity'] ?? 1) + 1;
-      pesananList.refresh();
-    } else {
-      pesananList.add({
-        'id': item['id'],
-        'name': item['namaProduk'] ?? item['namaTiket'],
-        'price': double.parse(item['hargaJual'].toString()),
-        'quantity': 1,
-        'type': item.containsKey('namaProduk') ? 'produk' : 'tiket',
-        'image': item['image'],
-      });
-    }
-
-    pesananCount.value = pesananList.length;
-    Get.snackbar(
-      'Added to Cart',
-      '${item['namaProduk'] ?? item['namaTiket']} added to cart',
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      duration: Duration(seconds: 2),
-    );
-  }
-
-  void removeFromPesanan(Map<String, dynamic> item) {
-    pesananList.removeWhere((pesanan) =>
-    pesanan['id'] == item['id'] && pesanan['type'] == item['type']);
-    pesananCount.value = pesananList.length;
-    Get.snackbar(
-      'Removed from Cart',
-      '${item['name']} removed from cart',
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-    );
-  }
-
-  void updateQuantity(int index, int newQuantity) {
-    if (index >= 0 && index < pesananList.length) {
-      if (newQuantity <= 0) {
-        removeFromPesanan(pesananList[index]);
-      } else {
-        pesananList[index]['quantity'] = newQuantity;
-        pesananList.refresh();
-      }
     }
   }
 
   void clearPesanan() {
     pesananList.clear();
+    selectedItems.clear();
     pesananCount.value = 0;
+  }
+
+  void clearPesananCount() {
+    pesananCount.value = 0;
+  }
+
+  // Add clearData method
+  void clearData() {
+    produkList.clear();
+    tiketList.clear();
+    pesananList.clear();
+    pesananCount.value = 0;
+    searchQuery.value = '';
+    isLoading.value = false;
+    selectedItems.clear();
+  }
+
+  // Add refreshData method
+  void refreshData() {
+    fetchProdukList();
+    fetchTiketList();
+  }
+
+  void onItemTap(Map<String, dynamic> item) {
+    // Handle item tap action
+    print('Item tapped: $item');
+  }
+
+  void addToCart(Map<String, dynamic> item) {
+    final itemId = item['id'];
+    final isProduct = item.containsKey('namaProduk');
+    final itemName = isProduct ? item['namaProduk'] : item['namaTiket'];
+
+    if (selectedItems.contains(itemId)) {
+      Get.snackbar(
+        'Item Sudah Ada',
+        '$itemName sudah ada dalam keranjang',
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
+      return;
+    } else {
+      final cartItem = {
+        ...item,
+        'quantity': 1,
+        'type': isProduct ? 'product' : 'ticket'
+      };
+
+      pesananList.add(cartItem);
+      selectedItems.add(itemId);
+      updatePesananCount();
+
+      Get.snackbar(
+        'Berhasil',
+        '$itemName ditambahkan ke keranjang',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
+    }
+    update();
+  }
+
+  void updateQuantity(int index, int newQuantity) {
+    if (index >= 0 && index < pesananList.length) {
+      pesananList[index]['quantity'] = newQuantity;
+      updatePesananCount();
+    }
+  }
+
+  void removeFromPesanan(Map<String, dynamic> item) {
+    pesananList.remove(item);
+    selectedItems.remove(item['id']);
+    updatePesananCount();
+    update(); // Memperbarui UI setelah perubahan data
+  }
+
+  void removeFromCart(Map<String, dynamic> item) {
+    pesananList.remove(item);
+    selectedItems.remove(item['id']);
+    updatePesananCount();
+    update(); // Memperbarui UI setelah perubahan data
+  }
+
+  void syncSelectedItems() {
+    selectedItems.clear();
+    for (var item in pesananList) {
+      selectedItems.add(item['id']); // Menyinkronkan ID yang ada di pesanan
+    }
+    update(); // Memperbarui UI
+  }
+
+  void updatePesananCount() {
+    pesananCount.value = pesananList.length;
+  }
+
+  String getToken() {
+    return box.read('token') ?? '';
   }
 }

@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import '../controllers/sales_history_controller.dart';
 import '../../../routes/app_pages.dart';
 
-class SalesHistoryPage extends StatelessWidget {
+class SalesHistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final SalesHistoryController salesController = Get.find<SalesHistoryController>();
+    final SalesHistoryController salesController =
+        Get.find<SalesHistoryController>();
 
     return Scaffold(
       backgroundColor: Color(0xFFFFFCF7),
@@ -23,16 +24,18 @@ class SalesHistoryPage extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Color(0xff213F84),
+        backgroundColor: Color(0xff181681),
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
         actions: [
           Obx(() {
             return DropdownButton<String>(
               value: salesController.filterType.value,
-              icon: Icon(Icons.more_vert, color: Colors.white), // Change to three dots icon
-              dropdownColor: Color(0xff213F84),
-              items: <String>['All', 'Weekly', 'Monthly', 'Yearly'].map((String value) {
+              icon: Icon(Icons.more_vert,
+                  color: Colors.white), // Change to three dots icon
+              dropdownColor: Color(0xff181681),
+              items: <String>['Semua', 'Mingguan', 'Bulanan', 'Tahunan']
+                  .map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value, style: TextStyle(color: Colors.white)),
@@ -88,7 +91,8 @@ class SalesHistoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSaleDetails(Map<String, dynamic> sale, SalesHistoryController salesController) {
+  Widget _buildSaleDetails(
+      Map<String, dynamic> sale, SalesHistoryController salesController) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
