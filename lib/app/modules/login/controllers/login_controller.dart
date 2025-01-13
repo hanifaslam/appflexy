@@ -30,17 +30,28 @@ class LoginController extends GetxController {
 
   // Handle login API request
   Future<Map<String, dynamic>> login(String email, String password) async {
+    if (email.isEmpty) {
+      Get.snackbar('Error', 'Email harus diisi!.',
+          icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3));
+      return {
+        'status': 'error',
+      };
+    }
+
+    if (password.isEmpty) {
+      Get.snackbar('Error', 'Password harus diisi!.',
+          icon: Icon(Icons.error, color: Colors.red,),
+          duration: const Duration(seconds: 3));
+      return {
+        'status': 'error',
+      };
+    }
+
     final url =
         Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/login');
 
     daftarKasirController.clearData();
-
-    if (email.isEmpty || password.isEmpty) {
-      return {
-        'status': 'error',
-        'message': 'Email dan password tidak boleh kosong.'
-      };
-    }
 
     showDialog(
         context: Get.context!,
@@ -93,12 +104,15 @@ class LoginController extends GetxController {
 
   // Handle error response from API
   Map<String, dynamic> _handleErrorResponse(http.Response response) {
-    if (response.headers['content-type']?.contains('application/json') ??
-        false) {
+    if (response.headers['content-type']?.contains('application/json') ?? false) {
       final errorData = json.decode(response.body);
-      final errorMessage = errorData['message'] ?? 'Email atau password salah.';
+      final errorMessage = errorData['message'];
       return {'status': 'error', 'message': errorMessage};
     } else {
+      Get.snackbar('Error', 'Email atau password salah.',
+          icon: Icon(Icons.error, color: Colors.red,),
+          snackPosition: SnackPosition.TOP,
+          duration: const Duration(seconds: 3));
       return {
         'status': 'error',
         'message': 'Email atau password salah.'
@@ -126,18 +140,18 @@ class LoginController extends GetxController {
           currentUser.value = userData;
         } else {
           Get.snackbar('Error', 'Data pengguna kosong.',
-              snackPosition: SnackPosition.BOTTOM,
+              snackPosition: SnackPosition.TOP,
               duration: const Duration(seconds: 3));
         }
       } else {
         Get.snackbar('Error',
             'Gagal mengambil data pengguna. Kode status: ${response.statusCode}',
-            snackPosition: SnackPosition.BOTTOM,
+            snackPosition: SnackPosition.TOP,
             duration: const Duration(seconds: 3));
       }
     } catch (e) {
       Get.snackbar('Error', 'Terjadi kesalahan: $e',
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 3));
     }
   }
