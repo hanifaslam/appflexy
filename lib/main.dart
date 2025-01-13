@@ -1,6 +1,7 @@
 import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
 import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 import 'package:apptiket/app/modules/pembayaran_cash/controllers/pembayaran_cash_controller.dart';
+import 'package:apptiket/app/modules/profile/controllers/profile_controller.dart';
 import 'package:apptiket/app/modules/tambah_produk/controllers/tambah_produk_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,14 +25,10 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final box = GetStorage();
+
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Application",
-      initialRoute: Routes.LOGIN,
-      getPages: AppPages.routes,
-    );
     return FutureBuilder(
       future: Future.delayed(Duration(seconds: 2)),
       builder: (context, snapshot) {
@@ -41,11 +38,25 @@ class MyApp extends StatelessWidget {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Application",
-            initialRoute: AppPages.INITIAL,
+            initialRoute: _getInitialRoute(),
             getPages: AppPages.routes,
           );
         }
       },
     );
+  }
+
+  String _getInitialRoute() {
+    final token = box.read('token');
+    final userId = box.read('user_id');
+    final needsProfile = box.read('needsProfile') ?? false;
+
+    if (token != null && userId != null) {
+      if (needsProfile) {
+        return Routes.PROFILE;
+      }
+      return Routes.HOME;
+    }
+    return Routes.LOGIN;
   }
 }

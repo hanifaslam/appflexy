@@ -34,28 +34,40 @@ class RegistrasiController extends GetxController {
         confirmPassword.isEmpty ||
         name.isEmpty) {
       Get.snackbar('Error', 'All fields are required.',
-          icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3));
       return;
     }
 
     if (!GetUtils.isEmail(email)) {
       Get.snackbar('Error', 'Invalid email address.',
-          icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3));
       return;
     }
 
     if (password.length < 8) {
       Get.snackbar('Error', 'Password must be at least 8 characters.',
-      icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3));
       return;
     }
 
     if (password != confirmPassword) {
       Get.snackbar('Error', 'Password confirmation does not match.',
-      icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3));
       return;
     }
@@ -64,7 +76,9 @@ class RegistrasiController extends GetxController {
         context: Get.context!,
         builder: (context) {
           return Center(
-            child: CircularProgressIndicator(color: Color(0xff181681),),
+            child: CircularProgressIndicator(
+              color: Color(0xff181681),
+            ),
           );
         });
 
@@ -93,12 +107,18 @@ class RegistrasiController extends GetxController {
         // Simpan token dan user_id ke storage
         box.write('token', token);
         box.write('user_id', userId);
+        box.write('isRegistered', true);
+        box.write('needsProfile', true); // Add this flag
+        box.remove('store_id'); // Remove store_id if exists
 
         print('Token: $token');
         print('User ID: $userId');
 
         Get.snackbar('Success', 'Registration successful!',
-        icon: Icon(Icons.check, color: Colors.green,),
+            icon: Icon(
+              Icons.check,
+              color: Colors.green,
+            ),
             duration: const Duration(seconds: 2));
 
         Get.offNamed(Routes.PROFILE);
@@ -109,7 +129,10 @@ class RegistrasiController extends GetxController {
       } else {
         var errorData = json.decode(response.body);
         Get.snackbar('Error', 'Registration failed: ${errorData.toString()}',
-            icon: Icon(Icons.error, color: Colors.red,),
+            icon: Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
             duration: const Duration(seconds: 3));
         Navigator.of(Get.context!).pop();
       }
