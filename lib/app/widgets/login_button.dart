@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../modules/login/controllers/login_controller.dart';
-import '../routes/app_pages.dart';
 
 class ProfileBtn extends StatefulWidget {
   @override
@@ -38,34 +36,7 @@ class _ProfileBtnState extends State<ProfileBtn> {
         String email = controller.emailController.text.trim();
         String password = controller.passwordController.text.trim();
 
-        // Ensure email and password are not empty
-        if (email.isNotEmpty && password.isNotEmpty) {
-          // Call the login API via the controller and wait for the result
-          var response = await controller.login(email, password);
-
-          if (response['status'] == 'success') {
-            // If login is successful, navigate to the profile page
-            Get.offAllNamed(Routes.HOME);
-          } else {
-            // If login fails, show an error message
-            Get.snackbar(
-              'Login Failed',
-              response['message'] ?? 'Incorrect email or password',
-              snackPosition: SnackPosition.TOP,
-              duration: const Duration(seconds: 3),
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
-          }
-        } else {
-          // If email or password is empty, show an error message
-          Get.snackbar(
-            'Error',
-            'Please enter email and password',
-            snackPosition: SnackPosition.TOP,
-            duration: const Duration(seconds: 3),
-          );
-        }
+        controller.login(email, password);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),

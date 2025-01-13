@@ -18,13 +18,13 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: _buildBody(),
-      floatingActionButton: _buildFloatingActionButton(),
+      floatingActionButton: _buildFloatingActionButton(context),
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: const Color(0xff181681),
       toolbarHeight: 90,
@@ -36,7 +36,7 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
       actions: [
         IconButton(
           icon: const Icon(Icons.more_vert, color: Colors.white),
-          onPressed: () => _showSortDialog(Get.context!),
+          onPressed: () => _showSortDialog(context),
         ),
       ],
     );
@@ -106,23 +106,21 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
   }
 
   Widget _buildTiketList() {
-    return Expanded(  // Changed from Flexible to Expanded
+    return Expanded(
       child: Container(
         color: Colors.white24,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: ListView.builder(
-            shrinkWrap: false, // Add this
-            physics: const AlwaysScrollableScrollPhysics(), // Add this
             itemCount: controller.filteredTiketList.length,
-            itemBuilder: (context, index) => _buildTiketCard(index),
+            itemBuilder: (context, index) => _buildTiketCard(context, index),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTiketCard(int index) {
+  Widget _buildTiketCard(BuildContext context, int index) {
     final tiket = controller.filteredTiketList[index];
     final double hargaJual =
         double.tryParse(tiket['hargaJual'].toString()) ?? 0.0;
@@ -155,20 +153,21 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
             subtitle: Text(
               'Stok: ${tiket['stok']} | ${currencyFormat.format(hargaJual)}',
             ),
-            trailing: _buildPopupMenu(index, tiket),
+            trailing: _buildPopupMenu(context, index, tiket),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildPopupMenu(int index, Map<String, dynamic> tiket) {
+  Widget _buildPopupMenu(
+      BuildContext context, int index, Map<String, dynamic> tiket) {
     return PopupMenuButton<String>(
       onSelected: (value) {
         if (value == 'edit') {
-          _editTiket(Get.context!, index, tiket);
+          _editTiket(context, index, tiket);
         } else if (value == 'delete') {
-          _showDeleteDialog(Get.context!, tiket['id']);
+          _showDeleteDialog(context, tiket['id']);
         }
       },
       itemBuilder: (BuildContext context) => [
@@ -196,30 +195,17 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
     );
   }
 
-  Widget _buildFloatingActionButton() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 6,
-            offset: const Offset(3, 5),
-          ),
-        ],
-      ),
-      child: FloatingActionButton(
-        elevation: 4,
-        backgroundColor: const Color(0xff181681),
-        onPressed: () async {
-          final result = await Get.to(() => TambahTiketView());
-          if (result != null) {
-            controller.fetchTikets();
-          }
-        },
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      elevation: 4,
+      backgroundColor: const Color(0xff181681),
+      onPressed: () async {
+        final result = await Get.to(() => TambahTiketView());
+        if (result != null) {
+          controller.fetchTikets();
+        }
+      },
+      child: const Icon(Icons.add, color: Colors.white),
     );
   }
 
