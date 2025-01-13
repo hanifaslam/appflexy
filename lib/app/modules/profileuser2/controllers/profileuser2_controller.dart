@@ -1,3 +1,4 @@
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -74,6 +75,12 @@ class Profileuser2Controller extends GetxController {
     return companyLogo.value.isEmpty
         ? 'assets/images/default_logo.png' // Default logo if none
         : companyLogo.value; // Logo path from storage
+  }
+
+  void logout() {
+    box.remove('token');
+    box.remove('user_id');
+    Get.offAllNamed(Routes.LOGIN);
   }
 
   // Function to get token

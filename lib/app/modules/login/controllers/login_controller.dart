@@ -1,5 +1,6 @@
 import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
 import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -57,7 +58,9 @@ class LoginController extends GetxController {
         context: Get.context!,
         builder: (context) {
           return Center(
-            child: CircularProgressIndicator(color: Color(0xff181681),),
+            child: CircularProgressIndicator(
+              color: Color(0xff181681),
+            ),
           );
         });
     try {
@@ -73,7 +76,6 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         Navigator.of(Get.context!).pop();
         return await _handleLoginSuccess(response);
-
       } else {
         Navigator.of(Get.context!).pop();
         return _handleErrorResponse(response);
@@ -93,9 +95,19 @@ class LoginController extends GetxController {
       final userId = data['user_id'];
       await saveTokenAndUserId(token, userId);
       await fetchCurrentUser(token);
-      // Setelah login berhasil, perbarui data toko
-      HomeController.to.fetchCompanyDetails();
-      Get.offAllNamed('/home');
+      // Check store existence
+      final storeExists = await checkStoreExists(token, userId);
+      final box = GetStorage();
+      final isRegistered = box.read('isRegistered') ?? false;
+
+      if (!isRegistered) {
+        Get.offAllNamed(Routes.REGISTRASI);
+      } else if (!storeExists) {
+        Get.offAllNamed(Routes.PROFILE);
+      } else {
+        HomeController.to.fetchCompanyDetails();
+        Get.offAllNamed(Routes.HOME);
+      }
       return {'status': 'success', 'message': 'Login successful'};
     } else {
       return {'status': 'error', 'message': 'Respons server tidak valid.'};
@@ -109,6 +121,7 @@ class LoginController extends GetxController {
       final errorMessage = errorData['message'];
       return {'status': 'error', 'message': errorMessage};
     } else {
+
       Get.snackbar('Error', 'Email atau password salah.',
           icon: Icon(Icons.error, color: Colors.red,),
           snackPosition: SnackPosition.TOP,
@@ -153,6 +166,33 @@ class LoginController extends GetxController {
       Get.snackbar('Error', 'Terjadi kesalahan: $e',
           snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 3));
+    }
+  }
+
+  Future<bool> checkStoreExists(String token, int userId) async {
+    try {
+      final box = GetStorage();
+      final response = await http.get(
+        Uri.parse(
+            'https://cheerful-distinct-fox.ngrok-free.app/api/stores/user/$userId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data != null && data['id'] != null) {
+          box.write('store_id', data['id']);
+          return true;
+        }
+      }
+      await box.remove('store_id');
+      return false;
+    } catch (e) {
+      print('Error checking store: $e');
+      return false;
     }
   }
 }

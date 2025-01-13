@@ -1,9 +1,17 @@
 import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 import 'dart:convert';
 
+class StorageKeys {
+  static const String token = 'token';
+  static const String userId = 'user_id';
+  static const String isProfileComplete = 'is_profile_complete';
+}
+
+// Modify your ProfileController
 class ProfileController extends GetxController {
   final box = GetStorage();
   var companyName = ''.obs;
@@ -17,19 +25,14 @@ class ProfileController extends GetxController {
           Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/stores');
       var request = http.MultipartRequest('POST', url);
 
-      // Tambahkan header Authorization
-      final token = box.read('token');
-      final userId = box.read('user_id');
+      final token = box.read(StorageKeys.token);
+      final userId = box.read(StorageKeys.userId);
 
       if (token == null || userId == null) {
         throw Exception('Token or User ID is missing');
       }
 
       request.headers['Authorization'] = 'Bearer $token';
-
-      // Debug print
-      print('Token: $token');
-      print('User ID: $userId');
 
       request.fields['nama_usaha'] = companyName.value;
       request.fields['jenis_usaha'] = companyType.value;
@@ -47,14 +50,15 @@ class ProfileController extends GetxController {
 
       var response = await request.send();
       var responseBody = await response.stream.bytesToString();
-      print('Response body: $responseBody'); // Debug print
-
       var responseData = json.decode(responseBody);
 
       if (response.statusCode == 201) {
+        // Mark profile as complete
+        box.remove('needsProfile');
         HomeController.to.fetchCompanyDetails();
         saveToStorage();
         Get.snackbar('Success', 'Profile updated successfully!');
+        Get.offAllNamed(Routes.HOME); // Navigate to home after success
       } else {
         Get.snackbar(
             'Error', 'Failed to update profile: ${responseData['message']}');
@@ -63,6 +67,11 @@ class ProfileController extends GetxController {
       print('Error: $e');
       Get.snackbar('Error', 'An error occurred: $e');
     }
+  }
+
+  // Add method to check if profile is complete
+  bool isProfileComplete() {
+    return box.read(StorageKeys.isProfileComplete) ?? false;
   }
 
   void saveToStorage() {

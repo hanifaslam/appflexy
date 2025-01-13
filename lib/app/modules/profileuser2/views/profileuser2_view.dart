@@ -406,6 +406,8 @@ class Profileuser2View extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Menutup dialog
+                GetStorage().remove('token');
+                GetStorage().remove('user_id');
                 Get.toNamed(Routes.LOGIN); // Pindah ke halaman login
               },
               style: ElevatedButton.styleFrom(
