@@ -16,17 +16,18 @@ class TambahTiketView extends StatefulWidget {
 
 class _TambahTiketViewState extends State<TambahTiketView> {
   final TextEditingController namaTiketController = TextEditingController();
-  final TextEditingController stokController = TextEditingController();
   final TextEditingController hargaJualController = TextEditingController();
   final TextEditingController keteranganController = TextEditingController();
   final TambahTiketController controller = Get.put(TambahTiketController());
+  int stok = 0;
+  bool showNominalOptions = false;
 
   @override
   void initState() {
     super.initState();
     if (widget.tiket != null) {
       namaTiketController.text = widget.tiket!['namaTiket'];
-      stokController.text = widget.tiket!['stok'].toString();
+      stok = widget.tiket!['stok'] ?? 0;
       hargaJualController.text = widget.tiket!['hargaJual'].toString();
       keteranganController.text = widget.tiket!['keterangan'];
     }
@@ -51,7 +52,9 @@ class _TambahTiketViewState extends State<TambahTiketView> {
       ),
       body: GestureDetector(
         onTap: () {
-          FocusScope.of(context).unfocus();
+          setState(() {
+            showNominalOptions = false; // Menutup dropdown jika area lain disentuh
+          });
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -89,28 +92,134 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(11),
                         borderSide:
-                            BorderSide(color: Color(0xff181681), width: 2.0)),
+                        BorderSide(color: Color(0xff181681), width: 2.0)),
                   ),
                 ),
                 const Gap(30),
-                TextField(
-                  controller: stokController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Bootstrap.box,
-                      color: Color(0xff181681),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 60,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xff181681), width: 2),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Bootstrap.box,
+                              color: Color(0xff181681),
+                            ),
+                            const SizedBox(width: 12),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  showNominalOptions = !showNominalOptions;
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Stok',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Color(0xff181681),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              stok.toString(),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    hintText: 'Stok',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
+                    const SizedBox(width: 8),
+                    Column(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              stok++;
+                            });
+                          },
+                          icon: Icon(
+                              Icons.add,
+                              color: Color(0xff181681),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (stok > 0) stok--;
+                            });
+                          },
+                          icon: Icon(Icons.remove, color: Color(0xff181681)),
+                        ),
+                      ],
                     ),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide:
-                            BorderSide(color: Color(0xff181681), width: 2.0)),
-                  ),
-                  keyboardType: TextInputType.number,
+                  ],
                 ),
+                if (showNominalOptions)
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Color(0xff181681), width: 1),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [5, 10, 20, 50, 100].map((value) {
+                        return ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              stok += value;
+                              showNominalOptions = false;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff181681),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            '$value',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 const Gap(30),
                 TextField(
                   controller: hargaJualController,
@@ -126,7 +235,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(11),
                         borderSide:
-                            BorderSide(color: Color(0xff181681), width: 2.0)),
+                        BorderSide(color: Color(0xff181681), width: 2.0)),
                   ),
                   keyboardType: TextInputType.number,
                 ),
@@ -142,7 +251,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(11),
                         borderSide:
-                            BorderSide(color: Color(0xff181681), width: 2.0)),
+                        BorderSide(color: Color(0xff181681), width: 2.0)),
                   ),
                   maxLines: 4,
                 ),
@@ -151,50 +260,47 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                   onPressed: controller.isLoading.value
                       ? null
                       : () {
-                          if (namaTiketController.text.isEmpty ||
-                              stokController.text.isEmpty ||
-                              hargaJualController.text.isEmpty ||
-                              keteranganController.text.isEmpty) {
-                            controller.errorMessage.value =
-                                "Semua kolom harus diisi!";
-                            return;
-                          }
+                    if (namaTiketController.text.isEmpty ||
+                        hargaJualController.text.isEmpty ||
+                        keteranganController.text.isEmpty) {
+                      controller.errorMessage.value =
+                      "Semua kolom harus diisi!";
+                      return;
+                    }
 
-                          final userId = controller.box
-                              .read('user_id'); // Get user_id from storage
+                    final userId = controller.box.read('user_id');
 
-                          Map<String, dynamic> tiketData = {
-                            'namaTiket': namaTiketController.text,
-                            'stok': int.tryParse(stokController.text) ?? 0,
-                            'hargaJual':
-                                double.tryParse(hargaJualController.text) ??
-                                    0.0,
-                            'keterangan': keteranganController.text,
-                            'user_id': userId,
-                          };
+                    Map<String, dynamic> tiketData = {
+                      'namaTiket': namaTiketController.text,
+                      'stok': stok,
+                      'hargaJual':
+                      double.tryParse(hargaJualController.text) ?? 0.0,
+                      'keterangan': keteranganController.text,
+                      'user_id': userId,
+                    };
 
-                          if (widget.tiket == null) {
-                            controller.addTiket(tiketData);
-                            Get.back(result: tiketData);
-                          } else {
-                            final tiketId = widget.tiket?['id'];
-                            if (tiketId != null) {
-                              controller.updateTiket(tiketId, tiketData);
-                              Get.back(result: tiketData);
-                            } else {
-                              controller.errorMessage.value =
-                                  "ID Tiket tidak valid untuk update.";
-                            }
-                          }
-                        },
+                    if (widget.tiket == null) {
+                      controller.addTiket(tiketData);
+                      Get.back(result: tiketData);
+                    } else {
+                      final tiketId = widget.tiket?['id'];
+                      if (tiketId != null) {
+                        controller.updateTiket(tiketId, tiketData);
+                        Get.back(result: tiketData);
+                      } else {
+                        controller.errorMessage.value =
+                        "ID Tiket tidak valid untuk update.";
+                      }
+                    }
+                  },
                   child: Obx(() => controller.isLoading.value
                       ? CircularProgressIndicator(color: Colors.white)
                       : Text(
-                          widget.tiket == null
-                              ? 'Tambah Tiket'
-                              : 'Edit Tiket',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        )),
+                    widget.tiket == null
+                        ? 'Tambah Tiket'
+                        : 'Edit Tiket',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  )),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff181681),
                     minimumSize: const Size(double.infinity, 50),
