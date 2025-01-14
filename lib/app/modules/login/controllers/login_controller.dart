@@ -76,6 +76,17 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         Navigator.of(Get.context!).pop();
         return await _handleLoginSuccess(response);
+      } else if (response.statusCode == 404) {
+        Navigator.of(Get.context!).pop();
+        Get.snackbar(
+          'Error',
+          'Tidak dapat terhubung ke server.',
+          snackPosition: SnackPosition.TOP,
+          duration: const Duration(seconds: 3),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return {'status': 'error', 'message': 'Tidak dapat terhubung ke server.'};
       } else {
         Navigator.of(Get.context!).pop();
         return _handleErrorResponse(response);
