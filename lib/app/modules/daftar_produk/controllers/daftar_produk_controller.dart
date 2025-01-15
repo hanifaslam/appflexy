@@ -22,7 +22,7 @@ class DaftarProdukController extends GetxController {
       isLoading.value = true;
       final userId = box.read('user_id'); // Get user_id from storage
       final response = await http.get(
-        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/products'),
+        Uri.parse('https://flexy.my.id/api/products'),
         headers: {'Accept': 'application/json'},
       );
 
@@ -54,7 +54,7 @@ class DaftarProdukController extends GetxController {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/products'),
+        Uri.parse('https://flexy.my.id/api/products'),
       );
 
       final userId = box.read('user_id'); // Get user_id from storage
@@ -101,8 +101,7 @@ class DaftarProdukController extends GetxController {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/products/$productId'),
+        Uri.parse('https://flexy.my.id/api/products/$productId'),
       );
 
       final userId = box.read('user_id'); // Get user_id from storage
@@ -154,8 +153,7 @@ class DaftarProdukController extends GetxController {
   Future<void> deleteProduct(int productId) async {
     try {
       final response = await http.delete(
-        Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/products/$productId'),
+        Uri.parse('https://flexy.my.id/api/products/$productId'),
         headers: {'Accept': 'application/json'},
       );
 

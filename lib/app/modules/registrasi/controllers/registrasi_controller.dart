@@ -83,8 +83,7 @@ class RegistrasiController extends GetxController {
         });
 
     try {
-      var url = Uri.parse(
-          'https://cheerful-distinct-fox.ngrok-free.app/api/register');
+      var url = Uri.parse('https://flexy.my.id/api/register');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},

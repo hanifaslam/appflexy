@@ -221,7 +221,7 @@ class DaftarProdukView extends StatelessWidget {
       if (produk['image'].toString().startsWith('http')) {
         return produk['image'];
       }
-      final baseUrl = 'https://cheerful-distinct-fox.ngrok-free.app';
+      final baseUrl = 'https://flexy.my.id';
       return '$baseUrl/storage/products/${produk['image']}';
     } catch (e) {
       print('Error generating image URL: $e');

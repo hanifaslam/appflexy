@@ -21,8 +21,7 @@ class ProfileController extends GetxController {
 
   Future<void> saveProfileToApi() async {
     try {
-      var url =
-          Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/stores');
+      var url = Uri.parse('https://flexy.my.id/api/stores');
       var request = http.MultipartRequest('POST', url);
 
       final token = box.read(StorageKeys.token);

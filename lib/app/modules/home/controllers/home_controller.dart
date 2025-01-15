@@ -45,7 +45,7 @@ class HomeController extends GetxController {
       }
 
       final response = await http.get(
-        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/stores'),
+        Uri.parse('https://flexy.my.id/api/stores'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -186,7 +186,7 @@ class HomeController extends GetxController {
 
       final response = await http.get(
         Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/orders?filter=$filter&user_id=$userId'),
+            'https://flexy.my.id/api/orders?filter=$filter&user_id=$userId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

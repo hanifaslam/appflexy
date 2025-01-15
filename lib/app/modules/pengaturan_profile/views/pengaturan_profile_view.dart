@@ -38,7 +38,7 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
         child: CachedNetworkImage(
           imageUrl: controller.companyLogo.value.startsWith('http')
               ? controller.companyLogo.value
-              : 'https://cheerful-distinct-fox.ngrok-free.app/storage/${controller.companyLogo.value}',
+              : 'https://flexy.my.id/storage/${controller.companyLogo.value}',
           width: 150,
           height: 150,
           fit: BoxFit.cover,

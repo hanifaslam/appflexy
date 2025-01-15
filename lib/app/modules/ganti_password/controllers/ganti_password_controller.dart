@@ -65,8 +65,7 @@ class GantiPasswordController extends GetxController {
       }
 
       final response = await http.post(
-        Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/change-password'),
+        Uri.parse('https://flexy.my.id/api/change-password'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

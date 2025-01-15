@@ -20,8 +20,8 @@ class Profileuser2Controller extends GetxController {
   // Fetch company details from the API
   Future<void> fetchCompanyDetails() async {
     try {
-      final response = await http.get(
-          Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/stores'));
+      final response =
+          await http.get(Uri.parse('https://flexy.my.id/api/stores'));
 
       if (response.statusCode == 200) {
         final dynamic responseData = jsonDecode(response.body);

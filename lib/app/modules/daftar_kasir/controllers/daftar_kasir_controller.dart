@@ -13,7 +13,7 @@ class DaftarKasirController extends GetxController {
   var isLoading = false.obs;
   var selectedItems = <int>[].obs;
 
-  final String baseUrl = 'https://cheerful-distinct-fox.ngrok-free.app/api';
+  final String baseUrl = 'https://flexy.my.id/api';
   final box = GetStorage(); // GetStorage instance
 
   // Add filtered getters
