@@ -244,91 +244,138 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildPieChartSection() {
     return Expanded(
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(37),
-            topRight: Radius.circular(37),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              spreadRadius: 2,
-              blurRadius: 8,
-              offset: const Offset(0, -3),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(), // Menggunakan BouncingScrollPhysics untuk efek scroll yang lebih halus
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.98), // Warna lebih solid
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(40),
+              topRight: Radius.circular(40),
             ),
-          ],
-        ),
-        child: Obx(() {
-          if (homeController.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (homeController.pieChartData.isEmpty) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 25.0),
-                  child: Icon(
-                    CupertinoIcons.cube_box,
-                    size: 150,
-                    color: Colors.grey,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                spreadRadius: 1,
+                blurRadius: 12,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          child: Obx(() {
+            if (homeController.isLoading.value) {
+              return Container(
+                height: Get.height * 0.65,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xff181681)),
+                    strokeWidth: 3,
                   ),
                 ),
-                const SizedBox(height: 10),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50.0),
-                  child: Text(
-                    'Tidak ada data pesanan yang dapat ditampilkan.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.italic,
+              );
+            } else if (homeController.pieChartData.isEmpty) {
+              return Container(
+                height: Get.height * 0.65,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        CupertinoIcons.cube_box,
+                        size: 80,
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            );
-          } else {
-            return Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Catatan Penjualan',
+                    const SizedBox(height: 24),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      child: const Text(
+                        'Tidak ada data pesanan yang dapat ditampilkan.',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          height: 1.5,
+                          color: Color(0xFF757575),
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      DropdownButton<String>(
-                        value: homeController.selectedFilter.value,
-                        items: <String>['Harian', 'Mingguan', 'Bulanan']
-                            .map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          homeController.onFilterChanged(newValue!);
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                _buildPieChart(),
-              ],
-            );
-          }
-        }),
+              );
+            } else {
+              return Container(
+                height: Get.height * 0.65,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(top: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Catatan Penjualan',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2D2D2D),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            child: DropdownButton<String>(
+                              value: homeController.selectedFilter.value,
+                              underline: SizedBox(),
+                              icon: Icon(Icons.keyboard_arrow_down, size: 20),
+                              items: <String>['Harian', 'Mingguan', 'Bulanan']
+                                  .map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF2D2D2D),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                homeController.onFilterChanged(newValue!);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(child: _buildPieChart()),
+                  ],
+                ),
+              );
+            }
+          }),
+        ),
       ),
     );
   }
