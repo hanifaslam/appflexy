@@ -3,6 +3,7 @@ import 'package:apptiket/app/widgets/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../registrasi/views/registrasi_view.dart';
 import '../controllers/login_controller.dart';
 
@@ -135,7 +136,7 @@ class LoginView extends GetView<LoginController> {
                         ),
                         GestureDetector(
                             onTap: () {
-                              Get.to(() => RegistrasiView());
+                              Get.offAllNamed(Routes.REGISTRASI);
                             },
                             child: Text(
                               'Daftar disini',

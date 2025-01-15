@@ -96,23 +96,19 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildContent() {
-    return RefreshIndicator(
-      onRefresh: () async {
-        // Refresh the data when the user pulls down to refresh
-        await homeController.fetchCompanyDetails();
-        await homeController
-            .fetchPieChartData(homeController.selectedFilter.value);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(top: 10),
-        child: Column(
-          children: [
-            _buildUserInfoSection(),
-            const SizedBox(height: 20),
-            _buildPieChartSection(),
-          ],
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 10),
+          child: Column(
+            children: [
+              _buildUserInfoSection(),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
-      ),
+        _buildPieChartSection(),
+      ],
     );
   }
 
@@ -243,140 +239,153 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildPieChartSection() {
-    return Expanded(
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(), // Menggunakan BouncingScrollPhysics untuk efek scroll yang lebih halus
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.98), // Warna lebih solid
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(40),
-              topRight: Radius.circular(40),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                spreadRadius: 1,
-                blurRadius: 12,
-                offset: const Offset(0, -4),
+    return DraggableScrollableSheet(
+      initialChildSize: 0.5,
+      minChildSize: 0.5,
+      // Increase maxChildSize to allow more space when dragged up
+      maxChildSize: 0.7,
+      snap: true,
+      builder: (BuildContext context, ScrollController scrollController) {
+        return NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (OverscrollIndicatorNotification overscroll) {
+            overscroll.disallowIndicator();
+            return true;
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.98),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
               ),
-            ],
-          ),
-          child: Obx(() {
-            if (homeController.isLoading.value) {
-              return Container(
-                height: Get.height * 0.65,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xff181681)),
-                    strokeWidth: 3,
-                  ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  spreadRadius: 1,
+                  blurRadius: 12,
+                  offset: const Offset(0, -4),
                 ),
-              );
-            } else if (homeController.pieChartData.isEmpty) {
-              return Container(
-                height: Get.height * 0.65,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(25),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        CupertinoIcons.cube_box,
-                        size: 80,
-                        color: Colors.grey,
+              ],
+            ),
+            // Wrap content in SingleChildScrollView to handle overflow
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Obx(() {
+                if (homeController.isLoading.value) {
+                  return SizedBox(
+                    height: Get.height * 0.65,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xff181681)),
+                        strokeWidth: 3,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 40),
-                      child: const Text(
-                        'Tidak ada data pesanan yang dapat ditampilkan.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          height: 1.5,
-                          color: Color(0xFF757575),
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
+                  );
+                } else if (homeController.pieChartData.isEmpty) {
+                  return SizedBox(
+                    height: Get.height * 0.65,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(25),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            CupertinoIcons.cube_box,
+                            size: 80,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 40),
+                          child: const Text(
+                            'Tidak ada data pesanan yang dapat ditampilkan.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              height: 1.5,
+                              color: Color(0xFF757575),
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min, // Add this to ensure column takes minimum required space
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 4,
+                        margin: const EdgeInsets.only(top: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return Container(
-                height: Get.height * 0.65,
-                child: Column(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(top: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Catatan Penjualan',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF2D2D2D),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Catatan Penjualan',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF2D2D2D),
+                              ),
                             ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            child: DropdownButton<String>(
-                              value: homeController.selectedFilter.value,
-                              underline: SizedBox(),
-                              icon: Icon(Icons.keyboard_arrow_down, size: 20),
-                              items: <String>['Harian', 'Mingguan', 'Bulanan']
-                                  .map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color(0xFF2D2D2D),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              child: DropdownButton<String>(
+                                value: homeController.selectedFilter.value,
+                                underline: SizedBox(),
+                                icon: Icon(Icons.keyboard_arrow_down, size: 20),
+                                items: <String>['Harian', 'Mingguan', 'Bulanan']
+                                    .map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xFF2D2D2D),
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                homeController.onFilterChanged(newValue!);
-                              },
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  homeController.onFilterChanged(newValue!);
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(child: _buildPieChart()),
-                  ],
-                ),
-              );
-            }
-          }),
-        ),
-      ),
+                      _buildPieChart(),
+                      // Add bottom padding to ensure content isn't cut off when scrolled
+                      SizedBox(height: 24),
+                    ],
+                  );
+                }
+              }),
+            ),
+          ),
+        );
+      },
     );
   }
 

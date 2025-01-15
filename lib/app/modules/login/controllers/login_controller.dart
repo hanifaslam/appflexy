@@ -126,9 +126,10 @@ class LoginController extends GetxController {
             'needsProfile', false); // User sudah terdaftar, langsung ke home
       }
 
-      if (!isRegistered) {
-        Get.offAllNamed(Routes.REGISTRASI);
-      } else {
+      if (isRegistered) {
+        Get.offAllNamed(Routes.HOME);
+      }
+      else {
         HomeController.to.fetchCompanyDetails();
         Get.offAllNamed(Routes.HOME);
       }

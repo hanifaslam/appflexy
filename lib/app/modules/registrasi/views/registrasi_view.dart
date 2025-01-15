@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:apptiket/app/widgets/register_button.dart';
 
+import '../../../routes/app_pages.dart';
+
 class RegistrasiView extends GetView<RegistrasiController> {
   final RegistrasiController controller = Get.put(RegistrasiController());
 
@@ -14,7 +16,7 @@ class RegistrasiView extends GetView<RegistrasiController> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Get.back();
+            Get.offAllNamed(Routes.LOGIN);
           },
         ),
         title: Text('Register'), // Set the title of the page
