@@ -25,8 +25,7 @@ class ManajemenTiketController extends GetxController {
 
   Future<void> fetchTikets() async {
     isLoading.value = true;
-    final url =
-        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/tikets');
+    final url = Uri.parse('https://flexy.my.id/api/tikets');
     final token = box.read('token');
     final userId = box.read('user_id');
 
@@ -83,8 +82,7 @@ class ManajemenTiketController extends GetxController {
   Future<void> deleteTiket(int tiketId) async {
     try {
       final response = await http.delete(
-        Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/tikets/$tiketId'),
+        Uri.parse('https://flexy.my.id/api/tikets/$tiketId'),
         headers: {
           'Authorization': 'Bearer ${box.read('token')}',
         },
@@ -115,8 +113,7 @@ class ManajemenTiketController extends GetxController {
       };
 
       final response = await http.put(
-        Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/tikets/$id'),
+        Uri.parse('https://flexy.my.id/api/tikets/$id'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

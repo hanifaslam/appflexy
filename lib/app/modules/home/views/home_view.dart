@@ -488,7 +488,7 @@ class _HomeViewState extends State<HomeView> {
       child: CachedNetworkImage(
         imageUrl: imageUrl.startsWith('http')
             ? imageUrl
-            : 'https://cheerful-distinct-fox.ngrok-free.app/storage/$imageUrl',
+            : 'https://flexy.my.id/storage/$imageUrl',
         width: 50,
         height: 50,
         fit: BoxFit.cover,

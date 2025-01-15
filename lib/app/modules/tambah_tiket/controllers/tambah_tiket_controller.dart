@@ -14,7 +14,7 @@ class TambahTiketController extends GetxController {
   Future<void> addTiket(Map<String, dynamic> tiketData) async {
     isLoading.value = true;
     final response = await http.post(
-      Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/tikets'),
+      Uri.parse('https://flexy.my.id/api/tikets'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -26,7 +26,9 @@ class TambahTiketController extends GetxController {
         context: Get.context!,
         builder: (context) {
           return Center(
-            child: CircularProgressIndicator(color: Color(0xff181681),),
+            child: CircularProgressIndicator(
+              color: Color(0xff181681),
+            ),
           );
         });
 
@@ -36,7 +38,10 @@ class TambahTiketController extends GetxController {
       Get.snackbar('Sukses', 'Tiket berhasil ditambahkan!',
           colorText: Colors.black.withOpacity(0.8),
           barBlur: 15,
-          icon: Icon(Icons.check, color: Colors.green,),
+          icon: Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
           duration: const Duration(seconds: 2),
           snackPosition: SnackPosition.TOP);
       Navigator.of(Get.context!).pop();
@@ -45,7 +50,10 @@ class TambahTiketController extends GetxController {
       Get.snackbar('Error', errorMessage.value,
           colorText: Colors.black.withOpacity(0.8),
           barBlur: 15,
-          icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3),
           snackPosition: SnackPosition.TOP);
       Navigator.of(Get.context!).pop();
@@ -56,7 +64,7 @@ class TambahTiketController extends GetxController {
   Future<void> updateTiket(int id, Map<String, dynamic> tiketData) async {
     isLoading.value = true;
     final response = await http.put(
-      Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/tikets/$id'),
+      Uri.parse('https://flexy.my.id/api/tikets/$id'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -68,7 +76,9 @@ class TambahTiketController extends GetxController {
         context: Get.context!,
         builder: (context) {
           return Center(
-            child: CircularProgressIndicator(color: Color(0xff181681),),
+            child: CircularProgressIndicator(
+              color: Color(0xff181681),
+            ),
           );
         });
 
@@ -77,7 +87,10 @@ class TambahTiketController extends GetxController {
       Get.snackbar('Sukses', 'Tiket berhasil diperbarui!',
           colorText: Colors.black.withOpacity(0.8),
           barBlur: 15,
-          icon: Icon(Icons.check, color: Colors.green,),
+          icon: Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
           duration: const Duration(seconds: 2),
           snackPosition: SnackPosition.TOP);
       Navigator.of(Get.context!).pop();
@@ -86,7 +99,10 @@ class TambahTiketController extends GetxController {
       Get.snackbar('Error', errorMessage.value,
           colorText: Colors.black.withOpacity(0.8),
           barBlur: 15,
-          icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3),
           snackPosition: SnackPosition.TOP);
       Navigator.of(Get.context!).pop();

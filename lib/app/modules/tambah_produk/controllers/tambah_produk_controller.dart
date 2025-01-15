@@ -58,7 +58,7 @@ class TambahProdukController extends GetxController {
 
   Future<void> addProduct() async {
     final Uri apiUrl = Uri.parse(
-        'https://cheerful-distinct-fox.ngrok-free.app/api/products'); // Ganti dengan endpoint API Anda
+        'https://flexy.my.id/api/products'); // Ganti dengan endpoint API Anda
     final userId = box.read('user_id'); // Get user_id from storage
 
     try {
@@ -92,7 +92,10 @@ class TambahProdukController extends GetxController {
         Get.snackbar('Success', 'Produk berhasil ditambahkan',
             colorText: Colors.black.withOpacity(0.8),
             barBlur: 15,
-            icon: Icon(Icons.check, color: Colors.green,),
+            icon: Icon(
+              Icons.check,
+              color: Colors.green,
+            ),
             duration: const Duration(seconds: 2),
             snackPosition: SnackPosition.TOP);
         clearFields();
@@ -103,7 +106,10 @@ class TambahProdukController extends GetxController {
         Get.snackbar('Error', 'Gagal menambahkan produk: ${responseData.body}',
             colorText: Colors.black.withOpacity(0.8),
             barBlur: 15,
-            icon: Icon(Icons.error, color: Colors.red,),
+            icon: Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
             duration: const Duration(seconds: 3),
             snackPosition: SnackPosition.TOP);
       }
@@ -112,7 +118,10 @@ class TambahProdukController extends GetxController {
       Get.snackbar('Error', 'An error occurred: $error',
           colorText: Colors.black.withOpacity(0.8),
           barBlur: 15,
-          icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3),
           snackPosition: SnackPosition.TOP);
     }

@@ -10,7 +10,7 @@ import '../../../widgets/pdfpreview_page.dart';
 
 class ApiEndpoints {
   static const String baseUrl =
-      'https://cheerful-distinct-fox.ngrok-free.app'; // Replace with your actual base URL
+      'https://flexy.my.id'; // Replace with your actual base URL
 }
 
 class KasirController extends GetxController {
@@ -242,11 +242,11 @@ class KasirController extends GetxController {
     return pesananList.map((item) {
       final index = pesananList.indexOf(item);
       return OrderItem(
-        name: item['type'] == 'product' ? item['namaProduk'] : item['namaTiket'],
+        name:
+            item['type'] == 'product' ? item['namaProduk'] : item['namaTiket'],
         quantity: localQuantities[index].value,
         price: double.tryParse(item['hargaJual'].toString()) ?? 0.0,
       );
     }).toList();
   }
-
 }

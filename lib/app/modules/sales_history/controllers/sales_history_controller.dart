@@ -39,8 +39,7 @@ class SalesHistoryController extends GetxController {
       }
 
       final response = await http.get(
-        Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/orders?user_id=$userId'),
+        Uri.parse('https://flexy.my.id/api/orders?user_id=$userId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

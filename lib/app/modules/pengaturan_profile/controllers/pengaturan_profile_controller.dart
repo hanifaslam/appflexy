@@ -35,7 +35,7 @@ class PengaturanProfileController extends GetxController {
       }
 
       final response = await http.get(
-        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/stores'),
+        Uri.parse('https://flexy.my.id/api/stores'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -85,8 +85,7 @@ class PengaturanProfileController extends GetxController {
 
       var request = http.MultipartRequest(
         'POST', // Change to POST
-        Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/stores/$storeId'),
+        Uri.parse('https://flexy.my.id/api/stores/$storeId'),
       );
 
       request.headers.addAll({
@@ -122,7 +121,9 @@ class PengaturanProfileController extends GetxController {
           context: Get.context!,
           builder: (context) {
             return Center(
-              child: CircularProgressIndicator(color: Color(0xff181681),),
+              child: CircularProgressIndicator(
+                color: Color(0xff181681),
+              ),
             );
           });
 

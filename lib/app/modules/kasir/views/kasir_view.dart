@@ -151,7 +151,7 @@ class _KasirViewState extends State<KasirView> {
           child: CachedNetworkImage(
             imageUrl: item['image'].startsWith('http')
                 ? item['image']
-                : 'https://cheerful-distinct-fox.ngrok-free.app/storage/${item['image']}',
+                : 'https://flexy.my.id/storage/${item['image']}',
             fit: BoxFit.cover,
             placeholder: (context, url) => _buildLoadingPlaceholder(),
             errorWidget: (context, url, error) => _buildErrorImage(),

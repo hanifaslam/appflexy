@@ -38,8 +38,7 @@ class EditProdukController extends GetxController {
 
   String? getImageUrl() {
     if (existingImage != null && existingImage!.isNotEmpty) {
-      final baseUrl =
-          'https://cheerful-distinct-fox.ngrok-free.app/storage/products/';
+      final baseUrl = 'https://flexy.my.id/storage/products/';
       return '$baseUrl$existingImage';
     }
     return null;
@@ -60,8 +59,7 @@ class EditProdukController extends GetxController {
   }
 
   Future<void> updateProduct(int productId) async {
-    final Uri apiUrl = Uri.parse(
-        'https://cheerful-distinct-fox.ngrok-free.app/api/products/$productId');
+    final Uri apiUrl = Uri.parse('https://flexy.my.id/api/products/$productId');
     final userId = box.read('user_id');
 
     // Validasi input

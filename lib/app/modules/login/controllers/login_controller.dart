@@ -33,7 +33,10 @@ class LoginController extends GetxController {
   Future<Map<String, dynamic>> login(String email, String password) async {
     if (email.isEmpty) {
       Get.snackbar('Error', 'Email harus diisi!.',
-          icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3));
       return {
         'status': 'error',
@@ -42,15 +45,17 @@ class LoginController extends GetxController {
 
     if (password.isEmpty) {
       Get.snackbar('Error', 'Password harus diisi!.',
-          icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           duration: const Duration(seconds: 3));
       return {
         'status': 'error',
       };
     }
 
-    final url =
-        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/login');
+    final url = Uri.parse('https://flexy.my.id/api/login');
 
     daftarKasirController.clearData();
 
@@ -86,7 +91,10 @@ class LoginController extends GetxController {
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
-        return {'status': 'error', 'message': 'Tidak dapat terhubung ke server.'};
+        return {
+          'status': 'error',
+          'message': 'Tidak dapat terhubung ke server.'
+        };
       } else {
         Navigator.of(Get.context!).pop();
         return _handleErrorResponse(response);
@@ -106,15 +114,20 @@ class LoginController extends GetxController {
       final userId = data['user_id'];
       await saveTokenAndUserId(token, userId);
       await fetchCurrentUser(token);
-      // Check store existence
-      final storeExists = await checkStoreExists(token, userId);
+
       final box = GetStorage();
       final isRegistered = box.read('isRegistered') ?? false;
 
+      // Hanya set needsProfile ke true jika user belum terdaftar
+      if (!isRegistered) {
+        await box.write('needsProfile', true);
+      } else {
+        await box.write(
+            'needsProfile', false); // User sudah terdaftar, langsung ke home
+      }
+
       if (!isRegistered) {
         Get.offAllNamed(Routes.REGISTRASI);
-      } else if (!storeExists) {
-        Get.offAllNamed(Routes.PROFILE);
       } else {
         HomeController.to.fetchCompanyDetails();
         Get.offAllNamed(Routes.HOME);
@@ -127,27 +140,26 @@ class LoginController extends GetxController {
 
   // Handle error response from API
   Map<String, dynamic> _handleErrorResponse(http.Response response) {
-    if (response.headers['content-type']?.contains('application/json') ?? false) {
+    if (response.headers['content-type']?.contains('application/json') ??
+        false) {
       final errorData = json.decode(response.body);
       final errorMessage = errorData['message'];
       return {'status': 'error', 'message': errorMessage};
     } else {
-
       Get.snackbar('Error', 'Email atau password salah.',
-          icon: Icon(Icons.error, color: Colors.red,),
+          icon: Icon(
+            Icons.error,
+            color: Colors.red,
+          ),
           snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 3));
-      return {
-        'status': 'error',
-        'message': 'Email atau password salah.'
-      };
+      return {'status': 'error', 'message': 'Email atau password salah.'};
     }
   }
 
   // Fetch current user data from the API
   Future<void> fetchCurrentUser(String token) async {
-    final url =
-        Uri.parse('https://cheerful-distinct-fox.ngrok-free.app/api/user');
+    final url = Uri.parse('https://flexy.my.id/api/user');
 
     try {
       final response = await http.get(
@@ -184,8 +196,7 @@ class LoginController extends GetxController {
     try {
       final box = GetStorage();
       final response = await http.get(
-        Uri.parse(
-            'https://cheerful-distinct-fox.ngrok-free.app/api/stores/user/$userId'),
+        Uri.parse('https://flexy.my.id/api/stores/user/$userId'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
