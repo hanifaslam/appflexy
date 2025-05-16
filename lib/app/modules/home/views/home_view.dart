@@ -12,7 +12,10 @@ import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
+import 'package:apptiket/app/core/utils/auto_responsive.dart';
+
+import '../../../core/utils/cloud_painter.dart';
+import '../../../core/utils/wave_painter.dart'; // tambahkan import ini
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -70,30 +73,161 @@ class _HomeViewState extends State<HomeView> {
   }
 
   AppBar _buildAppBar(AutoResponsive res) {
-    return AppBar(
-      toolbarHeight: res.hp(18),
-      backgroundColor: const Color(0xff181681),
-      elevation: 0,
-      title: Container(
-        padding: EdgeInsets.only(top: res.hp(0.5)),
-        child: Text(
-          "Flexy",
-          style: TextStyle(
-            fontFamily: 'Pacifico',
-            fontSize: res.sp(40),
-            fontWeight: FontWeight.normal,
-            color: Colors.white,
+  return AppBar(
+    toolbarHeight: res.hp(18),
+    backgroundColor: const Color(0xff181681),
+    elevation: 0,
+    title: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Tulisan Flexy
+        Container(
+          padding: EdgeInsets.only(top: res.hp(0.5)),
+          child: Text(
+            "Flexy",
+            style: TextStyle(
+              fontFamily: 'Pacifico',
+              fontSize: res.sp(40),
+              fontWeight: FontWeight.normal,
+              color: Colors.white,
+              shadows: [
+                Shadow(
+                  color: Colors.blueAccent.withOpacity(0.25),
+                  blurRadius: 12,
+                  offset: Offset(0, 4),
+                ),
+              ],
+              letterSpacing: 2,
+            ),
           ),
         ),
-      ),
-    );
-  }
+        // Modern, playful, gradient abstract art + soft cloud
+        Stack(
+          alignment: Alignment.bottomLeft,
+          children: [
+            // Blurred neon ellipse
+            Container(
+              width: res.wp(13),
+              height: res.hp(6.5),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF8EC5FC).withOpacity(0.85),
+                    const Color(0xFF6E61E6).withOpacity(0.65),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(res.wp(8)),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF8EC5FC).withOpacity(0.5),
+                    blurRadius: 30,
+                    spreadRadius: 4,
+                    offset: Offset(0, 8),
+                  ),
+                ],
+              ),
+            ),
+            // Wavy line overlay
+            Positioned(
+              top: res.hp(1.2),
+              left: res.wp(2.5),
+              child: Transform.rotate(
+                angle: 0.3,
+                child: Container(
+                  width: res.wp(7),
+                  height: res.hp(1.2),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFF6E61E6).withOpacity(0.7),
+                        const Color(0xFF8EC5FC).withOpacity(0.7),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+            // Dot accent
+            Positioned(
+              right: res.wp(1.5),
+              bottom: res.hp(0.7),
+              child: Container(
+                width: res.wp(1.7),
+                height: res.wp(1.7),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6E61E6).withOpacity(0.8),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF6E61E6).withOpacity(0.25),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Soft cloud shape (awan)
+            Positioned(
+              left: res.wp(5),
+              bottom: res.hp(0.5),
+              child: Opacity(
+                opacity: 1,
+                child: CustomPaint(
+                  size: Size(res.wp(8), res.hp(2.5)),
+                  painter: CloudPainter(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildBackground(AutoResponsive res) {
-    return Container(
-      height: res.height,
-      width: res.width,
-      color: const Color(0xff181681),
+    return Stack(
+      children: [
+        // Main dark blue background
+        Container(
+          height: res.height,
+          width: res.width,
+          color: const Color(0xff181681),
+        ),
+        // Top-right abstract wave
+        Positioned(
+          top: -res.hp(8),
+          right: -res.wp(20),
+          child: CustomPaint(
+            size: Size(res.wp(80), res.hp(30)),
+            painter: WavePainter(
+              colors: [
+                const Color(0xFF8EC5FC).withOpacity(0.22), // Light blue
+                const Color(0xFF6E61E6).withOpacity(0.18), // Purple
+              ],
+            ),
+          ),
+        ),
+        // Bottom-right abstract wave
+        Positioned(
+          bottom: -res.hp(10),
+          right: -res.wp(25),
+          child: CustomPaint(
+            size: Size(res.wp(100), res.hp(35)),
+            painter: WavePainter(
+              colors: [
+                const Color(0xFF8EC5FC).withOpacity(0.16),
+                const Color(0xFF6E61E6).withOpacity(0.13),
+              ],
+              reverse: true,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -590,3 +724,4 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+
