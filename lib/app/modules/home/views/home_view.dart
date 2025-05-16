@@ -12,6 +12,7 @@ import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -33,20 +34,21 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    homeController.fetchPieChartData(homeController
-        .selectedFilter.value); // Fetch pie chart data when initializing
-    homeController.fetchCompanyDetails(); // Fetch store data when initializing
+    homeController.fetchPieChartData(homeController.selectedFilter.value);
+    homeController.fetchCompanyDetails();
   }
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       backgroundColor: const Color(0xff181681),
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(res),
       body: Stack(
         children: [
-          _buildBackground(),
-          _buildContent(),
+          _buildBackground(res),
+          _buildContent(res),
         ],
       ),
       bottomNavigationBar: CustomNavigationBar(
@@ -67,18 +69,18 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(AutoResponsive res) {
     return AppBar(
-      toolbarHeight: 150,
+      toolbarHeight: res.hp(18),
       backgroundColor: const Color(0xff181681),
       elevation: 0,
       title: Container(
-        padding: const EdgeInsets.only(top: 5.0),
-        child: const Text(
+        padding: EdgeInsets.only(top: res.hp(0.5)),
+        child: Text(
           "Flexy",
           style: TextStyle(
             fontFamily: 'Pacifico',
-            fontSize: 50,
+            fontSize: res.sp(40),
             fontWeight: FontWeight.normal,
             color: Colors.white,
           ),
@@ -87,37 +89,37 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildBackground() {
+  Widget _buildBackground(AutoResponsive res) {
     return Container(
-      height: Get.height,
-      width: Get.width,
+      height: res.height,
+      width: res.width,
       color: const Color(0xff181681),
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(AutoResponsive res) {
     return Stack(
       children: [
         Container(
-          margin: const EdgeInsets.only(top: 10),
+          margin: EdgeInsets.only(top: res.hp(1)),
           child: Column(
             children: [
-              _buildUserInfoSection(),
-              const SizedBox(height: 20),
+              _buildUserInfoSection(res),
+              SizedBox(height: res.hp(2)),
             ],
           ),
         ),
-        _buildPieChartSection(),
+        _buildPieChartSection(res),
       ],
     );
   }
 
-  Widget _buildUserInfoSection() {
+  Widget _buildUserInfoSection(AutoResponsive res) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 25),
+      margin: EdgeInsets.symmetric(horizontal: res.wp(6)),
       decoration: BoxDecoration(
         color: const Color(0xff365194).withOpacity(1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(res.wp(5)),
         boxShadow: const [
           BoxShadow(
             color: Colors.black26,
@@ -128,22 +130,26 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(res.wp(5)),
         child: Column(
           children: [
             Row(
               children: [
                 Obx(() {
                   if (homeController.isLoading.value) {
-                    return const CircularProgressIndicator();
+                    return SizedBox(
+                      width: res.wp(12),
+                      height: res.wp(12),
+                      child: const CircularProgressIndicator(),
+                    );
                   }
 
                   final storeData = homeController.storeData.value;
                   final imageUrl = storeData?['gambar'];
 
-                  return _buildProductImage(imageUrl ?? '');
+                  return _buildProductImage(imageUrl ?? '', res);
                 }),
-                const SizedBox(width: 10),
+                SizedBox(width: res.wp(3)),
                 Expanded(
                   child: Obx(() {
                     if (homeController.isLoading.value) {
@@ -151,24 +157,22 @@ class _HomeViewState extends State<HomeView> {
                     }
 
                     final storeData = homeController.storeData.value;
-                    print('Store data: $storeData'); // Debug print
                     return Text.rich(
                       TextSpan(
                         text: 'Selamat Datang, ',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Inter',
-                          fontSize: 18,
+                          fontSize: res.sp(14),
                         ),
                         children: <TextSpan>[
                           TextSpan(
-                            text: storeData?['nama_usaha'] ??
-                                'Nama tidak ditemukan',
-                            style: const TextStyle(
+                            text: storeData?['nama_usaha'] ?? 'Nama tidak ditemukan',
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                               fontFamily: 'Inter',
-                              fontSize: 18,
+                              fontSize: res.sp(14),
                             ),
                           ),
                         ],
@@ -180,12 +184,12 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: res.hp(1)),
             Container(
-              margin: const EdgeInsets.only(top: 10),
+              margin: EdgeInsets.only(top: res.hp(1)),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9),
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                borderRadius: BorderRadius.all(Radius.circular(res.wp(5))),
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
@@ -195,7 +199,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ],
               ),
-              padding: const EdgeInsets.symmetric(vertical: 15),
+              padding: EdgeInsets.symmetric(vertical: res.hp(2)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -205,6 +209,7 @@ class _HomeViewState extends State<HomeView> {
                     'Tiket',
                     const Color(0xffFFAF00),
                     Colors.white,
+                    res,
                     onTap: () {
                       Get.offAllNamed(Routes.MANAJEMEN_TIKET);
                     },
@@ -215,6 +220,7 @@ class _HomeViewState extends State<HomeView> {
                     'Penjualan',
                     const Color(0xff5475F9),
                     Colors.white,
+                    res,
                     onTap: () {
                       Get.offAllNamed(Routes.SALES_HISTORY);
                     },
@@ -225,6 +231,7 @@ class _HomeViewState extends State<HomeView> {
                     'Produk',
                     const Color(0xffF95454),
                     Colors.white,
+                    res,
                     onTap: () {
                       Get.offAllNamed(Routes.DAFTAR_PRODUK);
                     },
@@ -238,11 +245,10 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildPieChartSection() {
+  Widget _buildPieChartSection(AutoResponsive res) {
     return DraggableScrollableSheet(
       initialChildSize: 0.5,
       minChildSize: 0.5,
-      // Increase maxChildSize to allow more space when dragged up
       maxChildSize: 0.7,
       snap: true,
       builder: (BuildContext context, ScrollController scrollController) {
@@ -254,9 +260,9 @@ class _HomeViewState extends State<HomeView> {
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.98),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(res.wp(10)),
+                topRight: Radius.circular(res.wp(10)),
               ),
               boxShadow: [
                 BoxShadow(
@@ -267,13 +273,12 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ],
             ),
-            // Wrap content in SingleChildScrollView to handle overflow
             child: SingleChildScrollView(
               controller: scrollController,
               child: Obx(() {
                 if (homeController.isLoading.value) {
                   return SizedBox(
-                    height: Get.height * 0.65,
+                    height: res.hp(65),
                     child: Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Color(0xff181681)),
@@ -283,31 +288,31 @@ class _HomeViewState extends State<HomeView> {
                   );
                 } else if (homeController.pieChartData.isEmpty) {
                   return SizedBox(
-                    height: Get.height * 0.65,
+                    height: res.hp(65),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(25),
+                          padding: EdgeInsets.all(res.wp(7)),
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             CupertinoIcons.cube_box,
-                            size: 80,
+                            size: res.wp(18),
                             color: Colors.grey,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: res.hp(3)),
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: 40),
-                          child: const Text(
+                          margin: EdgeInsets.symmetric(horizontal: res.wp(10)),
+                          child: Text(
                             'Tidak ada data pesanan yang dapat ditampilkan.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: res.sp(14),
                               height: 1.5,
                               color: Color(0xFF757575),
                               fontFamily: 'Inter',
@@ -320,26 +325,31 @@ class _HomeViewState extends State<HomeView> {
                   );
                 } else {
                   return Column(
-                    mainAxisSize: MainAxisSize.min, // Add this to ensure column takes minimum required space
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 40,
-                        height: 4,
-                        margin: const EdgeInsets.only(top: 12),
+                        width: res.wp(10),
+                        height: res.hp(0.5),
+                        margin: EdgeInsets.only(top: res.hp(1.5)),
                         decoration: BoxDecoration(
                           color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(res.wp(2)),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        padding: EdgeInsets.fromLTRB(
+                          res.wp(6),
+                          res.hp(3),
+                          res.wp(6),
+                          res.hp(2),
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'Catatan Penjualan',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: res.sp(16),
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xFF2D2D2D),
                               ),
@@ -347,13 +357,16 @@ class _HomeViewState extends State<HomeView> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(res.wp(3)),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: res.wp(2),
+                                vertical: res.hp(0.3),
+                              ),
                               child: DropdownButton<String>(
                                 value: homeController.selectedFilter.value,
                                 underline: SizedBox(),
-                                icon: Icon(Icons.keyboard_arrow_down, size: 20),
+                                icon: Icon(Icons.keyboard_arrow_down, size: res.sp(16)),
                                 items: <String>['Harian', 'Mingguan', 'Bulanan']
                                     .map((String value) {
                                   return DropdownMenuItem<String>(
@@ -361,7 +374,7 @@ class _HomeViewState extends State<HomeView> {
                                     child: Text(
                                       value,
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: res.sp(12),
                                         color: Color(0xFF2D2D2D),
                                       ),
                                     ),
@@ -375,9 +388,8 @@ class _HomeViewState extends State<HomeView> {
                           ],
                         ),
                       ),
-                      _buildPieChart(),
-                      // Add bottom padding to ensure content isn't cut off when scrolled
-                      SizedBox(height: 24),
+                      _buildPieChart(res),
+                      SizedBox(height: res.hp(3)),
                     ],
                   );
                 }
@@ -389,15 +401,15 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildPieChart() {
+  Widget _buildPieChart(AutoResponsive res) {
     return Padding(
-      padding: const EdgeInsets.all(0.0),
+      padding: EdgeInsets.all(0.0),
       child: Column(
         children: [
-          const SizedBox(height: 38),
+          SizedBox(height: res.hp(5)),
           SizedBox(
-            width: 200,
-            height: 200,
+            width: res.wp(55),
+            height: res.wp(55),
             child: Stack(
               children: [
                 PieChart(
@@ -407,23 +419,23 @@ class _HomeViewState extends State<HomeView> {
                         color: data.color,
                         value: data.value,
                         title: '${data.value.toStringAsFixed(1)}%',
-                        radius: 50, // Reduced radius
-                        titleStyle: const TextStyle(
-                          fontSize: 10,
+                        radius: res.wp(14),
+                        titleStyle: TextStyle(
+                          fontSize: res.sp(10),
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       );
                     }).toList(),
                     sectionsSpace: 2,
-                    centerSpaceRadius: 75, // Increased center space radius
+                    centerSpaceRadius: res.wp(20),
                   ),
                 ),
                 Center(
                   child: Text(
                     'Total\nPesanan:\nRp. ${NumberFormat.currency(locale: 'id', symbol: '', decimalDigits: 0).format(homeController.totalOrders.value)}',
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: TextStyle(
+                      fontSize: res.sp(14),
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
@@ -442,7 +454,8 @@ class _HomeViewState extends State<HomeView> {
     String label1,
     String label2,
     Color circleColor,
-    Color iconColor, {
+    Color iconColor,
+    AutoResponsive res, {
     VoidCallback? onTap,
   }) {
     return GestureDetector(
@@ -451,8 +464,8 @@ class _HomeViewState extends State<HomeView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 70,
-            height: 70,
+            width: res.wp(18),
+            height: res.wp(18),
             decoration: BoxDecoration(
               color: circleColor,
               shape: BoxShape.circle,
@@ -460,23 +473,23 @@ class _HomeViewState extends State<HomeView> {
             child: Icon(
               icon,
               color: iconColor,
-              size: 35,
+              size: res.sp(22),
             ),
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: res.hp(0.7)),
           Text(
             label1,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.black,
-              fontSize: 16,
+              fontSize: res.sp(12),
               fontFamily: 'Inter',
             ),
           ),
           Text(
             label2,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.black,
-              fontSize: 16,
+              fontSize: res.sp(12),
               fontFamily: 'Inter',
             ),
           ),
@@ -485,26 +498,26 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildProductImage(String imageUrl) {
+  Widget _buildProductImage(String imageUrl, AutoResponsive res) {
     if (imageUrl.isEmpty) {
-      return _buildPlaceholderImage();
+      return _buildPlaceholderImage(res);
     }
 
     final token = homeController.getToken();
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(res.wp(4)),
       child: CachedNetworkImage(
         imageUrl: imageUrl.startsWith('http')
             ? imageUrl
             : 'https://flexy.my.id/storage/$imageUrl',
-        width: 50,
-        height: 50,
+        width: res.wp(12),
+        height: res.wp(12),
         fit: BoxFit.cover,
-        placeholder: (context, url) => _buildLoadingPlaceholder(),
+        placeholder: (context, url) => _buildLoadingPlaceholder(res),
         errorWidget: (context, url, error) {
           print('Error loading image: $error');
-          return _buildErrorImage();
+          return _buildErrorImage(res);
         },
         cacheManager: CacheManager(
           Config(
@@ -528,29 +541,29 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildPlaceholderImage() {
+  Widget _buildPlaceholderImage(AutoResponsive res) {
     return Container(
-      width: 50,
-      height: 50,
+      width: res.wp(12),
+      height: res.wp(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(res.wp(4)),
       ),
       child: Icon(
         Icons.image,
-        size: 30,
+        size: res.sp(18),
         color: Colors.grey[600],
       ),
     );
   }
 
-  Widget _buildLoadingPlaceholder() {
+  Widget _buildLoadingPlaceholder(AutoResponsive res) {
     return Container(
-      width: 50,
-      height: 50,
+      width: res.wp(12),
+      height: res.wp(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(res.wp(4)),
       ),
       child: Center(
         child: CircularProgressIndicator(
@@ -561,17 +574,17 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildErrorImage() {
+  Widget _buildErrorImage(AutoResponsive res) {
     return Container(
-      width: 50,
-      height: 50,
+      width: res.wp(12),
+      height: res.wp(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(res.wp(4)),
       ),
       child: Icon(
         Icons.broken_image,
-        size: 30,
+        size: res.sp(18),
         color: Colors.grey[600],
       ),
     );

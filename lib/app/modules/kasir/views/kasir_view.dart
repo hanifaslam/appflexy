@@ -14,6 +14,7 @@ import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_contr
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class KasirView extends StatefulWidget {
   final List<Map<String, dynamic>> pesananList;
@@ -64,6 +65,8 @@ class _KasirViewState extends State<KasirView> {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context); // responsive helper
+
     final NumberFormat currencyFormat = NumberFormat.currency(
       locale: 'id',
       symbol: 'Rp',
@@ -78,11 +81,12 @@ class _KasirViewState extends State<KasirView> {
             fontFamily: 'Inter',
             fontWeight: FontWeight.bold,
             color: Color(0xff181681),
+            fontSize: res.sp(18),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, size: res.sp(20)),
           onPressed: () {
             controller.daftarKasirController.updatePesananCount();
             Get.offAllNamed(Routes.DAFTAR_KASIR);
@@ -111,50 +115,50 @@ class _KasirViewState extends State<KasirView> {
           ),
           Expanded(
             child: controller.pesananList.isEmpty
-                ? _buildEmptyState()
-                : _buildOrderList(currencyFormat),
+                ? _buildEmptyState(res)
+                : _buildOrderList(currencyFormat, res),
           ),
-          _buildPaymentSection(currencyFormat),
+          _buildPaymentSection(currencyFormat, res),
         ],
       ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AutoResponsive res) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inbox, size: 100, color: Colors.grey),
-          SizedBox(height: 16),
-          Text('Tidak ada pesanan.', style: TextStyle(color: Colors.grey)),
+          Icon(Icons.inbox, size: res.wp(25), color: Colors.grey),
+          SizedBox(height: res.hp(2)),
+          Text('Tidak ada pesanan.', style: TextStyle(color: Colors.grey, fontSize: res.sp(15))),
         ],
       ),
     );
   }
 
-  Widget _buildOrderList(NumberFormat currencyFormat) {
+  Widget _buildOrderList(NumberFormat currencyFormat, AutoResponsive res) {
     return ListView.builder(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(res.wp(4)),
       itemCount: controller.pesananList.length,
-      itemBuilder: (context, index) => _buildOrderItem(index, currencyFormat),
+      itemBuilder: (context, index) => _buildOrderItem(index, currencyFormat, res),
     );
   }
 
-  Widget _buildProductImage(Map<String, dynamic> item) {
+  Widget _buildProductImage(Map<String, dynamic> item, AutoResponsive res) {
     if (item['image'] != null) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(res.wp(3)),
         child: SizedBox(
-          width: 50,
-          height: 50,
+          width: res.wp(13),
+          height: res.wp(13),
           child: CachedNetworkImage(
             imageUrl: item['image'].startsWith('http')
                 ? item['image']
                 : 'https://flexy.my.id/storage/${item['image']}',
             fit: BoxFit.cover,
-            placeholder: (context, url) => _buildLoadingPlaceholder(),
-            errorWidget: (context, url, error) => _buildErrorImage(),
+            placeholder: (context, url) => _buildLoadingPlaceholder(res),
+            errorWidget: (context, url, error) => _buildErrorImage(res),
             cacheManager: CacheManager(
               Config(
                 'customCacheKey',
@@ -169,24 +173,24 @@ class _KasirViewState extends State<KasirView> {
       );
     } else {
       return Container(
-        width: 50,
-        height: 50,
+        width: res.wp(13),
+        height: res.wp(13),
         decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(res.wp(3)),
         ),
-        child: Icon(Icons.image, color: Colors.grey[400]),
+        child: Icon(Icons.image, color: Colors.grey[400], size: res.sp(18)),
       );
     }
   }
 
-  Widget _buildLoadingPlaceholder() {
+  Widget _buildLoadingPlaceholder(AutoResponsive res) {
     return Container(
-      width: 50,
-      height: 50,
+      width: res.wp(13),
+      height: res.wp(13),
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(res.wp(3)),
       ),
       child: Center(
         child: CircularProgressIndicator(strokeWidth: 2),
@@ -194,19 +198,19 @@ class _KasirViewState extends State<KasirView> {
     );
   }
 
-  Widget _buildErrorImage() {
+  Widget _buildErrorImage(AutoResponsive res) {
     return Container(
-      width: 50,
-      height: 50,
+      width: res.wp(13),
+      height: res.wp(13),
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(res.wp(3)),
       ),
-      child: Icon(Icons.broken_image, color: Colors.grey[400]),
+      child: Icon(Icons.broken_image, color: Colors.grey[400], size: res.sp(18)),
     );
   }
 
-  Widget _buildOrderItem(int index, NumberFormat currencyFormat) {
+  Widget _buildOrderItem(int index, NumberFormat currencyFormat, AutoResponsive res) {
     if (controller.pesananList.isEmpty ||
         controller.localQuantities.isEmpty ||
         index >= controller.pesananList.length ||
@@ -222,10 +226,10 @@ class _KasirViewState extends State<KasirView> {
     final String formattedPrice = currencyFormat.format(hargaJual);
 
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.all(res.wp(3)),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(res.wp(2)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -240,20 +244,18 @@ class _KasirViewState extends State<KasirView> {
             children: [
               // Product Image with larger size
               Container(
-                width: 70,
-                height: 70,
+                width: res.wp(18),
+                height: res.wp(18),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(res.wp(1.5)),
                   color: Colors.grey[100],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: _buildProductImage(item),
+                  borderRadius: BorderRadius.circular(res.wp(1.5)),
+                  child: _buildProductImage(item, res),
                 ),
               ),
-
-              SizedBox(width: 12),
-
+              SizedBox(width: res.wp(3)),
               // Product Details
               Expanded(
                 child: Column(
@@ -263,7 +265,7 @@ class _KasirViewState extends State<KasirView> {
                     Text(
                       itemName,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: res.sp(14),
                         color: Colors.black87,
                       ),
                       maxLines: 1,
@@ -272,7 +274,7 @@ class _KasirViewState extends State<KasirView> {
                     Text(
                       formattedPrice,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: res.sp(14),
                         fontWeight: FontWeight.w500,
                         color: Colors.black87,
                       ),
@@ -282,22 +284,21 @@ class _KasirViewState extends State<KasirView> {
               ),
             ],
           ),
-
           // Bottom Controls
           Positioned(
             right: 0,
             bottom: 0,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.23,
+              width: res.wp(23),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.grey[300]!,
                   width: 1.0,
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(res.wp(4)),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-              margin: EdgeInsets.only(top: 8),
+              padding: EdgeInsets.symmetric(horizontal: res.wp(1), vertical: res.hp(0.5)),
+              margin: EdgeInsets.only(top: res.hp(1)),
               child: Obx(() {
                 if (controller.localQuantities.isEmpty ||
                     index >= controller.localQuantities.length) {
@@ -351,13 +352,13 @@ class _KasirViewState extends State<KasirView> {
                         }
                       },
                       child: Padding(
-                        padding: EdgeInsets.all(4),
+                        padding: EdgeInsets.all(res.wp(1)),
                         child: controller.getQuantityIcon(index),
                       ),
                     ),
                     Text(
                       '${controller.localQuantities[index].value}',
-                      style: TextStyle(fontSize: 14),
+                      style: TextStyle(fontSize: res.sp(14)),
                     ),
                     InkWell(
                       onTap: () {
@@ -365,10 +366,10 @@ class _KasirViewState extends State<KasirView> {
                         calculateTotal();
                       },
                       child: Padding(
-                        padding: EdgeInsets.all(4),
+                        padding: EdgeInsets.all(res.wp(1)),
                         child: Icon(
                           Icons.add,
-                          size: 18,
+                          size: res.sp(18),
                           color: Colors.grey[600],
                         ),
                       ),
@@ -383,9 +384,9 @@ class _KasirViewState extends State<KasirView> {
     );
   }
 
-  Widget _buildPaymentSection(NumberFormat currencyFormat) {
+  Widget _buildPaymentSection(NumberFormat currencyFormat, AutoResponsive res) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(res.wp(4)),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -400,12 +401,12 @@ class _KasirViewState extends State<KasirView> {
       child: Column(
         children: [
           InkWell(
-            onTap: () => _showPaymentMethodDialog(context),
+            onTap: () => _showPaymentMethodDialog(context, res),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: res.wp(4), vertical: res.hp(1.2)),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey[300]!),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(res.wp(2)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -417,12 +418,13 @@ class _KasirViewState extends State<KasirView> {
                             ? CupertinoIcons.money_dollar
                             : Icons.qr_code_scanner,
                         color: const Color(0xff181681),
+                        size: res.sp(20),
                       ),
-                      SizedBox(width: 12),
+                      SizedBox(width: res.wp(3)),
                       Text(
                         selectedPaymentMethod ?? 'Pilih Pembayaran',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
+                            fontSize: res.sp(16), fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -430,13 +432,14 @@ class _KasirViewState extends State<KasirView> {
                     'Ganti',
                     style: TextStyle(
                         color: const Color(0xff181681),
-                        fontWeight: FontWeight.w500),
+                        fontWeight: FontWeight.w500,
+                        fontSize: res.sp(14)),
                   ),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: res.hp(2)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -446,31 +449,31 @@ class _KasirViewState extends State<KasirView> {
                   children: [
                     Text(
                       'Total',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(fontSize: res.sp(16), color: Colors.black),
                     ),
                     Obx(() => Text(
                           currencyFormat.format(controller.totalValue),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: res.sp(16),
                             color: Colors.black,
                           ),
                         )),
                   ],
                 ),
               ),
-              SizedBox(width: 8),
+              SizedBox(width: res.wp(2)),
               ElevatedButton(
                 onPressed: () => _processPayment(),
                 child: Text(
                   'Jual',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
+                  style: TextStyle(fontSize: res.sp(16), color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xff181681),
-                  minimumSize: Size(100, 50),
+                  minimumSize: Size(res.wp(25), res.hp(6)),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(res.wp(3)),
                   ),
                 ),
               ),
@@ -481,7 +484,7 @@ class _KasirViewState extends State<KasirView> {
     );
   }
 
-  void _showPaymentMethodDialog(BuildContext context) {
+  void _showPaymentMethodDialog(BuildContext context, AutoResponsive res) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -489,16 +492,16 @@ class _KasirViewState extends State<KasirView> {
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: AlertDialog(
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(res.wp(3))),
             title: Text('Pilih Metode Pembayaran',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: res.sp(16))),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
                   leading: Icon(CupertinoIcons.money_dollar,
-                      color: const Color(0xff181681)),
-                  title: Text('Tunai'),
+                      color: const Color(0xff181681), size: res.sp(20)),
+                  title: Text('Tunai', style: TextStyle(fontSize: res.sp(15))),
                   onTap: () {
                     setState(() => selectedPaymentMethod = 'Tunai');
                     controller.setPaymentMethod('Tunai');
@@ -507,8 +510,8 @@ class _KasirViewState extends State<KasirView> {
                 ),
                 ListTile(
                   leading: Icon(Icons.qr_code_scanner,
-                      color: const Color(0xff181681)),
-                  title: Text('QRIS'),
+                      color: const Color(0xff181681), size: res.sp(20)),
+                  title: Text('QRIS', style: TextStyle(fontSize: res.sp(15))),
                   onTap: () {
                     setState(() => selectedPaymentMethod = 'QRIS');
                     controller.setPaymentMethod('QRIS');

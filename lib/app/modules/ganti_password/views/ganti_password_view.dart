@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/ganti_password_controller.dart';
-// import 'package:gap/gap.dart';
-// import 'package:icons_plus/icons_plus.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class GantiPasswordView extends StatelessWidget {
   final GantiPasswordController controller = Get.put(GantiPasswordController());
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff181681),
         elevation: 1,
-        title: const Text(
+        title: Text(
           'Pengaturan Password',
           style: TextStyle(
             fontFamily: 'Inter',
             fontWeight: FontWeight.bold,
             color: Colors.white,
+            fontSize: res.sp(18),
           ),
         ),
         centerTitle: true,
@@ -29,14 +31,14 @@ class GantiPasswordView extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(res.wp(5)),
           child: Column(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(res.wp(12)),
                 child: Container(
-                  height: 250,
-                  width: 250,
+                  height: res.wp(55),
+                  width: res.wp(55),
                   child: FittedBox(
                     alignment: Alignment.center,
                     fit: BoxFit.fill,
@@ -44,8 +46,9 @@ class GantiPasswordView extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: res.hp(2)),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
+                padding: EdgeInsets.symmetric(horizontal: 0),
                 child: Obx(() => TextField(
                       controller: controller.passwordLamaController,
                       onChanged: (value) =>
@@ -64,24 +67,25 @@ class GantiPasswordView extends StatelessWidget {
                           onPressed: controller.togglePasswordLamaVisibility,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(13),
+                          borderRadius: BorderRadius.circular(res.wp(3)),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(res.wp(2.5)),
                           borderSide:
                               BorderSide(color: Color(0xff181681), width: 2.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(res.wp(3.5)),
                           borderSide:
                               BorderSide(color: Color(0xff181681), width: 0.5),
                         ),
                       ),
+                      style: TextStyle(fontSize: res.sp(16)),
                     )),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: res.hp(2)),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
+                padding: EdgeInsets.symmetric(horizontal: 0),
                 child: Obx(() => TextField(
                       controller: controller.passwordBaruController,
                       onChanged: (value) =>
@@ -100,24 +104,25 @@ class GantiPasswordView extends StatelessWidget {
                           onPressed: controller.togglePasswordBaruVisibility,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(13),
+                          borderRadius: BorderRadius.circular(res.wp(3)),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(res.wp(2.5)),
                           borderSide:
                               BorderSide(color: Color(0xff181681), width: 2.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(res.wp(3.5)),
                           borderSide:
                               BorderSide(color: Color(0xff181681), width: 0.5),
                         ),
                       ),
+                      style: TextStyle(fontSize: res.sp(16)),
                     )),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: res.hp(2)),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
+                padding: EdgeInsets.symmetric(horizontal: 0),
                 child: Obx(() => TextField(
                       controller: controller.confirmPasswordController,
                       onChanged: (value) =>
@@ -136,30 +141,31 @@ class GantiPasswordView extends StatelessWidget {
                           onPressed: controller.toggleConfirmPasswordVisibility,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(13),
+                          borderRadius: BorderRadius.circular(res.wp(3)),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(res.wp(2.5)),
                           borderSide:
                               BorderSide(color: Color(0xff181681), width: 2.0),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(res.wp(3.5)),
                           borderSide:
                               BorderSide(color: Color(0xff181681), width: 0.5),
                         ),
                       ),
+                      style: TextStyle(fontSize: res.sp(16)),
                     )),
               ),
-              SizedBox(height: 32),
+              SizedBox(height: res.hp(4)),
               Obx(() => ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xff181681),
                       foregroundColor: Colors.white,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: res.wp(8), vertical: res.hp(2)),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(res.wp(2)),
                       ),
                       elevation: 4,
                     ),
@@ -168,7 +174,10 @@ class GantiPasswordView extends StatelessWidget {
                         : controller.gantiPassword,
                     child: controller.isLoading.value
                         ? CircularProgressIndicator(color: Colors.white)
-                        : Text("Ganti Password"),
+                        : Text(
+                            "Ganti Password",
+                            style: TextStyle(fontSize: res.sp(16)),
+                          ),
                   ))
             ],
           ),

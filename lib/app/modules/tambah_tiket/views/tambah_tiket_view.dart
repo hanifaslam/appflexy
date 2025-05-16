@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:gap/gap.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:apptiket/app/modules/tambah_tiket/controllers/tambah_tiket_controller.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class TambahTiketView extends StatefulWidget {
   final Map<String, dynamic>? tiket;
@@ -35,9 +36,11 @@ class _TambahTiketViewState extends State<TambahTiketView> {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70,
+        toolbarHeight: res.hp(8),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -46,8 +49,10 @@ class _TambahTiketViewState extends State<TambahTiketView> {
         ),
         title: Text(
           widget.tiket == null ? 'Tambah Tiket' : 'Edit Tiket',
-          style: const TextStyle(
-              color: Color(0xff181681), fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: const Color(0xff181681),
+              fontWeight: FontWeight.bold,
+              fontSize: res.sp(18)),
         ),
       ),
       body: GestureDetector(
@@ -57,19 +62,19 @@ class _TambahTiketViewState extends State<TambahTiketView> {
           });
         },
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(res.wp(4)),
           child: SingleChildScrollView(
             child: Column(
               children: [
                 Obx(() {
                   if (controller.errorMessage.isNotEmpty) {
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
+                      padding: EdgeInsets.only(bottom: res.hp(2)),
                       child: Text(
                         controller.errorMessage.value,
                         style: TextStyle(
                           color: Colors.red,
-                          fontSize: 14,
+                          fontSize: res.sp(14),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -80,40 +85,44 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                 }),
                 TextField(
                   controller: namaTiketController,
+                  style: TextStyle(fontSize: res.sp(16)),
                   decoration: InputDecoration(
                     hintText: 'Nama Tiket',
+                    hintStyle: TextStyle(fontSize: res.sp(16)),
                     prefixIcon: Icon(
                       Bootstrap.ticket_detailed,
-                      color: Color(0xff181681),
+                      color: const Color(0xff181681),
+                      size: res.sp(20),
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
+                      borderRadius: BorderRadius.circular(res.wp(3.5)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
+                        borderRadius: BorderRadius.circular(res.wp(3)),
                         borderSide:
-                        BorderSide(color: Color(0xff181681), width: 2.0)),
+                        const BorderSide(color: Color(0xff181681), width: 2.0)),
                   ),
                 ),
-                const Gap(30),
+                Gap(res.hp(3)),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Container(
-                        height: 60,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        height: res.hp(7),
+                        padding: EdgeInsets.symmetric(horizontal: res.wp(3)),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xff181681), width: 2),
-                          borderRadius: BorderRadius.circular(13),
+                          border: Border.all(color: const Color(0xff181681), width: 2),
+                          borderRadius: BorderRadius.circular(res.wp(3.5)),
                         ),
                         child: Row(
                           children: [
                             Icon(
                               Bootstrap.box,
-                              color: Color(0xff181681),
+                              color: const Color(0xff181681),
+                              size: res.sp(20),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: res.wp(3)),
                             GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -125,22 +134,23 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                                   Text(
                                     'Stok',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: res.sp(16),
                                       color: Colors.grey[700],
                                     ),
                                   ),
                                   Icon(
                                     Icons.arrow_drop_down,
-                                    color: Color(0xff181681),
+                                    color: const Color(0xff181681),
+                                    size: res.sp(22),
                                   ),
                                 ],
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Text(
                               stok.toString(),
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: res.sp(16),
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
@@ -149,7 +159,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: res.wp(2)),
                     Column(
                       children: [
                         IconButton(
@@ -158,10 +168,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                               stok++;
                             });
                           },
-                          icon: Icon(
-                              Icons.add,
-                              color: Color(0xff181681),
-                          ),
+                          icon: Icon(Icons.add, color: const Color(0xff181681), size: res.sp(22)),
                         ),
                         IconButton(
                           onPressed: () {
@@ -169,7 +176,7 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                               if (stok > 0) stok--;
                             });
                           },
-                          icon: Icon(Icons.remove, color: Color(0xff181681)),
+                          icon: Icon(Icons.remove, color: const Color(0xff181681), size: res.sp(22)),
                         ),
                       ],
                     ),
@@ -177,17 +184,17 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                 ),
                 if (showNominalOptions)
                   Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    padding: const EdgeInsets.all(8),
+                    margin: EdgeInsets.only(top: res.hp(1)),
+                    padding: EdgeInsets.all(res.wp(2)),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(color: Color(0xff181681), width: 1),
-                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xff181681), width: 1),
+                      borderRadius: BorderRadius.circular(res.wp(2)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
                           blurRadius: 4,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -202,17 +209,17 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                             });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff181681),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
+                            backgroundColor: const Color(0xff181681),
+                            padding: EdgeInsets.symmetric(
+                                vertical: res.hp(1), horizontal: res.wp(3)),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(res.wp(2)),
                             ),
                           ),
                           child: Text(
                             '$value',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: res.sp(14),
                               color: Colors.white,
                             ),
                           ),
@@ -220,42 +227,46 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                       }).toList(),
                     ),
                   ),
-                const Gap(30),
+                Gap(res.hp(3)),
                 TextField(
                   controller: hargaJualController,
+                  style: TextStyle(fontSize: res.sp(16)),
                   decoration: InputDecoration(
                     hintText: 'Harga Jual',
+                    hintStyle: TextStyle(fontSize: res.sp(16)),
                     prefixIcon: Icon(
                       IonIcons.cash,
-                      color: Color(0xff181681),
+                      color: const Color(0xff181681),
+                      size: res.sp(20),
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
+                      borderRadius: BorderRadius.circular(res.wp(3.5)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
+                        borderRadius: BorderRadius.circular(res.wp(3)),
                         borderSide:
-                        BorderSide(color: Color(0xff181681), width: 2.0)),
+                        const BorderSide(color: Color(0xff181681), width: 2.0)),
                   ),
                   keyboardType: TextInputType.number,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: res.hp(2)),
                 TextField(
                   controller: keteranganController,
+                  style: TextStyle(fontSize: res.sp(16)),
                   decoration: InputDecoration(
                     hintText: 'Keterangan Tiket',
-                    hintStyle: TextStyle(color: Color(0xff181681)),
+                    hintStyle: TextStyle(color: const Color(0xff181681), fontSize: res.sp(16)),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
+                      borderRadius: BorderRadius.circular(res.wp(3.5)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
+                        borderRadius: BorderRadius.circular(res.wp(3)),
                         borderSide:
-                        BorderSide(color: Color(0xff181681), width: 2.0)),
+                        const BorderSide(color: Color(0xff181681), width: 2.0)),
                   ),
                   maxLines: 4,
                 ),
-                const Gap(70),
+                Gap(res.hp(7)),
                 ElevatedButton(
                   onPressed: controller.isLoading.value
                       ? null
@@ -299,13 +310,13 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                     widget.tiket == null
                         ? 'Tambah Tiket'
                         : 'Edit Tiket',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(color: Colors.white, fontSize: res.sp(16)),
                   )),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff181681),
-                    minimumSize: const Size(double.infinity, 50),
+                    minimumSize: Size(double.infinity, res.hp(6)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(res.wp(5)),
                     ),
                   ),
                 ),

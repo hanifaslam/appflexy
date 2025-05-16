@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class ProfileView extends GetView<ProfileController> {
   final ImagePicker _picker = ImagePicker();
@@ -18,16 +19,20 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.only(top: 29),
+        title: Padding(
+          padding: EdgeInsets.only(top: res.hp(3.5)),
           child: Text(
             'Pengaturan Profil Toko',
             style: TextStyle(
-                fontFamily: 'Montserrat-VariableFont_wght',
-                fontWeight: FontWeight.bold,
-                color: Color(0xff181681)),
+              fontFamily: 'Montserrat-VariableFont_wght',
+              fontWeight: FontWeight.bold,
+              color: Color(0xff181681),
+              fontSize: res.sp(18),
+            ),
           ),
         ),
         centerTitle: true,
@@ -39,40 +44,40 @@ class ProfileView extends GetView<ProfileController> {
         },
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(res.wp(4)),
             child: Column(
               children: [
                 // Logo Toko
-                Gap(20),
+                Gap(res.hp(2)),
                 GestureDetector(
                   onTap: _pickImage,
                   child: Obx(() {
                     return Container(
-                      width: 150,
-                      height: 150,
+                      width: res.wp(40),
+                      height: res.wp(40),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(500),
                       ),
                       child: controller.imagePath.value.isEmpty
-                          ? const Icon(
+                          ? Icon(
                               Icons.add_photo_alternate,
-                              size: 50,
+                              size: res.wp(15),
                               color: Colors.grey,
                             )
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(500),
                               child: Image.file(
                                 File(controller.imagePath.value),
-                                fit: BoxFit.cover, // Gambar memenuhi container
-                                width: 150,
-                                height: 150,
+                                fit: BoxFit.cover,
+                                width: res.wp(40),
+                                height: res.wp(40),
                               ),
                             ),
                     );
                   }),
                 ),
-                const Gap(50),
+                Gap(res.hp(6)),
 
                 // Informasi Toko
                 TextField(
@@ -80,11 +85,12 @@ class ProfileView extends GetView<ProfileController> {
                   decoration: InputDecoration(
                     hintText: 'Nama Toko',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(res.wp(4)),
                     ),
                   ),
+                  style: TextStyle(fontSize: res.sp(16)),
                 ),
-                const SizedBox(height: 40),
+                Gap(res.hp(3)),
 
                 // Bidang Usaha
                 TextField(
@@ -92,11 +98,12 @@ class ProfileView extends GetView<ProfileController> {
                   decoration: InputDecoration(
                     hintText: 'Bidang Usaha',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(res.wp(4)),
                     ),
                   ),
+                  style: TextStyle(fontSize: res.sp(16)),
                 ),
-                const SizedBox(height: 40),
+                Gap(res.hp(3)),
 
                 // Alamat Toko
                 TextField(
@@ -105,11 +112,12 @@ class ProfileView extends GetView<ProfileController> {
                   decoration: InputDecoration(
                     hintText: 'Alamat',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(res.wp(4)),
                     ),
                   ),
+                  style: TextStyle(fontSize: res.sp(16)),
                 ),
-                const SizedBox(height: 40),
+                Gap(res.hp(3)),
 
                 // Tombol Simpan
                 ElevatedButton(
@@ -132,23 +140,23 @@ class ProfileView extends GetView<ProfileController> {
                         backgroundColor:
                             const Color(0xFF5C8FDA).withOpacity(0.2),
                         colorText: const Color(0xFF2B47CA),
-                        margin: const EdgeInsets.all(16),
+                        margin: EdgeInsets.all(res.wp(4)),
                         borderRadius: 8,
                         snackStyle: SnackStyle.FLOATING,
                       );
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 100, vertical: 20),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: res.wp(20), vertical: res.hp(2.5)),
                     backgroundColor: const Color(0xff181681),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(res.wp(4)),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Simpan',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(color: Colors.white, fontSize: res.sp(16)),
                   ),
                 ),
               ],

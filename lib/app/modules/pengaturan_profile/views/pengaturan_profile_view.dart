@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../controllers/pengaturan_profile_controller.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class PengaturanProfileView extends GetView<PengaturanProfileController> {
   final ImagePicker _picker = ImagePicker();
@@ -19,14 +20,14 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
     }
   }
 
-  Widget _buildImageWidget() {
+  Widget _buildImageWidget(AutoResponsive res) {
     if (controller.selectedImage.value != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(500),
         child: Image.file(
           controller.selectedImage.value!,
-          width: 150,
-          height: 150,
+          width: res.wp(40),
+          height: res.wp(40),
           fit: BoxFit.cover,
         ),
       );
@@ -39,8 +40,8 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
           imageUrl: controller.companyLogo.value.startsWith('http')
               ? controller.companyLogo.value
               : 'https://flexy.my.id/storage/${controller.companyLogo.value}',
-          width: 150,
-          height: 150,
+          width: res.wp(40),
+          height: res.wp(40),
           fit: BoxFit.cover,
           cacheManager: CacheManager(
             Config(
@@ -71,9 +72,9 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
         ),
       );
     } else {
-      return const Icon(
+      return Icon(
         Icons.add_photo_alternate,
-        size: 50,
+        size: res.wp(15),
         color: Colors.grey,
       );
     }
@@ -81,16 +82,19 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff181681),
         elevation: 1,
-        title: const Text(
+        title: Text(
           'Pengaturan Profil Toko',
           style: TextStyle(
             fontFamily: 'Inter',
             fontWeight: FontWeight.bold,
             color: Colors.white,
+            fontSize: res.sp(18),
           ),
         ),
         centerTitle: true,
@@ -98,15 +102,14 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Get.back(result: true); // Pass true to indicate refresh needed
-            Get.find<HomeController>()
-                .fetchCompanyDetails(); // Refresh home data
+            Get.find<HomeController>().fetchCompanyDetails(); // Refresh home data
           },
         ),
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(res.wp(5)),
           child: Column(
             children: [
               // Logo Toko
@@ -114,17 +117,17 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                 onTap: _pickImage,
                 child: Obx(() {
                   return Container(
-                    width: 150,
-                    height: 150,
+                    width: res.wp(40),
+                    height: res.wp(40),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(500),
                     ),
-                    child: _buildImageWidget(),
+                    child: _buildImageWidget(res),
                   );
                 }),
               ),
-              const Gap(50),
+              Gap(res.hp(6)),
 
               // Nama Toko
               Obx(() {
@@ -139,25 +142,23 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                   ),
                   onChanged: (value) => controller.companyName.value = value,
                   decoration: InputDecoration(
-                    hintText: 'Nama Toko', // Ganti labelText dengan hintText
+                    hintText: 'Nama Toko',
                     border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(15), // Sesuaikan border radius
+                      borderRadius: BorderRadius.circular(res.wp(4)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide:
-                          BorderSide(color: Color(0xff181681), width: 2.0),
+                      borderRadius: BorderRadius.circular(res.wp(3.5)),
+                      borderSide: BorderSide(color: Color(0xff181681), width: 2.0),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide:
-                          BorderSide(color: Color(0xff181681), width: 0.5),
+                      borderRadius: BorderRadius.circular(res.wp(4)),
+                      borderSide: BorderSide(color: Color(0xff181681), width: 0.5),
                     ),
                   ),
+                  style: TextStyle(fontSize: res.sp(16)),
                 );
               }),
-              const SizedBox(height: 20),
+              Gap(res.hp(2)),
 
               // Bidang Usaha
               Obx(() {
@@ -172,25 +173,23 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                   ),
                   onChanged: (value) => controller.companyType.value = value,
                   decoration: InputDecoration(
-                    hintText: 'Bidang Usaha', // Petunjuk untuk input
+                    hintText: 'Bidang Usaha',
                     border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(15), // Border yang melengkung
+                      borderRadius: BorderRadius.circular(res.wp(4)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide:
-                          BorderSide(color: Color(0xff181681), width: 2.0),
+                      borderRadius: BorderRadius.circular(res.wp(3.5)),
+                      borderSide: BorderSide(color: Color(0xff181681), width: 2.0),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide:
-                          BorderSide(color: Color(0xff181681), width: 0.5),
+                      borderRadius: BorderRadius.circular(res.wp(4)),
+                      borderSide: BorderSide(color: Color(0xff181681), width: 0.5),
                     ),
                   ),
+                  style: TextStyle(fontSize: res.sp(16)),
                 );
               }),
-              const SizedBox(height: 20),
+              Gap(res.hp(2)),
 
               // Alamat Toko
               Obx(() {
@@ -204,27 +203,25 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                     ),
                   ),
                   onChanged: (value) => controller.companyAddress.value = value,
-                  maxLines: 2, // Membatasi input hingga dua baris
+                  maxLines: 2,
                   decoration: InputDecoration(
-                    hintText: 'Alamat', // Petunjuk untuk input
+                    hintText: 'Alamat',
                     border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(15), // Border yang melengkung
+                      borderRadius: BorderRadius.circular(res.wp(4)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      borderSide:
-                          BorderSide(color: Color(0xff181681), width: 2.0),
+                      borderRadius: BorderRadius.circular(res.wp(3.5)),
+                      borderSide: BorderSide(color: Color(0xff181681), width: 2.0),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide:
-                          BorderSide(color: Color(0xff181681), width: 0.5),
+                      borderRadius: BorderRadius.circular(res.wp(4)),
+                      borderSide: BorderSide(color: Color(0xff181681), width: 0.5),
                     ),
                   ),
+                  style: TextStyle(fontSize: res.sp(16)),
                 );
               }),
-              const SizedBox(height: 20),
+              Gap(res.hp(2)),
 
               // Tombol Simpan
               ElevatedButton(
@@ -243,16 +240,15 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
                   controller.updateStore();
                 },
                 style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: res.wp(8), vertical: res.hp(2)),
                   backgroundColor: Color(0xff181681),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(res.wp(2)),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Simpan',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: res.sp(16)),
                 ),
               ),
             ],

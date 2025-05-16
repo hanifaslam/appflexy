@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:gap/gap.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 import '../controllers/edit_produk_controller.dart';
 
@@ -36,9 +37,11 @@ class _EditProdukViewState extends State<EditProdukView> {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70,
+        toolbarHeight: res.hp(8),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -47,8 +50,11 @@ class _EditProdukViewState extends State<EditProdukView> {
         ),
         title: Text(
           'Edit Produk',
-          style: const TextStyle(
-              color: Color(0xff181681), fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: const Color(0xff181681),
+            fontWeight: FontWeight.bold,
+            fontSize: res.sp(18),
+          ),
         ),
       ),
       body: GestureDetector(
@@ -59,7 +65,7 @@ class _EditProdukViewState extends State<EditProdukView> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(res.wp(4)),
                 child: GetBuilder<EditProdukController>(
                   builder: (controller) {
                     return Column(
@@ -67,64 +73,69 @@ class _EditProdukViewState extends State<EditProdukView> {
                         // Nama Produk
                         TextField(
                           controller: controller.namaProdukController,
+                          style: TextStyle(fontSize: res.sp(16)),
                           decoration: InputDecoration(
                             hintText: 'Nama Produk',
                             prefixIcon: Icon(
                               Bootstrap.box,
                               color: Color(0xff181681),
+                              size: res.sp(20),
                             ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(res.wp(3.5)),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(res.wp(3.5)),
                               borderSide: BorderSide(
                                   color: Color(0xff181681), width: 2.0),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        Gap(res.hp(2)),
 
                         // Kode Produk
                         TextField(
                           controller: controller.kodeProdukController,
+                          style: TextStyle(fontSize: res.sp(16)),
                           decoration: InputDecoration(
                             hintText: 'Kode Produk',
                             prefixIcon: Icon(
                               Bootstrap.tags,
                               color: Color(0xff181681),
+                              size: res.sp(20),
                             ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(res.wp(3.5)),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(res.wp(3.5)),
                               borderSide: BorderSide(
                                   color: Color(0xff181681), width: 2.0),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        Gap(res.hp(2)),
 
                         // Kategori
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(11),
+                            borderRadius: BorderRadius.circular(res.wp(3.5)),
                           ),
                           child: Row(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 12.0),
+                                padding: EdgeInsets.only(left: res.wp(3)),
                                 child: Icon(
                                   Bootstrap.list,
                                   color: Color(0xff181681),
+                                  size: res.sp(20),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: res.wp(2)),
                               Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 15),
+                                  padding: EdgeInsets.symmetric(vertical: res.hp(1.5)),
                                   child: Text(
                                     controller.kategoriController.text.isEmpty
                                         ? 'Kategori'
@@ -133,13 +144,13 @@ class _EditProdukViewState extends State<EditProdukView> {
                                       color: controller.kategoriController.text.isEmpty
                                           ? Colors.grey[600]
                                           : Colors.black,
-                                      fontSize: 16,
+                                      fontSize: res.sp(16),
                                     ),
                                   ),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
+                                padding: EdgeInsets.only(right: res.wp(2)),
                                 child: PopupMenuButton<String>(
                                   icon: Icon(Icons.arrow_drop_down, color: Color(0xff181681)),
                                   onSelected: (String value) {
@@ -152,7 +163,7 @@ class _EditProdukViewState extends State<EditProdukView> {
                                         value: choice,
                                         child: Text(
                                           choice,
-                                          style: TextStyle(fontSize: 16),
+                                          style: TextStyle(fontSize: res.sp(16)),
                                         ),
                                       );
                                     }).toList();
@@ -162,31 +173,32 @@ class _EditProdukViewState extends State<EditProdukView> {
                             ],
                           ),
                         ),
-                        const Gap(30),
+                        Gap(res.hp(3)),
 
                         // Stok
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(11),
+                            borderRadius: BorderRadius.circular(res.wp(3.5)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                                padding: EdgeInsets.fromLTRB(res.wp(3), res.hp(1.5), res.wp(3), 0),
                                 child: Row(
                                   children: [
                                     Icon(
                                       Bootstrap.box2,
                                       color: Color(0xff181681),
+                                      size: res.sp(20),
                                     ),
-                                    SizedBox(width: 10),
+                                    SizedBox(width: res.wp(2)),
                                     Text(
                                       'Stok',
                                       style: TextStyle(
                                         color: Color(0xff181681),
-                                        fontSize: 16,
+                                        fontSize: res.sp(16),
                                       ),
                                     ),
                                   ],
@@ -196,7 +208,7 @@ class _EditProdukViewState extends State<EditProdukView> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.remove_circle_outline),
+                                    icon: Icon(Icons.remove_circle_outline, size: res.sp(22)),
                                     onPressed: () {
                                       int currentStock = int.tryParse(controller.stokController.text) ?? 0;
                                       if (currentStock > 0) {
@@ -205,16 +217,16 @@ class _EditProdukViewState extends State<EditProdukView> {
                                       }
                                     },
                                   ),
-                                  SizedBox(width: 20),
+                                  SizedBox(width: res.wp(5)),
                                   Text(
                                     controller.stokController.text.isEmpty
                                         ? '0'
                                         : controller.stokController.text,
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(fontSize: res.sp(20)),
                                   ),
-                                  SizedBox(width: 20),
+                                  SizedBox(width: res.wp(5)),
                                   IconButton(
-                                    icon: Icon(Icons.add_circle_outline),
+                                    icon: Icon(Icons.add_circle_outline, size: res.sp(22)),
                                     onPressed: () {
                                       int currentStock = int.tryParse(controller.stokController.text) ?? 0;
                                       controller.stokController.text = (currentStock + 1).toString();
@@ -224,7 +236,7 @@ class _EditProdukViewState extends State<EditProdukView> {
                                 ],
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                                padding: EdgeInsets.fromLTRB(res.wp(3), 0, res.wp(3), res.hp(1.5)),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: stockOptions.map((int stock) {
@@ -232,15 +244,15 @@ class _EditProdukViewState extends State<EditProdukView> {
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Color(0xff181681),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius: BorderRadius.circular(res.wp(5)),
                                         ),
-                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                        padding: EdgeInsets.symmetric(horizontal: res.wp(4), vertical: res.hp(1)),
                                       ),
                                       onPressed: () {
                                         controller.stokController.text = stock.toString();
                                         controller.update();
                                       },
-                                      child: Text('$stock', style: TextStyle(color: Colors.white)),
+                                      child: Text('$stock', style: TextStyle(color: Colors.white, fontSize: res.sp(14))),
                                     );
                                   }).toList(),
                                 ),
@@ -248,65 +260,61 @@ class _EditProdukViewState extends State<EditProdukView> {
                             ],
                           ),
                         ),
-                        const Gap(30),
+                        Gap(res.hp(3)),
 
                         // Foto Produk
                         GestureDetector(
                           onTap: controller.pickImage,
                           child: Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            padding: EdgeInsets.symmetric(vertical: res.hp(2)),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey, width: 2),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(res.wp(2)),
                             ),
                             child: Row(
                               children: [
                                 Container(
-                                  width: 50,
-                                  height: 50,
-                                  margin: EdgeInsets.only(left: 15),
+                                  width: res.wp(13),
+                                  height: res.wp(13),
+                                  margin: EdgeInsets.only(left: res.wp(3)),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(res.wp(2)),
                                   ),
                                   child: controller.hasImage()
                                       ? controller.selectedImage != null
-                                      ? Image.file(
-                                    controller.selectedImage!,
-                                    fit: BoxFit.cover,
-                                  )
-                                      : CachedNetworkImage(
-                                    imageUrl:
-                                    controller.getImageUrl()!,
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        Center(
-                                          child:
-                                          CircularProgressIndicator(
-                                            color: Color(0xff181681),
-                                          ),
-                                        ),
-                                    errorWidget:
-                                        (context, url, error) => Icon(
-                                      Bootstrap.image,
-                                      size: 30,
-                                      color: Color(0xff181681),
-                                    ),
-                                  )
+                                          ? Image.file(
+                                              controller.selectedImage!,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : CachedNetworkImage(
+                                              imageUrl: controller.getImageUrl()!,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) => Center(
+                                                child: CircularProgressIndicator(
+                                                  color: Color(0xff181681),
+                                                ),
+                                              ),
+                                              errorWidget: (context, url, error) => Icon(
+                                                Bootstrap.image,
+                                                size: res.wp(13),
+                                                color: Color(0xff181681),
+                                              ),
+                                            )
                                       : Icon(
-                                    Bootstrap.image,
-                                    size: 30,
-                                    color: Color(0xff181681),
-                                  ),
+                                          Bootstrap.image,
+                                          size: res.wp(13),
+                                          color: Color(0xff181681),
+                                        ),
                                 ),
-                                const SizedBox(width: 8),
+                                SizedBox(width: res.wp(2)),
                                 Expanded(
                                   child: Text(
                                     controller.selectedImage != null
                                         ? 'Ganti Foto Produk'
                                         : 'Foto Produk yang Baru',
-                                    style: const TextStyle(
-                                      fontSize: 18,
+                                    style: TextStyle(
+                                      fontSize: res.sp(16),
                                       fontFamily: 'inter',
                                       fontStyle: FontStyle.normal,
                                     ),
@@ -317,48 +325,51 @@ class _EditProdukViewState extends State<EditProdukView> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        Gap(res.hp(2)),
                         Text(
                           '*Ingin mengganti gambar? Pilih baru. Jika tidak, biarkan saja.',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: res.sp(14),
                             color: const Color.fromARGB(255, 80, 79, 79),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        Gap(res.hp(2)),
 
                         // Harga Sewa
                         TextField(
                           controller: controller.hargaJualController,
+                          style: TextStyle(fontSize: res.sp(16)),
                           decoration: InputDecoration(
                             hintText: 'Harga Sewa',
                             prefixIcon: Icon(
                               IonIcons.cash,
                               color: Color(0xff181681),
+                              size: res.sp(20),
                             ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(res.wp(3.5)),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(res.wp(3.5)),
                               borderSide: BorderSide(
                                   color: Color(0xff181681), width: 2.0),
                             ),
                           ),
                           keyboardType: TextInputType.number,
                         ),
-                        const SizedBox(height: 16),
+                        Gap(res.hp(2)),
 
                         // Keterangan
                         TextField(
                           controller: controller.keteranganController,
+                          style: TextStyle(fontSize: res.sp(16)),
                           decoration: InputDecoration(
                             hintText: 'Keterangan Produk (opsional)',
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(res.wp(3.5)),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(res.wp(3.5)),
                               borderSide: BorderSide(
                                   color: Color(0xff181681), width: 2.0),
                             ),
@@ -385,7 +396,7 @@ class _EditProdukViewState extends State<EditProdukView> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(res.wp(5)),
                 child: ElevatedButton(
                   onPressed: () async {
                     if (widget.produk != null) {
@@ -394,14 +405,14 @@ class _EditProdukViewState extends State<EditProdukView> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff181681),
-                    minimumSize: const Size(double.infinity, 50),
+                    minimumSize: Size(double.infinity, res.hp(6)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(res.wp(5)),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Update Produk',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: res.sp(16), color: Colors.white),
                   ),
                 ),
               ),

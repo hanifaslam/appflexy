@@ -9,6 +9,7 @@ import '../../edit_produk/controllers/edit_produk_controller.dart';
 import '../controllers/daftar_produk_controller.dart';
 import 'package:apptiket/app/modules/edit_produk/views/edit_produk_view.dart';
 import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 // Custom ImageCacheManager class
 class CustomCacheManager {
@@ -34,34 +35,37 @@ class DaftarProdukView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff181681),
-        toolbarHeight: 90,
+        toolbarHeight: res.hp(11),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.offAllNamed('/home'),
         ),
         title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: res.wp(3), vertical: res.hp(1)),
           child: TextField(
             onChanged: (query) => controller.updateSearchQuery(query),
             decoration: InputDecoration(
               hintText: 'Cari Nama Produk',
               prefixIcon: Icon(Icons.search_sharp),
-              hintStyle: TextStyle(color: Color(0xff181681)),
+              hintStyle: TextStyle(color: Color(0xff181681), fontSize: res.sp(14)),
               border: InputBorder.none,
               filled: true,
               fillColor: Colors.grey[350],
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
-                borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.circular(res.wp(10)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.transparent),
-                borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.circular(res.wp(10)),
               ),
             ),
+            style: TextStyle(fontSize: res.sp(14)),
           ),
         ),
         actions: [
@@ -73,26 +77,26 @@ class DaftarProdukView extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return _buildLoadingShimmer();
+          return _buildLoadingShimmer(res);
         }
 
         if (controller.filteredProdukList.isEmpty) {
-          return _buildEmptyState();
+          return _buildEmptyState(res);
         }
 
         return Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(res.wp(2.5)),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(res.wp(3)),
             ),
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(res.wp(2)),
             child: ListView.builder(
               itemCount: controller.filteredProdukList.length,
               itemBuilder: (context, index) {
                 final produk = controller.filteredProdukList[index];
-                return _buildProductCard(produk, index);
+                return _buildProductCard(produk, index, res);
               },
             ),
           ),
@@ -100,20 +104,20 @@ class DaftarProdukView extends StatelessWidget {
       }),
       floatingActionButton: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(res.wp(3)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 6,
-              offset: Offset(3, 5),
+              offset: Offset(res.wp(1.5), res.hp(1.5)),
             ),
           ],
         ),
         child: FloatingActionButton(
           backgroundColor: Color(0xff181681),
           onPressed: () async {
-            final result = await Get.to(() => TambahProdukView());
+            final result = await Get.toNamed('/tambah-produk');
             if (result != null) {
               controller.fetchProducts();
             }
@@ -121,13 +125,14 @@ class DaftarProdukView extends StatelessWidget {
           child: Icon(
             Icons.add,
             color: Colors.white,
+            size: res.sp(24),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildLoadingShimmer() {
+  Widget _buildLoadingShimmer(AutoResponsive res) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
@@ -135,10 +140,10 @@ class DaftarProdukView extends StatelessWidget {
         itemCount: 5,
         itemBuilder: (context, index) {
           return Card(
-            margin: EdgeInsets.all(8),
+            margin: EdgeInsets.all(res.wp(2)),
             child: Container(
-              height: 80,
-              padding: EdgeInsets.all(8),
+              height: res.hp(8),
+              padding: EdgeInsets.all(res.wp(2)),
             ),
           );
         },
@@ -146,26 +151,26 @@ class DaftarProdukView extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AutoResponsive res) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.inbox,
-            size: 100,
+            size: res.wp(25),
             color: Colors.grey,
           ),
-          SizedBox(height: 16),
+          SizedBox(height: res.hp(2)),
           Text(
             'Tidak ada daftar produk yang dapat ditampilkan.',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: Colors.grey, fontSize: res.sp(15)),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
+          SizedBox(height: res.hp(1)),
           Text(
             'Tambahkan produk untuk dapat menampilkan daftar produk yang tersedia.',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: Colors.grey, fontSize: res.sp(13)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -173,40 +178,41 @@ class DaftarProdukView extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard(Map<String, dynamic> produk, int index) {
+  Widget _buildProductCard(Map<String, dynamic> produk, int index, AutoResponsive res) {
     double hargaJual = double.tryParse(produk['hargaJual'].toString()) ?? 0.0;
     String imageUrl = _getImageUrl(produk);
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(res.wp(3)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 6,
-            offset: Offset(6, 10),
+            offset: Offset(res.wp(3), res.hp(2)),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top: 5),
+        padding: EdgeInsets.only(top: res.hp(0.5)),
         child: Card(
           color: Colors.white,
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(res.wp(3)),
           ),
           child: ListTile(
-            leading: _buildProductImage(imageUrl),
+            leading: _buildProductImage(imageUrl, res),
             title: Text(
               produk['namaProduk'] ?? '',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: res.sp(15)),
             ),
             subtitle: Text(
               'Stok: ${produk['stok']} | ${currencyFormat.format(hargaJual)}',
+              style: TextStyle(fontSize: res.sp(13)),
             ),
-            trailing: _buildPopupMenu(index, produk),
+            trailing: _buildPopupMenu(index, produk, res),
           ),
         ),
       ),
@@ -229,22 +235,22 @@ class DaftarProdukView extends StatelessWidget {
     }
   }
 
-  Widget _buildProductImage(String imageUrl) {
+  Widget _buildProductImage(String imageUrl, AutoResponsive res) {
     if (imageUrl.isEmpty) {
-      return _buildPlaceholderImage();
+      return _buildPlaceholderImage(res);
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(res.wp(4)),
       child: CachedNetworkImage(
         imageUrl: imageUrl,
-        width: 50,
-        height: 50,
+        width: res.wp(12),
+        height: res.wp(12),
         fit: BoxFit.cover,
-        placeholder: (context, url) => _buildLoadingPlaceholder(),
+        placeholder: (context, url) => _buildLoadingPlaceholder(res),
         errorWidget: (context, url, error) {
           print('Error loading image: $error');
-          return _buildErrorImage();
+          return _buildErrorImage(res);
         },
         cacheManager: CustomCacheManager.instance,
         fadeInDuration: const Duration(milliseconds: 500),
@@ -259,29 +265,29 @@ class DaftarProdukView extends StatelessWidget {
     );
   }
 
-  Widget _buildPlaceholderImage() {
+  Widget _buildPlaceholderImage(AutoResponsive res) {
     return Container(
-      width: 50,
-      height: 50,
+      width: res.wp(12),
+      height: res.wp(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(res.wp(4)),
       ),
       child: Icon(
         Icons.image,
-        size: 30,
+        size: res.sp(18),
         color: Colors.grey[600],
       ),
     );
   }
 
-  Widget _buildLoadingPlaceholder() {
+  Widget _buildLoadingPlaceholder(AutoResponsive res) {
     return Container(
-      width: 50,
-      height: 50,
+      width: res.wp(12),
+      height: res.wp(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(res.wp(4)),
       ),
       child: Center(
         child: CircularProgressIndicator(
@@ -292,23 +298,23 @@ class DaftarProdukView extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorImage() {
+  Widget _buildErrorImage(AutoResponsive res) {
     return Container(
-      width: 50,
-      height: 50,
+      width: res.wp(12),
+      height: res.wp(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(res.wp(4)),
       ),
       child: Icon(
         Icons.broken_image,
-        size: 30,
+        size: res.sp(18),
         color: Colors.grey[600],
       ),
     );
   }
 
-  Widget _buildPopupMenu(int index, Map<String, dynamic> produk) {
+  Widget _buildPopupMenu(int index, Map<String, dynamic> produk, AutoResponsive res) {
     return PopupMenuButton<String>(
       onSelected: (value) {
         if (value == 'edit') {
@@ -322,9 +328,9 @@ class DaftarProdukView extends StatelessWidget {
           value: 'edit',
           child: Row(
             children: [
-              Icon(Icons.edit),
-              SizedBox(width: 8),
-              Text('Edit Produk'),
+              Icon(Icons.edit, size: res.sp(16)),
+              SizedBox(width: res.wp(2)),
+              Text('Edit Produk', style: TextStyle(fontSize: res.sp(14))),
             ],
           ),
         ),
@@ -332,9 +338,9 @@ class DaftarProdukView extends StatelessWidget {
           value: 'delete',
           child: Row(
             children: [
-              Icon(Icons.delete),
-              SizedBox(width: 8),
-              Text('Hapus Produk'),
+              Icon(Icons.delete, size: res.sp(16)),
+              SizedBox(width: res.wp(2)),
+              Text('Hapus Produk', style: TextStyle(fontSize: res.sp(14))),
             ],
           ),
         ),

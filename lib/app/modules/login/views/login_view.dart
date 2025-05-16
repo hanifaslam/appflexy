@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../registrasi/views/registrasi_view.dart';
 import '../controllers/login_controller.dart';
+import '../../../core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class LoginView extends GetView<LoginController> {
   @override
@@ -13,33 +14,33 @@ class LoginView extends GetView<LoginController> {
     if (!Get.isRegistered<DaftarKasirController>()) {
       Get.put(DaftarKasirController());
     }
+
+    final res = AutoResponsive(context);
+
     return Scaffold(
       body: GestureDetector(
         onTap: () {
-          // Menutup keyboard saat mengetuk area kosong
           FocusScope.of(context).unfocus();
         },
         child: Align(
-          alignment: Alignment.topCenter, // Align content to the top
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            // Ensures content is scrollable if needed
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 80.0, // Adjust top padding if needed
+              padding: EdgeInsets.symmetric(
+                horizontal: res.wp(5),
+                vertical: res.hp(10),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment
-                    .center, // Align items to the center horizontally
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 40), // Add space from top
+                  SizedBox(height: res.hp(4)), // Add space from top
 
                   // Logo image
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(res.wp(6)),
                     child: Container(
-                      height: 250,
-                      width: 250,
+                      height: res.wp(55),
+                      width: res.wp(55),
                       child: FittedBox(
                         alignment: Alignment.center,
                         fit: BoxFit.fill,
@@ -48,61 +49,71 @@ class LoginView extends GetView<LoginController> {
                     ),
                   ),
 
-                  const SizedBox(height: 30), // Spacing between logo and text
+                  SizedBox(height: res.hp(3)), // Spacing between logo and text
                   Text(
                     "Buka tiket Anda untuk pengalaman luar biasa!",
                     style: TextStyle(
-                      fontFamily: 'Inter', // Custom font family
-                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontSize: res.sp(16),
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
 
-                  const SizedBox(
-                      height: 30), // Spacing between text and input fields
+                  SizedBox(height: res.hp(3)), // Spacing between text and input fields
 
                   // Email input field
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: res.wp(2.5)),
                     child: TextField(
                       controller: controller.emailController,
+                      style: TextStyle(fontSize: res.sp(16)),
                       decoration: InputDecoration(
                         hintText: "Email",
-                        labelStyle: const TextStyle(
-                          fontFamily: 'Inter', // Apply custom font
-                          fontSize: 16,
+                        hintStyle: TextStyle(fontSize: res.sp(16)),
+                        labelStyle: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: res.sp(16),
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.bold,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide:
-                              const BorderSide(color: Color(0xFF84AFC2)),
+                          borderRadius: BorderRadius.circular(res.wp(4)),
+                          borderSide: const BorderSide(color: Color(0xFF84AFC2)),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: res.hp(1.8),
+                          horizontal: res.wp(4),
                         ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 15),
+                  SizedBox(height: res.hp(1.5)),
 
                   // Password input field
                   Obx(() => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        padding: EdgeInsets.symmetric(horizontal: res.wp(2.5)),
                         child: TextField(
                           controller: controller.passwordController,
                           obscureText: controller.isPasswordHidden.value,
+                          style: TextStyle(fontSize: res.sp(16)),
                           decoration: InputDecoration(
                             hintText: "Kata Sandi",
+                            hintStyle: TextStyle(fontSize: res.sp(16)),
                             labelStyle: TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 16,
+                              fontSize: res.sp(16),
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.bold,
                             ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(res.wp(4)),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: res.hp(1.8),
+                              horizontal: res.wp(4),
                             ),
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -116,32 +127,28 @@ class LoginView extends GetView<LoginController> {
                         ),
                       )),
 
-                  const SizedBox(
-                      height: 40), // Spacing between password input and button
+                  SizedBox(height: res.hp(4)), // Spacing between password input and button
                   // Button
                   ProfileBtn(),
 
-                  SizedBox(height: 25),
+                  SizedBox(height: res.hp(2.5)),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: res.wp(2)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'Belum punya akun?',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: res.sp(16)),
                         ),
-                        SizedBox(
-                          width: 7,
-                        ),
+                        SizedBox(width: res.wp(2)),
                         GestureDetector(
                             onTap: () {
                               Get.offAllNamed(Routes.REGISTRASI);
                             },
                             child: Text(
                               'Daftar disini',
-                              style:
-                                  TextStyle(color: Colors.blue, fontSize: 16),
+                              style: TextStyle(color: Colors.blue, fontSize: res.sp(16)),
                             )),
                       ],
                     ),

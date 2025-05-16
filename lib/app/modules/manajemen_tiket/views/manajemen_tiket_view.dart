@@ -5,6 +5,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:apptiket/app/modules/tambah_tiket/views/tambah_tiket_view.dart';
 import 'package:apptiket/app/modules/manajemen_tiket/controllers/manajemen_tiket_controller.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class ManajemenTiketView extends GetView<ManajemenTiketController> {
   final NumberFormat currencyFormat = NumberFormat.currency(
@@ -17,22 +18,24 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
-      appBar: _buildAppBar(context),
-      body: _buildBody(),
-      floatingActionButton: _buildFloatingActionButton(context),
+      appBar: _buildAppBar(context, res),
+      body: _buildBody(res),
+      floatingActionButton: _buildFloatingActionButton(context, res),
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar(BuildContext context, AutoResponsive res) {
     return AppBar(
       backgroundColor: const Color(0xff181681),
-      toolbarHeight: 90,
+      toolbarHeight: res.hp(11),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Get.offAllNamed(Routes.HOME),
       ),
-      title: _buildSearchField(),
+      title: _buildSearchField(res),
       actions: [
         IconButton(
           icon: const Icon(Icons.more_vert, color: Colors.white),
@@ -42,61 +45,62 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
     );
   }
 
-  Widget _buildSearchField() {
+  Widget _buildSearchField(AutoResponsive res) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+      padding: EdgeInsets.symmetric(horizontal: res.wp(3), vertical: res.hp(1)),
       child: TextField(
         onChanged: controller.updateSearchQuery,
         decoration: InputDecoration(
           hintText: 'Cari Nama Tiket',
           prefixIcon: const Icon(Icons.search_sharp),
-          hintStyle: TextStyle(color: const Color(0xff181681)),
+          hintStyle: TextStyle(color: const Color(0xff181681), fontSize: res.sp(14)),
           border: InputBorder.none,
           filled: true,
           fillColor: Colors.grey[350],
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(res.wp(10)),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(res.wp(10)),
           ),
         ),
+        style: TextStyle(fontSize: res.sp(14)),
       ),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(AutoResponsive res) {
     return Obx(() {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
 
       if (controller.filteredTiketList.isEmpty) {
-        return _buildEmptyState();
+        return _buildEmptyState(res);
       }
 
       return Column(
         children: [
-          _buildTiketList(),
+          _buildTiketList(res),
         ],
       );
     });
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AutoResponsive res) {
     return Container(
       color: Colors.white24,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Bootstrap.box, size: 100, color: Colors.grey),
-            SizedBox(height: 16),
+          children: [
+            Icon(Bootstrap.box, size: res.wp(30), color: Colors.grey),
+            SizedBox(height: res.hp(2)),
             Text(
               'Tidak ada daftar tiket yang dapat ditampilkan.',
-              style: TextStyle(color: Colors.grey),
+              style: TextStyle(color: Colors.grey, fontSize: res.sp(14)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -105,55 +109,56 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
     );
   }
 
-  Widget _buildTiketList() {
+  Widget _buildTiketList(AutoResponsive res) {
     return Expanded(
       child: Container(
         color: Colors.white24,
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(res.wp(2.5)),
           child: ListView.builder(
             itemCount: controller.filteredTiketList.length,
-            itemBuilder: (context, index) => _buildTiketCard(context, index),
+            itemBuilder: (context, index) => _buildTiketCard(context, index, res),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTiketCard(BuildContext context, int index) {
+  Widget _buildTiketCard(BuildContext context, int index, AutoResponsive res) {
     final tiket = controller.filteredTiketList[index];
     final double hargaJual =
         double.tryParse(tiket['hargaJual'].toString()) ?? 0.0;
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(res.wp(3)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 6,
-            offset: const Offset(6, 10),
+            offset: Offset(res.wp(1.5), res.hp(1.5)),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top: 5),
+        padding: EdgeInsets.only(top: res.hp(0.5)),
         child: Card(
           color: Colors.white,
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(res.wp(3)),
           ),
           child: ListTile(
             title: Text(
               tiket['namaTiket'],
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: res.sp(15)),
             ),
             subtitle: Text(
               'Stok: ${tiket['stok']} | ${currencyFormat.format(hargaJual)}',
+              style: TextStyle(fontSize: res.sp(13)),
             ),
-            trailing: _buildPopupMenu(context, index, tiket),
+            trailing: _buildPopupMenu(context, index, tiket, res),
           ),
         ),
       ),
@@ -161,7 +166,7 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
   }
 
   Widget _buildPopupMenu(
-      BuildContext context, int index, Map<String, dynamic> tiket) {
+      BuildContext context, int index, Map<String, dynamic> tiket, AutoResponsive res) {
     return PopupMenuButton<String>(
       onSelected: (value) {
         if (value == 'edit') {
@@ -171,23 +176,23 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
         }
       },
       itemBuilder: (BuildContext context) => [
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'edit',
           child: Row(
             children: [
-              Icon(Icons.edit),
-              SizedBox(width: 8),
-              Text('Edit Tiket'),
+              Icon(Icons.edit, size: res.sp(16)),
+              SizedBox(width: res.wp(2)),
+              Text('Edit Tiket', style: TextStyle(fontSize: res.sp(14))),
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'delete',
           child: Row(
             children: [
-              Icon(Icons.delete),
-              SizedBox(width: 8),
-              Text('Hapus Tiket'),
+              Icon(Icons.delete, size: res.sp(16)),
+              SizedBox(width: res.wp(2)),
+              Text('Hapus Tiket', style: TextStyle(fontSize: res.sp(14))),
             ],
           ),
         ),
@@ -195,7 +200,7 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
     );
   }
 
-  Widget _buildFloatingActionButton(BuildContext context) {
+  Widget _buildFloatingActionButton(BuildContext context, AutoResponsive res) {
     return FloatingActionButton(
       elevation: 4,
       backgroundColor: const Color(0xff181681),
@@ -205,7 +210,7 @@ class ManajemenTiketView extends GetView<ManajemenTiketController> {
           controller.fetchTikets();
         }
       },
-      child: const Icon(Icons.add, color: Colors.white),
+      child: Icon(Icons.add, color: Colors.white, size: res.sp(24)),
     );
   }
 

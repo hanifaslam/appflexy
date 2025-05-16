@@ -1,11 +1,10 @@
 // MENAMBAHKAN TIKET (JUMLAH TIKET / JENIS TIKET)
 
-
-
 import 'package:apptiket/app/modules/kasir/controllers/kasir_controller.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class PenjualanView extends StatefulWidget {
   const PenjualanView({super.key});
@@ -17,6 +16,8 @@ class PenjualanView extends StatefulWidget {
 class _PenjualanViewState extends State<PenjualanView> {
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tiket Anda'),
@@ -28,19 +29,19 @@ class _PenjualanViewState extends State<PenjualanView> {
           },
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: EdgeInsets.all(res.wp(4)),
         child: Column(
           children: [
-            TicketCard(),
+            TicketCard(res: res),
           ],
         ),
       ),
       floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end, // Menempatkan di kiri
+        mainAxisAlignment: MainAxisAlignment.end, // Menempatkan di kanan
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(res.wp(2)),
             child: FloatingActionButton(
               onPressed: () {
                 // Aksi ketika tombol tambah ditekan
@@ -56,48 +57,50 @@ class _PenjualanViewState extends State<PenjualanView> {
 }
 
 class TicketCard extends StatelessWidget {
-  const TicketCard({super.key});
+  final AutoResponsive res;
+  const TicketCard({super.key, required this.res});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(() => KasirController());
+        // Navigasi ke halaman kasir (ubah sesuai kebutuhan)
+        // Get.to(() => KasirView(pesananList: []));
       },
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(res.wp(3)),
         ),
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(res.wp(4)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Tiket Dewasa',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: res.sp(16),
                       fontWeight: FontWeight.bold,
                       color: Colors.blue,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: res.hp(0.5)),
                   Text(
                     'Untuk usia 15 ke atas',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: res.sp(14),
                       color: Colors.grey[600],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: res.hp(1)),
+                  Text(
                     '50.000',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: res.sp(18),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

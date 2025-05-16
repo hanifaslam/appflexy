@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +25,8 @@ class SnkView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff181681),
@@ -45,6 +48,7 @@ class SnkView extends StatelessWidget {
         ),
       ),
       body: ListView(
+        padding: EdgeInsets.all(res.wp(4)),
         children: [
           ListTile(
             leading: const Icon(Icons.description, color: Colors.black),
@@ -105,6 +109,8 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -127,23 +133,23 @@ class DetailPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(res.wp(4)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 20,
+                style: TextStyle(
+                  fontSize: res.sp(20),
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: res.hp(1)),
               Text(
                 content,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: res.sp(16),
                   height: 1.5,
                 ),
               ),

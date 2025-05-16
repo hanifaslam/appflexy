@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class SettingQRISView extends StatefulWidget {
   const SettingQRISView({super.key});
@@ -116,6 +117,8 @@ class _SettingQRISViewState extends State<SettingQRISView> {
 
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff181681),
@@ -125,12 +128,12 @@ class _SettingQRISViewState extends State<SettingQRISView> {
             fontFamily: 'Inter',
             fontWeight: FontWeight.bold,
             color: Colors.white,
+            fontSize: res.sp(18),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: Colors.white), // Tombol back (arrow)
+          icon: Icon(Icons.arrow_back, color: Colors.white), // Tombol back (arrow)
           onPressed: () {
             Navigator.of(context).pop(); // Kembali ke halaman sebelumnya
           },
@@ -138,7 +141,7 @@ class _SettingQRISViewState extends State<SettingQRISView> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(res.wp(4)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -146,39 +149,40 @@ class _SettingQRISViewState extends State<SettingQRISView> {
               qrCodeImage != null
                   ? Image.file(
                       qrCodeImage!,
-                      width: 360,
-                      height: 500,
+                      width: res.wp(80),
+                      height: res.hp(50),
                       fit: BoxFit.cover,
                     )
-                  : const Text(
+                  : Text(
                       'Belum ada QR Code. Unggah file QR Code Anda.',
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: res.sp(15)),
                     ),
-              const SizedBox(height: 20),
+              SizedBox(height: res.hp(2)),
               // Tombol untuk menghapus QR Code atau mengganti dengan tombol unggah
               qrCodeImage != null
                   ? ElevatedButton(
                       onPressed: _deleteQrCode,
-                      child: const Text('Hapus QR Code',
-                          style: TextStyle(color: Colors.white)),
+                      child: Text('Hapus QR Code',
+                          style: TextStyle(color: Colors.white, fontSize: res.sp(15))),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: res.wp(8), vertical: res.hp(2)),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                            borderRadius: BorderRadius.circular(res.wp(2))),
                         elevation: 4,
                         backgroundColor: Colors.red,
                       ),
                     )
                   : ElevatedButton(
                       onPressed: pickQrCodeImage,
-                      child: const Text('Unggah QR Code',
-                          style: TextStyle(color: Colors.white)),
+                      child: Text('Unggah QR Code',
+                          style: TextStyle(color: Colors.white, fontSize: res.sp(15))),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: res.wp(8), vertical: res.hp(2)),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                            borderRadius: BorderRadius.circular(res.wp(2))),
                         elevation: 4,
                         backgroundColor: Color(0xff181681),
                       ),
