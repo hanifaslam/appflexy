@@ -1,3 +1,4 @@
+import 'package:apptiket/app/core/constants/api_constants.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,7 +23,7 @@ class DaftarProdukController extends GetxController {
       isLoading.value = true;
       final userId = box.read('user_id'); // Get user_id from storage
       final response = await http.get(
-        Uri.parse('https://flexy.my.id/api/products'),
+        Uri.parse(ApiConstants.getFullUrl(ApiConstants.products)),
         headers: {'Accept': 'application/json'},
       );
 
@@ -54,7 +55,7 @@ class DaftarProdukController extends GetxController {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://flexy.my.id/api/products'),
+        Uri.parse(ApiConstants.getFullUrl(ApiConstants.products))
       );
 
       final userId = box.read('user_id'); // Get user_id from storage
@@ -101,7 +102,7 @@ class DaftarProdukController extends GetxController {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://flexy.my.id/api/products/$productId'),
+        Uri.parse(ApiConstants.getFullUrl('${ApiConstants.products}/$productId'))
       );
 
       final userId = box.read('user_id'); // Get user_id from storage
@@ -153,7 +154,7 @@ class DaftarProdukController extends GetxController {
   Future<void> deleteProduct(int productId) async {
     try {
       final response = await http.delete(
-        Uri.parse('https://flexy.my.id/api/products/$productId'),
+        Uri.parse(ApiConstants.getFullUrl('${ApiConstants.products}/$productId')),
         headers: {'Accept': 'application/json'},
       );
 

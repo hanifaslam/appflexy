@@ -14,7 +14,8 @@ import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_contr
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
-import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
+import 'package:apptiket/app/core/utils/auto_responsive.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class KasirView extends StatefulWidget {
   final List<Map<String, dynamic>> pesananList;
@@ -151,11 +152,10 @@ class _KasirViewState extends State<KasirView> {
         borderRadius: BorderRadius.circular(res.wp(3)),
         child: SizedBox(
           width: res.wp(13),
-          height: res.wp(13),
-          child: CachedNetworkImage(
+          height: res.wp(13),          child: CachedNetworkImage(
             imageUrl: item['image'].startsWith('http')
                 ? item['image']
-                : 'https://flexy.my.id/storage/${item['image']}',
+                : ApiConstants.getStorageUrl(item['image']),
             fit: BoxFit.cover,
             placeholder: (context, url) => _buildLoadingPlaceholder(res),
             errorWidget: (context, url, error) => _buildErrorImage(res),

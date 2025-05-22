@@ -5,12 +5,12 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 import '../../../widgets/pdfpreview_page.dart';
 
 class ApiEndpoints {
-  static const String baseUrl =
-      'https://flexy.my.id'; // Replace with your actual base URL
+  static String get baseUrl => ApiConstants.mainUrl;
 }
 
 class KasirController extends GetxController {

@@ -33,10 +33,8 @@ class PengaturanProfileController extends GetxController {
 
       if (token == null || userId == null) {
         throw Exception('Authentication required');
-      }
-
-      final response = await http.get(
-        Uri.parse('https://flexy.my.id/api/stores'),
+      }      final response = await http.get(
+        Uri.parse(ApiConstants.getFullUrl(ApiConstants.stores)),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -82,11 +80,9 @@ class PengaturanProfileController extends GetxController {
 
       if (token == null || userId == null || storeId == null) {
         throw Exception('Authentication required or store_id not found');
-      }
-
-      var request = http.MultipartRequest(
+      }      var request = http.MultipartRequest(
         'POST', // Change to POST
-        Uri.parse('https://flexy.my.id/api/stores/$storeId'),
+        Uri.parse(ApiConstants.getFullUrl('${ApiConstants.stores}/$storeId')),
       );
 
       request.headers.addAll({

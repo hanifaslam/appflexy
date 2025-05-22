@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class Profileuser2Controller extends GetxController {
   final box = GetStorage();
@@ -21,7 +22,7 @@ class Profileuser2Controller extends GetxController {
   Future<void> fetchCompanyDetails() async {
     try {
       final response =
-          await http.get(Uri.parse('https://flexy.my.id/api/stores'));
+          await http.get(Uri.parse(ApiConstants.getFullUrl(ApiConstants.stores)));
 
       if (response.statusCode == 200) {
         final dynamic responseData = jsonDecode(response.body);
