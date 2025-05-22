@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class HomeController extends GetxController {
   static HomeController get to => Get.find<HomeController>();
@@ -43,9 +44,8 @@ class HomeController extends GetxController {
       if (token == null || userId == null) {
         throw Exception('Authentication required');
       }
-
       final response = await http.get(
-        Uri.parse('https://flexy.my.id/api/stores'),
+        Uri.parse(ApiConstants.getFullUrl(ApiConstants.stores)),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -186,7 +186,7 @@ class HomeController extends GetxController {
 
       final response = await http.get(
         Uri.parse(
-            'https://flexy.my.id/api/orders?filter=$filter&user_id=$userId'),
+            '${ApiConstants.baseUrl}/orders?filter=$filter&user_id=$userId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

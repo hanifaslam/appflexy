@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class LoginController extends GetxController {
   var isPasswordHidden = true.obs;
@@ -55,7 +56,7 @@ class LoginController extends GetxController {
       };
     }
 
-    final url = Uri.parse('https://flexy.my.id/api/login');
+    final url = Uri.parse(ApiConstants.getFullUrl(ApiConstants.login));
 
     daftarKasirController.clearData();
 
@@ -128,8 +129,7 @@ class LoginController extends GetxController {
 
       if (isRegistered) {
         Get.offAllNamed(Routes.HOME);
-      }
-      else {
+      } else {
         HomeController.to.fetchCompanyDetails();
         Get.offAllNamed(Routes.HOME);
       }
@@ -160,7 +160,7 @@ class LoginController extends GetxController {
 
   // Fetch current user data from the API
   Future<void> fetchCurrentUser(String token) async {
-    final url = Uri.parse('https://flexy.my.id/api/user');
+    final url = Uri.parse(ApiConstants.getFullUrl(ApiConstants.users));
 
     try {
       final response = await http.get(
@@ -197,7 +197,7 @@ class LoginController extends GetxController {
     try {
       final box = GetStorage();
       final response = await http.get(
-        Uri.parse('https://flexy.my.id/api/stores/user/$userId'),
+        Uri.parse('${ApiConstants.baseUrl}/stores/user/$userId'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

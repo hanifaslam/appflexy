@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class DaftarKasirController extends GetxController {
   var produkList = <Map<String, dynamic>>[].obs;
@@ -13,7 +14,6 @@ class DaftarKasirController extends GetxController {
   var isLoading = false.obs;
   var selectedItems = <int>[].obs;
 
-  final String baseUrl = 'https://flexy.my.id/api';
   final box = GetStorage(); // GetStorage instance
 
   // Add filtered getters
@@ -35,7 +35,8 @@ class DaftarKasirController extends GetxController {
 
   Future<List<dynamic>> getOrderItems() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/order_items'));
+      final response =
+          await http.get(Uri.parse(ApiConstants.getFullUrl('order_items')));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -76,7 +77,7 @@ class DaftarKasirController extends GetxController {
     try {
       final userId = box.read('user_id'); // Get user_id from storage
       final response = await http.get(
-        Uri.parse('$baseUrl/$endpoint'),
+        Uri.parse(ApiConstants.getFullUrl(endpoint)),
         headers: {'Accept': 'application/json'},
       );
       if (response.statusCode == 200) {

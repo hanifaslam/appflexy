@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class PengaturanProfileController extends GetxController {
   final box = GetStorage();
