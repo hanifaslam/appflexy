@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class RegistrasiController extends GetxController {
   final box = GetStorage();
@@ -81,9 +82,8 @@ class RegistrasiController extends GetxController {
             ),
           );
         });
-
     try {
-      var url = Uri.parse('https://flexy.my.id/api/register');
+      var url = Uri.parse(ApiConstants.getFullUrl(ApiConstants.register));
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},

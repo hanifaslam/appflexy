@@ -4,17 +4,17 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class TambahTiketController extends GetxController {
   final box = GetStorage();
   final DaftarKasirController daftarKasirController = Get.find();
   var isLoading = false.obs;
   var errorMessage = ''.obs;
-
   Future<void> addTiket(Map<String, dynamic> tiketData) async {
     isLoading.value = true;
     final response = await http.post(
-      Uri.parse('https://flexy.my.id/api/tikets'),
+      Uri.parse(ApiConstants.getFullUrl(ApiConstants.tikets)),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 import 'dart:convert';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class StorageKeys {
   static const String token = 'token';
@@ -18,10 +19,9 @@ class ProfileController extends GetxController {
   var companyType = ''.obs;
   var companyAddress = ''.obs;
   var imagePath = ''.obs;
-
   Future<void> saveProfileToApi() async {
     try {
-      var url = Uri.parse('https://flexy.my.id/api/stores');
+      var url = Uri.parse(ApiConstants.getFullUrl(ApiConstants.stores));
       var request = http.MultipartRequest('POST', url);
 
       final token = box.read(StorageKeys.token);

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class SalesHistoryController extends GetxController {
   final box = GetStorage();
@@ -37,9 +38,8 @@ class SalesHistoryController extends GetxController {
       if (token == null || userId == null) {
         throw Exception('Authentication required');
       }
-
       final response = await http.get(
-        Uri.parse('https://flexy.my.id/api/orders?user_id=$userId'),
+        Uri.parse('${ApiConstants.baseUrl}/orders?user_id=$userId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
