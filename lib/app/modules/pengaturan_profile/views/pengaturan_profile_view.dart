@@ -8,7 +8,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../controllers/pengaturan_profile_controller.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
-import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
+import 'package:apptiket/app/core/utils/auto_responsive.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class PengaturanProfileView extends GetView<PengaturanProfileController> {
   final ImagePicker _picker = ImagePicker();
@@ -36,10 +37,9 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
 
       return ClipRRect(
         borderRadius: BorderRadius.circular(500),
-        child: CachedNetworkImage(
-          imageUrl: controller.companyLogo.value.startsWith('http')
+        child: CachedNetworkImage(          imageUrl: controller.companyLogo.value.startsWith('http')
               ? controller.companyLogo.value
-              : 'https://flexy.my.id/storage/${controller.companyLogo.value}',
+              : ApiConstants.getStorageUrl(controller.companyLogo.value),
           width: res.wp(40),
           height: res.wp(40),
           fit: BoxFit.cover,

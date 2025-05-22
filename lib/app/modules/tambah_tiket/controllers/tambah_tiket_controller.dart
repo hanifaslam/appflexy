@@ -60,11 +60,10 @@ class TambahTiketController extends GetxController {
     }
     isLoading.value = false;
   }
-
   Future<void> updateTiket(int id, Map<String, dynamic> tiketData) async {
     isLoading.value = true;
     final response = await http.put(
-      Uri.parse('https://flexy.my.id/api/tikets/$id'),
+      Uri.parse(ApiConstants.getFullUrl('${ApiConstants.tikets}/$id')),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

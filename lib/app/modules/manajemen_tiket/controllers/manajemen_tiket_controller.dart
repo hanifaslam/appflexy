@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class ManajemenTiketController extends GetxController {
   RxList tiketList = [].obs;
@@ -22,10 +23,9 @@ class ManajemenTiketController extends GetxController {
     _refreshTimer?.cancel();
     super.onClose();
   }
-
   Future<void> fetchTikets() async {
     isLoading.value = true;
-    final url = Uri.parse('https://flexy.my.id/api/tikets');
+    final url = Uri.parse(ApiConstants.getFullUrl(ApiConstants.tikets));
     final token = box.read('token');
     final userId = box.read('user_id');
 
@@ -80,9 +80,8 @@ class ManajemenTiketController extends GetxController {
   }
 
   Future<void> deleteTiket(int tiketId) async {
-    try {
-      final response = await http.delete(
-        Uri.parse('https://flexy.my.id/api/tikets/$tiketId'),
+    try {      final response = await http.delete(
+        Uri.parse(ApiConstants.getFullUrl('${ApiConstants.tikets}/$tiketId')),
         headers: {
           'Authorization': 'Bearer ${box.read('token')}',
         },
@@ -110,10 +109,8 @@ class ManajemenTiketController extends GetxController {
         'id': id,
         'user_id': userId,
         ...tiketData,
-      };
-
-      final response = await http.put(
-        Uri.parse('https://flexy.my.id/api/tikets/$id'),
+      };      final response = await http.put(
+        Uri.parse(ApiConstants.getFullUrl('${ApiConstants.tikets}/$id')),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

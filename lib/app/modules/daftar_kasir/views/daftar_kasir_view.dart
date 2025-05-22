@@ -1,3 +1,4 @@
+import 'package:apptiket/app/core/constants/api_constants.dart';
 import 'package:apptiket/app/modules/kasir/views/kasir_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -57,7 +58,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
             unselectedLabelColor: Colors.grey,
             indicatorColor: Colors.blue,
             indicatorWeight: 3.0,
-            labelStyle: TextStyle(fontSize: res.sp(15), fontWeight: FontWeight.bold),
+            labelStyle:
+                TextStyle(fontSize: res.sp(15), fontWeight: FontWeight.bold),
             unselectedLabelStyle: TextStyle(fontSize: res.sp(14)),
           ),
           leading: IconButton(
@@ -76,7 +78,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
     );
   }
 
-  Widget _buildList(List<Map<String, dynamic>> list, String type, AutoResponsive res) {
+  Widget _buildList(
+      List<Map<String, dynamic>> list, String type, AutoResponsive res) {
     return list.isEmpty
         ? _buildEmptyState(type, res)
         : ListView.builder(
@@ -89,8 +92,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
                   double.tryParse(item['hargaJual']?.toString() ?? '0') ?? 0.0;
 
               return Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: res.wp(3.5), vertical: res.hp(0.7)),
+                padding: EdgeInsets.symmetric(
+                    horizontal: res.wp(3.5), vertical: res.hp(0.7)),
                 child: _buildListItem(item, type, title, price, res),
               );
             },
@@ -113,25 +116,31 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
     );
   }
 
-  Widget _buildListItem(
-      Map<String, dynamic> item, String type, String title, double price, AutoResponsive res) {
+  Widget _buildListItem(Map<String, dynamic> item, String type, String title,
+      double price, AutoResponsive res) {
     return Card(
       color: Color(0xffE3E3E3),
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(res.wp(3.5))),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(res.wp(3.5))),
       child: ListTile(
         leading: _buildItemImage(item, type, res),
-        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: res.sp(15))),
-        subtitle: Text(currencyFormat.format(price), style: TextStyle(fontSize: res.sp(13))),
+        title: Text(title,
+            style:
+                TextStyle(fontWeight: FontWeight.bold, fontSize: res.sp(15))),
+        subtitle: Text(currencyFormat.format(price),
+            style: TextStyle(fontSize: res.sp(13))),
         trailing: Obx(() => controller.selectedItems.contains(item['id'])
-            ? Icon(Icons.check_circle, color: Color(0xff181681), size: res.sp(20))
+            ? Icon(Icons.check_circle,
+                color: Color(0xff181681), size: res.sp(20))
             : SizedBox.shrink()),
         onTap: () => controller.addToCart(item),
       ),
     );
   }
 
-  Widget _buildItemImage(Map<String, dynamic> item, String type, AutoResponsive res) {
+  Widget _buildItemImage(
+      Map<String, dynamic> item, String type, AutoResponsive res) {
     if (type == 'produk' && item['image'] != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(res.wp(4)),
@@ -141,7 +150,7 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
           child: CachedNetworkImage(
             imageUrl: item['image'].startsWith('http')
                 ? item['image']
-                : 'https://flexy.my.id/storage/${item['image']}',
+                : ApiConstants.getStorageUrl(item['image']),
             fit: BoxFit.cover,
             placeholder: (context, url) => _buildLoadingPlaceholder(res),
             errorWidget: (context, url, error) => _buildErrorImage(res),
@@ -184,7 +193,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
       height: res.wp(13),
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(res.wp(4))),
-      child: Icon(Icons.broken_image, size: res.sp(18), color: Colors.grey[600]),
+      child:
+          Icon(Icons.broken_image, size: res.sp(18), color: Colors.grey[600]),
     );
   }
 
@@ -217,8 +227,8 @@ class _DaftarKasirViewState extends State<DaftarKasirView> {
                         decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(res.wp(3))),
-                        constraints:
-                            BoxConstraints(minWidth: res.wp(5), minHeight: res.hp(2)),
+                        constraints: BoxConstraints(
+                            minWidth: res.wp(5), minHeight: res.hp(2)),
                         child: Text(
                           controller.pesananCount.toString(),
                           style: TextStyle(

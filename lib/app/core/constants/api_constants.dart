@@ -14,9 +14,9 @@
 /// ```
 class ApiConstants {
   // Base URLs
-  static const String baseUrl = 'https://flexy.my.id/api';
-  static const String storageUrl = 'https://flexy.my.id/storage';
-  static const String mainUrl = 'https://flexy.my.id';
+  static const String baseUrl = 'http://10.0.2.2:8000/api';
+  static const String storageUrl = 'http://10.0.2.2:8000/storage';
+  static const String mainUrl = 'http://127.0.0.1:8000';
 
   // API endpoints
   static const String products = '/products';

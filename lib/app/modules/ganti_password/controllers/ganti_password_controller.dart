@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class GantiPasswordController extends GetxController {
   final box = GetStorage();
@@ -62,10 +63,8 @@ class GantiPasswordController extends GetxController {
 
       if (token == null || userId == null) {
         throw Exception('Authentication required');
-      }
-
-      final response = await http.post(
-        Uri.parse('https://flexy.my.id/api/change-password'),
+      }      final response = await http.post(
+        Uri.parse(ApiConstants.getFullUrl(ApiConstants.changePassword)),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

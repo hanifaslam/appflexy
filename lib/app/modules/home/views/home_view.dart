@@ -13,9 +13,10 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:apptiket/app/core/utils/auto_responsive.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 import '../../../core/utils/cloud_painter.dart';
-import '../../../core/utils/wave_painter.dart'; // tambahkan import ini
+import '../../../core/utils/wave_painter.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -640,11 +641,10 @@ class _HomeViewState extends State<HomeView> {
     final token = homeController.getToken();
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(res.wp(4)),
-      child: CachedNetworkImage(
+      borderRadius: BorderRadius.circular(res.wp(4)),      child: CachedNetworkImage(
         imageUrl: imageUrl.startsWith('http')
             ? imageUrl
-            : 'https://flexy.my.id/storage/$imageUrl',
+            : ApiConstants.getStorageUrl(imageUrl),
         width: res.wp(12),
         height: res.wp(12),
         fit: BoxFit.cover,

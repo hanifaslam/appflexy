@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class EditProdukController extends GetxController {
   final TextEditingController namaProdukController = TextEditingController();
@@ -35,11 +36,9 @@ class EditProdukController extends GetxController {
     return selectedImage != null ||
         (existingImage != null && existingImage!.isNotEmpty);
   }
-
   String? getImageUrl() {
     if (existingImage != null && existingImage!.isNotEmpty) {
-      final baseUrl = 'https://flexy.my.id/storage/products/';
-      return '$baseUrl$existingImage';
+      return ApiConstants.getStorageUrl('${ApiConstants.productImages}$existingImage');
     }
     return null;
   }
@@ -57,9 +56,8 @@ class EditProdukController extends GetxController {
       Get.snackbar('Error', 'Failed to pick image: $error');
     }
   }
-
   Future<void> updateProduct(int productId) async {
-    final Uri apiUrl = Uri.parse('https://flexy.my.id/api/products/$productId');
+    final Uri apiUrl = Uri.parse(ApiConstants.getFullUrl('${ApiConstants.products}/$productId'));
     final userId = box.read('user_id');
 
     // Validasi input

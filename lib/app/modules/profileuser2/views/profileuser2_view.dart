@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import '../../../core/constants/api_constants.dart';
 import '../../profileuser2/controllers/profileuser2_controller.dart';
 import 'package:apptiket/app/widgets/navbar.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
@@ -214,7 +215,7 @@ class Profileuser2View extends StatelessWidget {
                                 imageUrl: controller.companyLogo.value
                                         .startsWith('http')
                                     ? controller.companyLogo.value
-                                    : 'https://flexy.my.id/storage/${controller.companyLogo.value}',
+                                    : ApiConstants.getStorageUrl(controller.companyLogo.value),
                                 width: 110,
                                 height: 110,
                                 fit: BoxFit.cover,
@@ -301,7 +302,7 @@ class Profileuser2View extends StatelessWidget {
     }
 
     final response = await http.get(
-      Uri.parse('https://flexy.my.id/api/orders?user_id=$userId'),
+      Uri.parse(ApiConstants.getFullUrl('/orders?user_id=$userId')),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

@@ -9,7 +9,8 @@ import '../../edit_produk/controllers/edit_produk_controller.dart';
 import '../controllers/daftar_produk_controller.dart';
 import 'package:apptiket/app/modules/edit_produk/views/edit_produk_view.dart';
 import 'package:apptiket/app/modules/tambah_produk/views/tambah_produk_view.dart';
-import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
+import 'package:apptiket/app/core/utils/auto_responsive.dart';
+import 'package:apptiket/app/core/constants/api_constants.dart';
 
 // Custom ImageCacheManager class
 class CustomCacheManager {
@@ -226,9 +227,7 @@ class DaftarProdukView extends StatelessWidget {
     try {
       if (produk['image'].toString().startsWith('http')) {
         return produk['image'];
-      }
-      final baseUrl = 'https://flexy.my.id';
-      return '$baseUrl/storage/products/${produk['image']}';
+      }      return ApiConstants.getStorageUrl('${ApiConstants.productImages}${produk['image']}');
     } catch (e) {
       print('Error generating image URL: $e');
       return '';
