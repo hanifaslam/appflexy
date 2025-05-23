@@ -3,9 +3,11 @@ import 'dart:ui';
 import 'package:apptiket/app/modules/pembayaran_cash/controllers/pembayaran_cash_controller.dart';
 import 'package:apptiket/app/modules/pembayaran_cash/views/pembayaran_cash_view.dart';
 import 'package:apptiket/app/modules/qrisPayment/views/qris_payment_view.dart';
+import 'package:apptiket/app/modules/midtrans_payment/views/midtrans_payment_view.dart';
 import 'package:apptiket/app/routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:apptiket/app/modules/kasir/controllers/kasir_controller.dart';
@@ -132,7 +134,8 @@ class _KasirViewState extends State<KasirView> {
         children: [
           Icon(Icons.inbox, size: res.wp(25), color: Colors.grey),
           SizedBox(height: res.hp(2)),
-          Text('Tidak ada pesanan.', style: TextStyle(color: Colors.grey, fontSize: res.sp(15))),
+          Text('Tidak ada pesanan.',
+              style: TextStyle(color: Colors.grey, fontSize: res.sp(15))),
         ],
       ),
     );
@@ -142,17 +145,18 @@ class _KasirViewState extends State<KasirView> {
     return ListView.builder(
       padding: EdgeInsets.all(res.wp(4)),
       itemCount: controller.pesananList.length,
-      itemBuilder: (context, index) => _buildOrderItem(index, currencyFormat, res),
+      itemBuilder: (context, index) =>
+          _buildOrderItem(index, currencyFormat, res),
     );
   }
 
-  Widget _buildProductImage(Map<String, dynamic> item, AutoResponsive res) {
-    if (item['image'] != null) {
+  Widget _buildProductImage(Map<String, dynamic> item, AutoResponsive res) {    if (item['image'] != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(res.wp(3)),
         child: SizedBox(
           width: res.wp(13),
-          height: res.wp(13),          child: CachedNetworkImage(
+          height: res.wp(13),
+          child: CachedNetworkImage(
             imageUrl: item['image'].startsWith('http')
                 ? item['image']
                 : ApiConstants.getStorageUrl(item['image']),
@@ -206,11 +210,13 @@ class _KasirViewState extends State<KasirView> {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(res.wp(3)),
       ),
-      child: Icon(Icons.broken_image, color: Colors.grey[400], size: res.sp(18)),
+      child:
+          Icon(Icons.broken_image, color: Colors.grey[400], size: res.sp(18)),
     );
   }
 
-  Widget _buildOrderItem(int index, NumberFormat currencyFormat, AutoResponsive res) {
+  Widget _buildOrderItem(
+      int index, NumberFormat currencyFormat, AutoResponsive res) {
     if (controller.pesananList.isEmpty ||
         controller.localQuantities.isEmpty ||
         index >= controller.pesananList.length ||
@@ -297,7 +303,8 @@ class _KasirViewState extends State<KasirView> {
                 ),
                 borderRadius: BorderRadius.circular(res.wp(4)),
               ),
-              padding: EdgeInsets.symmetric(horizontal: res.wp(1), vertical: res.hp(0.5)),
+              padding: EdgeInsets.symmetric(
+                  horizontal: res.wp(1), vertical: res.hp(0.5)),
               margin: EdgeInsets.only(top: res.hp(1)),
               child: Obx(() {
                 if (controller.localQuantities.isEmpty ||
@@ -403,7 +410,8 @@ class _KasirViewState extends State<KasirView> {
           InkWell(
             onTap: () => _showPaymentMethodDialog(context, res),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: res.wp(4), vertical: res.hp(1.2)),
+              padding: EdgeInsets.symmetric(
+                  horizontal: res.wp(4), vertical: res.hp(1.2)),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey[300]!),
                 borderRadius: BorderRadius.circular(res.wp(2)),
@@ -449,7 +457,8 @@ class _KasirViewState extends State<KasirView> {
                   children: [
                     Text(
                       'Total',
-                      style: TextStyle(fontSize: res.sp(16), color: Colors.black),
+                      style:
+                          TextStyle(fontSize: res.sp(16), color: Colors.black),
                     ),
                     Obx(() => Text(
                           currencyFormat.format(controller.totalValue),
@@ -491,10 +500,11 @@ class _KasirViewState extends State<KasirView> {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(res.wp(3))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(res.wp(3))),
             title: Text('Pilih Metode Pembayaran',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: res.sp(16))),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: res.sp(16))),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -515,6 +525,17 @@ class _KasirViewState extends State<KasirView> {
                   onTap: () {
                     setState(() => selectedPaymentMethod = 'QRIS');
                     controller.setPaymentMethod('QRIS');
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.payment,
+                      color: const Color(0xff181681), size: res.sp(20)),
+                  title: Text('Midtrans QRIS',
+                      style: TextStyle(fontSize: res.sp(15))),
+                  onTap: () {
+                    setState(() => selectedPaymentMethod = 'Midtrans');
+                    controller.setPaymentMethod('Midtrans');
                     Navigator.pop(context);
                   },
                 ),
@@ -547,11 +568,24 @@ class _KasirViewState extends State<KasirView> {
 
     controller.setPaymentMethod(selectedPaymentMethod!);
     final success = await controller.submitOrder();
-
     if (success) {
-      Get.to(() => selectedPaymentMethod == 'Tunai'
-          ? PembayaranCashView()
-          : QrisPaymentView());
+      if (selectedPaymentMethod == 'Tunai') {
+        Get.to(() => PembayaranCashView());
+      } else if (selectedPaymentMethod == 'QRIS') {
+        Get.to(() => QrisPaymentView());
+      } else if (selectedPaymentMethod == 'Midtrans') {
+        // Get user data from storage or use default values
+        final storage = GetStorage();
+        final userName = storage.read('user_name') ?? 'Customer';
+        final userEmail = storage.read('user_email') ?? 'customer@example.com';
+
+        // Navigate to Midtrans Payment with required data
+        Get.toNamed(Routes.MIDTRANS_PAYMENT, arguments: {
+          'amount': controller.totalValue.toInt(),
+          'name': userName,
+          'email': userEmail,
+        });
+      }
     }
   }
 }

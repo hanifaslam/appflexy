@@ -96,10 +96,8 @@ class KasirController extends GetxController {
         'payment_method': selectedPaymentMethod.value,
         'total': _total.value,
         'items': items
-      };
-
-      final response = await http.post(
-        Uri.parse('${ApiEndpoints.baseUrl}/api/orders'),
+      };      final response = await http.post(
+        Uri.parse(ApiConstants.getFullUrl(ApiConstants.orders)),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

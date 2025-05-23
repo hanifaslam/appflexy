@@ -30,13 +30,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return GetMaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   title: "Application",
-    //   initialRoute:
-    //       '/home', // Ganti ke route yang kamu inginkan, misalnya '/login' atau '/dashboard'
-    //   getPages: AppPages.routes,
-    // );
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Application",
+      initialRoute:
+          '/home', // Ganti ke route yang kamu inginkan, misalnya '/login' atau '/dashboard'
+      getPages: AppPages.routes,
+    );
 
     return FutureBuilder(
       future: Future.delayed(Duration(seconds: 2)),

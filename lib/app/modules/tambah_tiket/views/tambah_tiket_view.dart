@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:gap/gap.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:apptiket/app/modules/tambah_tiket/controllers/tambah_tiket_controller.dart';
-import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
+import 'package:apptiket/app/core/utils/auto_responsive.dart';
+// tambahkan import ini
 
 class TambahTiketView extends StatefulWidget {
   final Map<String, dynamic>? tiket;
@@ -288,16 +289,16 @@ class _TambahTiketViewState extends State<TambahTiketView> {
                       double.tryParse(hargaJualController.text) ?? 0.0,
                       'keterangan': keteranganController.text,
                       'user_id': userId,
-                    };
-
-                    if (widget.tiket == null) {
+                    };                    if (widget.tiket == null) {
+                      // Don't navigate back here - let the controller handle it after API call completes
                       controller.addTiket(tiketData);
-                      Get.back(result: tiketData);
+                      // Get.back will be handled by the addTiket method after success
                     } else {
                       final tiketId = widget.tiket?['id'];
                       if (tiketId != null) {
+                        // Don't navigate back here - let the controller handle it after API call completes
                         controller.updateTiket(tiketId, tiketData);
-                        Get.back(result: tiketData);
+                        // Get.back will be handled by the updateTiket method after success
                       } else {
                         controller.errorMessage.value =
                         "ID Tiket tidak valid untuk update.";

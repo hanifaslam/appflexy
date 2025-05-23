@@ -18,6 +18,8 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/manajemen_tiket/bindings/manajemen_tiket_binding.dart';
 import '../modules/manajemen_tiket/views/manajemen_tiket_view.dart';
+import '../modules/midtrans_payment/bindings/midtrans_payment_binding.dart';
+import '../modules/midtrans_payment/views/midtrans_payment_view.dart';
 import '../modules/pembayaran_cash/bindings/pembayaran_cash_binding.dart';
 import '../modules/pembayaran_cash/views/pembayaran_cash_view.dart';
 import '../modules/pengaturan_profile/bindings/pengaturan_profile_binding.dart';
@@ -81,21 +83,19 @@ class AppPages {
       binding: PenjualanBinding(),
     ),
     GetPage(
+      name: _Paths.KASIR,
+      page: () => KasirView(pesananList: [],),
+      binding: KasirBinding(),
+    ),
+    GetPage(
       name: _Paths.SETTINGS,
-      page: () => const SettingsView(),
+      page: () => SettingsView(),
       binding: SettingsBinding(),
     ),
     GetPage(
       name: _Paths.MANAJEMEN_TIKET,
       page: () => ManajemenTiketView(),
       binding: ManajemenTiketBinding(),
-    ),
-    GetPage(
-      name: _Paths.KASIR,
-      page: () => KasirView(
-        pesananList: [],
-      ),
-      binding: KasirBinding(),
     ),
     GetPage(
       name: _Paths.DAFTAR_PRODUK,
@@ -134,9 +134,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.STRUK,
-      page: () => StrukView(
-        receipt: Get.arguments,
-      ),
+      page: () => StrukView(receipt: Get.arguments, ),
       binding: StrukBinding(),
     ),
     GetPage(
@@ -173,6 +171,11 @@ class AppPages {
       name: _Paths.SNK,
       page: () => const SnkView(),
       binding: SnkBinding(),
+    ),
+    GetPage(
+      name: _Paths.MIDTRANS_PAYMENT,
+      page: () => const MidtransPaymentView(),
+      binding: MidtransPaymentBinding(),
     ),
   ];
 }

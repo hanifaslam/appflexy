@@ -27,6 +27,7 @@ abstract class Routes {
   static const QRIS_PAYMENT = _Paths.QRIS_PAYMENT;
   static const SETTING_Q_R_I_S = _Paths.SETTING_Q_R_I_S;
   static const SNK = _Paths.SNK;
+  static const MIDTRANS_PAYMENT = _Paths.MIDTRANS_PAYMENT;
 }
 
 abstract class _Paths {
@@ -55,4 +56,5 @@ abstract class _Paths {
   static const QRIS_PAYMENT = '/qris-payment';
   static const SETTING_Q_R_I_S = '/setting-q-r-i-s';
   static const SNK = '/snk';
+  static const MIDTRANS_PAYMENT = '/midtrans-payment';
 }
