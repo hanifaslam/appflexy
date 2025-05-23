@@ -195,9 +195,8 @@ class LoginController extends GetxController {
 
   Future<bool> checkStoreExists(String token, int userId) async {
     try {
-      final box = GetStorage();
-      final response = await http.get(
-        Uri.parse('${ApiConstants.baseUrl}/stores/user/$userId'),
+      final box = GetStorage();      final response = await http.get(
+        Uri.parse(ApiConstants.getMainUrl('api/stores/user/$userId')),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

@@ -11,19 +11,14 @@ class TambahTiketController extends GetxController {
   final DaftarKasirController daftarKasirController = Get.find();
   var isLoading = false.obs;
   var errorMessage = ''.obs;
+
+  // Function to add a new ticket
   Future<void> addTiket(Map<String, dynamic> tiketData) async {
     isLoading.value = true;
-    final response = await http.post(
-      Uri.parse(ApiConstants.getFullUrl(ApiConstants.tikets)),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: json.encode(tiketData),
-    );
-
+    // Show loading dialog BEFORE making the request
     showDialog(
         context: Get.context!,
+        barrierDismissible: false,
         builder: (context) {
           return Center(
             child: CircularProgressIndicator(
@@ -31,10 +26,19 @@ class TambahTiketController extends GetxController {
             ),
           );
         });
-
-    // check if the response status code is 201
+        
+    final response = await http.post(
+      Uri.parse(ApiConstants.getFullUrl(ApiConstants.tikets)),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: json.encode(tiketData),
+    );    // check if the response status code is 201
     if (response.statusCode == 201) {
       daftarKasirController.fetchTiketList(); // Refresh daftar tiket
+      Navigator.of(Get.context!).pop(); // Close loading dialog
+      
       Get.snackbar('Sukses', 'Tiket berhasil ditambahkan!',
           colorText: Colors.black.withOpacity(0.8),
           barBlur: 15,
@@ -44,7 +48,9 @@ class TambahTiketController extends GetxController {
           ),
           duration: const Duration(seconds: 2),
           snackPosition: SnackPosition.TOP);
-      Navigator.of(Get.context!).pop();
+          
+      // Navigate back to previous screen with the data
+      Get.back(result: tiketData);
     } else {
       errorMessage.value = 'Gagal menambahkan tiket: ${response.body}';
       Get.snackbar('Error', errorMessage.value,
@@ -59,20 +65,13 @@ class TambahTiketController extends GetxController {
       Navigator.of(Get.context!).pop();
     }
     isLoading.value = false;
-  }
-  Future<void> updateTiket(int id, Map<String, dynamic> tiketData) async {
+  }  Future<void> updateTiket(int id, Map<String, dynamic> tiketData) async {
     isLoading.value = true;
-    final response = await http.put(
-      Uri.parse(ApiConstants.getFullUrl('${ApiConstants.tikets}/$id')),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: json.encode(tiketData),
-    );
-
+    
+    // Show loading dialog BEFORE making the request
     showDialog(
         context: Get.context!,
+        barrierDismissible: false,
         builder: (context) {
           return Center(
             child: CircularProgressIndicator(
@@ -80,9 +79,18 @@ class TambahTiketController extends GetxController {
             ),
           );
         });
-
-    if (response.statusCode == 200) {
+        
+    final response = await http.put(
+      Uri.parse(ApiConstants.getFullUrl('${ApiConstants.tikets}/$id')),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: json.encode(tiketData),
+    );    if (response.statusCode == 200) {
       daftarKasirController.fetchTiketList(); // Refresh daftar tiket
+      Navigator.of(Get.context!).pop(); // Close loading dialog
+      
       Get.snackbar('Sukses', 'Tiket berhasil diperbarui!',
           colorText: Colors.black.withOpacity(0.8),
           barBlur: 15,
@@ -92,7 +100,9 @@ class TambahTiketController extends GetxController {
           ),
           duration: const Duration(seconds: 2),
           snackPosition: SnackPosition.TOP);
-      Navigator.of(Get.context!).pop();
+          
+      // Navigate back to previous screen with the updated data
+      Get.back(result: tiketData);
     } else {
       errorMessage.value = 'Gagal mengupdate tiket: ${response.body}';
       Get.snackbar('Error', errorMessage.value,

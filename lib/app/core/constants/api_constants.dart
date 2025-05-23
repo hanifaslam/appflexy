@@ -17,17 +17,17 @@ class ApiConstants {
   static const String baseUrl = 'http://10.0.2.2:8000/api';
   static const String storageUrl = 'http://10.0.2.2:8000/storage';
   static const String mainUrl = 'http://127.0.0.1:8000';
-
   // API endpoints
   static const String products = '/products';
   static const String tikets = '/tikets';
   static const String orderItems = '/order_items';
   static const String orders = '/orders';
   static const String stores = '/stores';
-  static const String users = '/user';
+  static const String users = '/user';  
   static const String login = '/login';
   static const String register = '/register';
   static const String changePassword = '/change-password';
+  static const String transaction = '/payment/create-transaction';
 
   // Storage paths
   static const String productImages = '/products/';
