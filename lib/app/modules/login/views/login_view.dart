@@ -144,7 +144,7 @@ class LoginView extends GetView<LoginController> {
                         SizedBox(width: res.wp(2)),
                         GestureDetector(
                             onTap: () {
-                              Get.offAllNamed(Routes.REGISTRASI);
+                              Get.toNamed(Routes.REGISTRASI);
                             },
                             child: Text(
                               'Daftar disini',

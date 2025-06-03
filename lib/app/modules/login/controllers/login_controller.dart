@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 import 'package:get_storage/get_storage.dart';
 import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class LoginController extends GetxController {
   var isPasswordHidden = true.obs;
+  var isLoading = false.obs;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final DaftarKasirController daftarKasirController =
@@ -17,6 +19,9 @@ class LoginController extends GetxController {
 
   var users = <Map<String, dynamic>>[].obs;
   var currentUser = <String, dynamic>{}.obs;
+  
+  // Login timeout duration in seconds
+  final int loginTimeoutDuration = 15;
 
   // Toggle password visibility
   void togglePasswordVisibility() {
@@ -29,83 +34,89 @@ class LoginController extends GetxController {
     await box.write('token', token);
     await box.write('user_id', userId);
   }
-
   // Handle login API request
   Future<Map<String, dynamic>> login(String email, String password) async {
+    // Validate inputs first
     if (email.isEmpty) {
-      Get.snackbar('Error', 'Email harus diisi!.',
-          icon: Icon(
-            Icons.error,
-            color: Colors.red,
-          ),
-          duration: const Duration(seconds: 3));
-      return {
-        'status': 'error',
-      };
+      _showErrorSnackbar('Email Kosong', 'Email harus diisi!');
+      return {'status': 'error', 'message': 'Email kosong'};
     }
 
     if (password.isEmpty) {
-      Get.snackbar('Error', 'Password harus diisi!.',
-          icon: Icon(
-            Icons.error,
-            color: Colors.red,
-          ),
-          duration: const Duration(seconds: 3));
-      return {
-        'status': 'error',
-      };
+      _showErrorSnackbar('Password Kosong', 'Password harus diisi!');
+      return {'status': 'error', 'message': 'Password kosong'};
+    }
+    
+    // Email validation
+    if (!_isValidEmail(email)) {
+      _showErrorSnackbar('Format Email Salah', 'Masukkan format email yang benar');
+      return {'status': 'error', 'message': 'Format email tidak valid'};
     }
 
+    // Set loading state
+    isLoading.value = true;
     final url = Uri.parse(ApiConstants.getFullUrl(ApiConstants.login));
 
     daftarKasirController.clearData();
-
-    showDialog(
-        context: Get.context!,
-        builder: (context) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: Color(0xff181681),
-            ),
-          );
-        });
+    
     try {
-      final response = await http.post(
+      // Create a timeout that will trigger if the request takes too long
+      final responseCompleter = Completer<http.Response>();
+      
+      // Setup timeout
+      Future.delayed(Duration(seconds: loginTimeoutDuration), () {
+        if (!responseCompleter.isCompleted) {
+          responseCompleter.completeError(TimeoutException('Login request timed out'));
+        }
+      });
+      
+      // Make the actual request
+      http.post(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
-      );
-
+      ).then((response) {
+        if (!responseCompleter.isCompleted) {
+          responseCompleter.complete(response);
+        }
+      }).catchError((error) {
+        if (!responseCompleter.isCompleted) {
+          responseCompleter.completeError(error);
+        }
+      });
+      
+      // Wait for either the response or the timeout
+      final response = await responseCompleter.future;
+      
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
 
+      // Handle the response based on status code
       if (response.statusCode == 200) {
-        Navigator.of(Get.context!).pop();
+        isLoading.value = false;
         return await _handleLoginSuccess(response);
+      } else if (response.statusCode == 401 || response.statusCode == 422) {
+        isLoading.value = false;
+        _showErrorSnackbar('Login Gagal', 'Email atau password salah.');
+        return {'status': 'error', 'message': 'Kredensial tidak valid'};
       } else if (response.statusCode == 404) {
-        Navigator.of(Get.context!).pop();
-        Get.snackbar(
-          'Error',
-          'Tidak dapat terhubung ke server.',
-          snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return {
-          'status': 'error',
-          'message': 'Tidak dapat terhubung ke server.'
-        };
+        isLoading.value = false;
+        _showErrorSnackbar('Server Error', 'Tidak dapat terhubung ke server.');
+        return {'status': 'error', 'message': 'Tidak dapat terhubung ke server.'};
       } else {
-        Navigator.of(Get.context!).pop();
+        isLoading.value = false;
         return _handleErrorResponse(response);
       }
+    } on TimeoutException catch (_) {
+      isLoading.value = false;
+      _showErrorSnackbar('Timeout', 'Waktu permintaan habis. Server tidak merespon.');
+      return {'status': 'error', 'message': 'Timeout pada server'};
     } catch (e) {
-      Navigator.of(Get.context!).pop();
-      return {'status': 'error', 'message': 'Password atau email salah.'};
+      isLoading.value = false;
+      _showErrorSnackbar('Error', 'Terjadi kesalahan koneksi: ${e.toString()}');
+      return {'status': 'error', 'message': 'Kesalahan koneksi'};
     }
   }
-
   // Handle successful login
   Future<Map<String, dynamic>> _handleLoginSuccess(
       http.Response response) async {
@@ -127,6 +138,10 @@ class LoginController extends GetxController {
             'needsProfile', false); // User sudah terdaftar, langsung ke home
       }
 
+      // Show a brief success message
+      _showSuccessSnackbar('Login Berhasil', 'Selamat datang kembali!');
+      
+      // Navigate to appropriate page
       if (isRegistered) {
         Get.offAllNamed(Routes.HOME);
       } else {
@@ -135,61 +150,81 @@ class LoginController extends GetxController {
       }
       return {'status': 'success', 'message': 'Login successful'};
     } else {
+      _showErrorSnackbar('Error', 'Respons server tidak valid.');
       return {'status': 'error', 'message': 'Respons server tidak valid.'};
     }
   }
-
   // Handle error response from API
   Map<String, dynamic> _handleErrorResponse(http.Response response) {
     if (response.headers['content-type']?.contains('application/json') ??
         false) {
       final errorData = json.decode(response.body);
-      final errorMessage = errorData['message'];
+      final errorMessage = errorData['message'] ?? 'Terjadi kesalahan pada server';
+      
+      // Show appropriate message based on error
+      if (errorMessage.toLowerCase().contains('email') || 
+          errorMessage.toLowerCase().contains('password')) {
+        _showErrorSnackbar('Login Gagal', 'Email atau password salah.');
+      } else {
+        _showErrorSnackbar('Error', errorMessage);
+      }
+      
       return {'status': 'error', 'message': errorMessage};
     } else {
-      Get.snackbar('Error', 'Email atau password salah.',
-          icon: Icon(
-            Icons.error,
-            color: Colors.red,
-          ),
-          snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 3));
+      _showErrorSnackbar('Login Gagal', 'Email atau password salah.');
       return {'status': 'error', 'message': 'Email atau password salah.'};
     }
   }
-
   // Fetch current user data from the API
   Future<void> fetchCurrentUser(String token) async {
     final url = Uri.parse(ApiConstants.getFullUrl(ApiConstants.users));
 
     try {
-      final response = await http.get(
+      // Set a timeout for this request too
+      final responseCompleter = Completer<http.Response>();
+      
+      // Setup timeout
+      Future.delayed(Duration(seconds: loginTimeoutDuration), () {
+        if (!responseCompleter.isCompleted) {
+          responseCompleter.completeError(TimeoutException('User data request timed out'));
+        }
+      });
+      
+      // Make the actual request
+      http.get(
         url,
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-      );
+      ).then((response) {
+        if (!responseCompleter.isCompleted) {
+          responseCompleter.complete(response);
+        }
+      }).catchError((error) {
+        if (!responseCompleter.isCompleted) {
+          responseCompleter.completeError(error);
+        }
+      });
+      
+      // Wait for either the response or the timeout
+      final response = await responseCompleter.future;
 
       if (response.statusCode == 200) {
         final userData = json.decode(response.body);
         if (userData != null) {
           currentUser.value = userData;
         } else {
-          Get.snackbar('Error', 'Data pengguna kosong.',
-              snackPosition: SnackPosition.TOP,
-              duration: const Duration(seconds: 3));
+          // Just log the error, don't show to user during login flow
+          print('Error: Data pengguna kosong.');
         }
       } else {
-        Get.snackbar('Error',
-            'Gagal mengambil data pengguna. Kode status: ${response.statusCode}',
-            snackPosition: SnackPosition.TOP,
-            duration: const Duration(seconds: 3));
+        print('Error: Gagal mengambil data pengguna. Kode status: ${response.statusCode}');
       }
+    } on TimeoutException catch (_) {
+      print('Timeout saat mengambil data pengguna');
     } catch (e) {
-      Get.snackbar('Error', 'Terjadi kesalahan: $e',
-          snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 3));
+      print('Error saat mengambil data pengguna: $e');
     }
   }
 
@@ -209,12 +244,61 @@ class LoginController extends GetxController {
           box.write('store_id', data['id']);
           return true;
         }
-      }
-      await box.remove('store_id');
+      }      await box.remove('store_id');
       return false;
     } catch (e) {
       print('Error checking store: $e');
       return false;
     }
+  }
+  
+  // Helper method to show error snackbars consistently
+  void _showErrorSnackbar(String title, String message) {
+    Get.snackbar(
+      title,
+      message,
+      icon: Icon(Icons.error_outline, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.red.shade800,
+      colorText: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      borderRadius: 8,
+      duration: const Duration(seconds: 3),
+      isDismissible: true,
+      dismissDirection: DismissDirection.horizontal,
+      forwardAnimationCurve: Curves.easeOutBack,
+    );
+  }
+  
+  // Show success snackbar
+  void _showSuccessSnackbar(String title, String message) {
+    Get.snackbar(
+      title,
+      message,
+      icon: Icon(Icons.check_circle, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.green.shade700,
+      colorText: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      borderRadius: 8,
+      duration: const Duration(seconds: 3),
+      isDismissible: true,
+      dismissDirection: DismissDirection.horizontal,
+      forwardAnimationCurve: Curves.easeOutBack,
+    );
+  }
+    // Email validation using regex
+  bool _isValidEmail(String email) {
+    // Simple email validation regex
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+  
+  @override
+  void onClose() {
+    // Clean up controllers when the controller is disposed
+    emailController.dispose();
+    passwordController.dispose();
+    super.onClose();
   }
 }

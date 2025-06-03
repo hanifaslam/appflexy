@@ -10,7 +10,6 @@ class DaftarProdukController extends GetxController {
   var searchQuery = ''.obs;
   var isLoading = true.obs;
   final box = GetStorage(); // GetStorage instance
-
   @override
   void onReady() {
     super.onReady();
@@ -28,13 +27,27 @@ class DaftarProdukController extends GetxController {
       );
 
       if (response.statusCode == 200) {
+        print('API Raw Response: ${response.body}');
         List<dynamic> productList = json.decode(response.body);
+        
+        if (productList.isNotEmpty) {
+          print('First product in response: ${productList[0]}');
+          if (productList[0]['image'] != null) {
+            print('Image path from API: ${productList[0]['image']}');
+          }
+        }
+        
         products.value = List<Map<String, dynamic>>.from(productList)
             .where(
                 (product) => product['user_id'].toString() == userId.toString())
             .toList();
         filteredProdukList.value = products;
         print('Fetched ${products.length} products');
+        
+        // Debug print images
+        for (var product in products) {
+          print('Product: ${product['namaProduk']} - Image: ${product['image']}');
+        }
       } else {
         print('Error status code: ${response.statusCode}');
         print('Error response: ${response.body}');

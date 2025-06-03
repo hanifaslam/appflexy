@@ -1,12 +1,10 @@
 import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
 import 'package:apptiket/app/modules/home/controllers/home_controller.dart';
 import 'package:apptiket/app/modules/pembayaran_cash/controllers/pembayaran_cash_controller.dart';
-import 'package:apptiket/app/modules/profile/controllers/profile_controller.dart';
 import 'package:apptiket/app/modules/tambah_produk/controllers/tambah_produk_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:apptiket/app/core/constants/api_constants.dart';
 
 import 'app/modules/kasir/controllers/kasir_controller.dart';
 import 'app/modules/sales_history/controllers/sales_history_controller.dart';
