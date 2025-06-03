@@ -7,7 +7,18 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:apptiket/app/core/constants/api_constants.dart';
 
-import '../../../widgets/pdfpreview_page.dart';
+// OrderItem class definition (moved from deleted pdfpreview_page.dart)
+class OrderItem {
+  final String name;
+  final int quantity;
+  final double price;
+
+  OrderItem({
+    required this.name,
+    required this.quantity,
+    required this.price,
+  });
+}
 
 class ApiEndpoints {
   static String get baseUrl => ApiConstants.mainUrl;

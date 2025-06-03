@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:apptiket/app/core/constants/api_constants.dart';
 
 class ManajemenTiketController extends GetxController {
@@ -23,6 +24,7 @@ class ManajemenTiketController extends GetxController {
     _refreshTimer?.cancel();
     super.onClose();
   }
+
   Future<void> fetchTikets() async {
     isLoading.value = true;
     final url = Uri.parse(ApiConstants.getFullUrl(ApiConstants.tikets));
@@ -79,61 +81,122 @@ class ManajemenTiketController extends GetxController {
     }
   }
 
-  Future<void> deleteTiket(int tiketId) async {
-    try {      final response = await http.delete(
+  Future<bool> deleteTiket(int tiketId) async {
+    try {
+      isLoading.value = true;
+      
+      print('Deleting tiket with ID: $tiketId');
+      
+      final token = box.read('token');
+      if (token == null) {
+        throw Exception('Token tidak ditemukan');
+      }
+
+      final response = await http.delete(
         Uri.parse(ApiConstants.getFullUrl('${ApiConstants.tikets}/$tiketId')),
         headers: {
-          'Authorization': 'Bearer ${box.read('token')}',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
         },
       );
 
-      if (response.statusCode == 200) {
+      print('Delete response status: ${response.statusCode}');
+      print('Delete response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        // Hapus dari list lokal
         tiketList.removeWhere((tiket) => tiket['id'] == tiketId);
-        filteredTiketList.value = List.from(tiketList);
-        Get.snackbar('Sukses', 'Tiket berhasil dihapus!',
-            snackPosition: SnackPosition.BOTTOM);
+        filteredTiketList.removeWhere((tiket) => tiket['id'] == tiketId);
+        
+        // Refresh list untuk memastikan data terbaru
+        await fetchTikets();
+        
+        // Show success message
+        Get.snackbar(
+          'Berhasil',
+          'Tiket berhasil dihapus!',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          icon: Icon(Icons.check_circle, color: Colors.white),
+          duration: Duration(seconds: 2),
+        );
+        
+        return true;
       } else {
-        throw Exception('Failed to delete ticket: ${response.body}');
+        throw Exception('Failed to delete ticket: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus tiket: $e',
-          snackPosition: SnackPosition.BOTTOM);
+      print('Error deleting tiket: $e');
+      Get.snackbar(
+        'Error', 
+        'Gagal menghapus tiket: ${e.toString()}',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        icon: Icon(Icons.error, color: Colors.white),
+        duration: Duration(seconds: 3),
+      );
+      return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 
   Future<void> updateTiket(int id, Map<String, dynamic> tiketData) async {
     try {
+      isLoading.value = true;
+      
       final userId = box.read('user_id');
+      final token = box.read('token');
+
+      if (token == null) {
+        throw Exception('Token tidak ditemukan');
+      }
 
       final dataToUpdate = {
         'id': id,
         'user_id': userId,
         ...tiketData,
-      };      final response = await http.put(
+      };
+
+      final response = await http.put(
         Uri.parse(ApiConstants.getFullUrl('${ApiConstants.tikets}/$id')),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': 'Bearer ${box.read('token')}',
+          'Authorization': 'Bearer $token',
         },
         body: json.encode(dataToUpdate),
       );
 
       if (response.statusCode == 200) {
-        final index = tiketList.indexWhere((tiket) => tiket['id'] == id);
-        if (index != -1) {
-          tiketList[index] = dataToUpdate;
-          filteredTiketList.value = List.from(tiketList);
-        }
-        Get.snackbar('Sukses', 'Tiket berhasil diperbarui!',
-            snackPosition: SnackPosition.BOTTOM);
+        // Refresh data untuk memastikan konsistensi
+        await fetchTikets();
+        
+        Get.snackbar(
+          'Berhasil', 
+          'Tiket berhasil diperbarui!',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          icon: Icon(Icons.check_circle, color: Colors.white),
+        );
       } else {
-        throw Exception('Failed to update ticket: ${response.body}');
+        throw Exception('Failed to update ticket: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      Get.snackbar('Error', 'Gagal mengupdate tiket: $e',
-          snackPosition: SnackPosition.BOTTOM);
+      print('Error updating tiket: $e');
+      Get.snackbar(
+        'Error', 
+        'Gagal mengupdate tiket: ${e.toString()}',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       throw e;
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -145,5 +208,10 @@ class ManajemenTiketController extends GetxController {
       filteredTiketList
           .sort((a, b) => b['namaTiket'].compareTo(a['namaTiket']));
     }
+  }
+
+  // Method untuk refresh manual
+  Future<void> refreshData() async {
+    await fetchTikets();
   }
 }

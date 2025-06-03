@@ -4,13 +4,12 @@ import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:apptiket/app/modules/pengaturan_profile/controllers/pengaturan_profile_controller.dart';
 import 'bluetooth.dart';
-import 'pdfpreview_page.dart' as pdf;
 
 class StrukPembayaranPage extends StatelessWidget {
   final double totalPembelian;
   final double uangTunai;
   final double kembalian;
-  final List<pdf.OrderItem> orderItems;
+  final List<OrderItem> orderItems;
   final String orderDate;
 
   StrukPembayaranPage({
@@ -28,192 +27,258 @@ class StrukPembayaranPage extends StatelessWidget {
 
     final PengaturanProfileController profileController = Get.put(PengaturanProfileController());
     final KasirController kasirController = Get.put(KasirController());
+    
+    // Get screen size for responsive design
+    final screenSize = MediaQuery.of(context).size;
+    final isTablet = screenSize.width > 600;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff181681),
-          automaticallyImplyLeading: false,
+        backgroundColor: Color(0xff181681).withOpacity(0.95),
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        toolbarHeight: 0, // Remove app bar height since we're using a custom header
       ),
       body: Container(
-        color: Colors.grey.shade200,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xff181681), Color(0xff0F0B5C).withOpacity(0.9)],
+            stops: [0.0, 0.3],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isTablet ? 32.0 : 16.0,
+              vertical: 16.0,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Color(0xff181681),
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(10),
+            child: Card(
+              elevation: 8,
+              shadowColor: Colors.black38,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Success Header
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xff181681), Color(0xff0F0B5C)],
+                      ),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.check_circle_outline,
+                            color: Colors.white,
+                            size: isTablet ? 60 : 48,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          "Transaksi Berhasil",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: isTablet ? 24 : 20,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Pembayaran telah diproses",
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: isTablet ? 16 : 14,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.white,
-                        size: 48,
+                  
+                  // Receipt Details
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Date
+                          _buildRow("Tanggal", orderDate),
+                          Divider(thickness: 1, color: Colors.grey.shade300, height: 32),
+                          
+                          // Order Items header
+                          Text(
+                            "Detail Pembayaran",
+                            style: TextStyle(
+                              fontSize: isTablet ? 20 : 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff181681),
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                          
+                          // Order Items list
+                          ...orderItems.map((item) {
+                            return _buildRow(
+                              "${item.name} x${item.quantity}",
+                              currencyFormat.format(item.price * item.quantity),
+                            );
+                          }).toList(),
+                          
+                          Divider(thickness: 1, color: Colors.grey.shade300, height: 32),
+                          
+                          // Payment Summary
+                          _buildRow(
+                            "Total", 
+                            currencyFormat.format(totalPembelian),
+                            isBold: true,
+                          ),
+                          if (uangTunai > 0)
+                            _buildRow("Uang Tunai", currencyFormat.format(uangTunai)),
+                          if (uangTunai > 0)
+                            _buildRow(
+                              "Kembalian", 
+                              currencyFormat.format(kembalian),
+                              valueColor: Colors.green.shade700,
+                            ),
+                            
+                          Divider(thickness: 1, color: Colors.grey.shade300, height: 32),
+                          
+                          // Company Info
+                          Center(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Terima Kasih!",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: isTablet ? 18 : 16,
+                                    color: Color(0xff181681),
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Obx(() => Text(
+                                  profileController.companyName.value.isNotEmpty
+                                      ? profileController.companyName.value
+                                      : 'Nama Perusahaan Tidak Tersedia',
+                                  style: TextStyle(
+                                    fontSize: isTablet ? 18 : 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )),
+                                SizedBox(height: 4),
+                                Obx(() => Text(
+                                  profileController.companyAddress.value.isNotEmpty
+                                      ? profileController.companyAddress.value
+                                      : 'Alamat Tidak Tersedia',
+                                  style: TextStyle(
+                                    fontSize: isTablet ? 15 : 14,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 12),
-                      Text(
-                        "Transaksi Berhasil",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildRow("Tanggal", orderDate),
-                      Divider(thickness: 1.5),
-                      Text(
-                        "Detail Pembayaran",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  
+                  // Action Buttons
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.vertical(
+                        bottom: Radius.circular(16),
                       ),
-                      ...orderItems.map((item) {
-                        return _buildRow(
-                          "${item.name} x${item.quantity}",
-                          currencyFormat.format(item.price * item.quantity),
-                        );
-                      }).toList(),
-                      Divider(thickness: 1.5),
-                      _buildRow("Total", currencyFormat.format(totalPembelian)),
-                      if (uangTunai > 0)
-                        _buildRow("Uang Tunai", currencyFormat.format(uangTunai)),
-                      if (uangTunai > 0)
-                        _buildRow("Kembalian", currencyFormat.format(kembalian)),
-                      Divider(thickness: 1.5),
-                      Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              "Terima Kasih!",
+                      border: Border(
+                        top: BorderSide(color: Colors.grey.shade200),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Get.to(() => BluetoothPage(
+                                totalPembelian: totalPembelian,
+                                uangTunai: uangTunai,
+                                kembalian: kembalian,
+                                orderItems: orderItems,
+                                orderDate: orderDate,
+                              ));
+                            },
+                            icon: Icon(Icons.print, size: isTablet ? 24 : 20),
+                            label: Text(
+                              "Cetak",
                               style: TextStyle(
+                                fontSize: isTablet ? 20 : 18, 
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
                               ),
                             ),
-                            SizedBox(height: 8),
-                            Obx(() => Text(
-                              profileController.companyName.value.isNotEmpty
-                                  ? profileController.companyName.value
-                                  : 'Nama Perusahaan Tidak Tersedia',
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              backgroundColor: Color(0xff16812f),
+                              foregroundColor: Colors.white,
+                              elevation: 2,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Get.offAllNamed('/daftar-kasir');
+                              kasirController.clearOrder();
+                            },
+                            child: Text(
+                              "OK",
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: isTablet ? 20 : 18, 
                                 fontWeight: FontWeight.bold,
                               ),
-                            )),
-                            Obx(() => Text(
-                              profileController.companyAddress.value.isNotEmpty
-                                  ? profileController.companyAddress.value
-                                  : 'Alamat Tidak Tersedia',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontStyle: FontStyle.italic,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              textAlign: TextAlign.center,
-                            )),
-                          ],
+                              backgroundColor: Color(0xff181681),
+                              foregroundColor: Colors.white,
+                              elevation: 2,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Divider(thickness: 1.5),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Get.to(() => pdf.PDFPreviewPage(
-                            totalPembelian: totalPembelian,
-                            uangTunai: uangTunai,
-                            kembalian: kembalian,
-                            orderItems: orderItems,
-                            orderDate: orderDate,
-                          ));
-                        },
-                        icon: Icon(Icons.description),
-                        label: Text(
-                          "Simpan Sebagai PDF",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 53),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)
-                          ),
-                          backgroundColor: Color(0xff181681),
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 16,),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Get.to(() => BluetoothPage(
-                            totalPembelian: totalPembelian,
-                            uangTunai: uangTunai,
-                            kembalian: kembalian,
-                            orderItems: orderItems,
-                            orderDate: orderDate,
-                          ));
-                        },
-                        icon: Icon(Icons.print, size: 20), // Ikon printer
-                        label: Text(
-                          "Cetak",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 55.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          backgroundColor: Color(0xff16812f),
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-
-                      SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          Get.offAllNamed('/daftar-kasir');
-                          kasirController.clearOrder();
-                        },
-                        child: Text(
-                          "OK",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 80.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)
-                          ),
-                          backgroundColor: Color(0xff16812f),
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -221,7 +286,7 @@ class StrukPembayaranPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(String label, String value) {
+  Widget _buildRow(String label, String value, {bool isBold = false, Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -230,8 +295,11 @@ class StrukPembayaranPage extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 16,
-                fontWeight: label == "Total" ? FontWeight.bold : FontWeight.normal),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              color: isBold ? Color(0xff181681) : Colors.black87,
+            ),
           ),
           Expanded(
             child: Text(
@@ -239,6 +307,8 @@ class StrukPembayaranPage extends StatelessWidget {
               textAlign: TextAlign.right,
               style: TextStyle(
                 fontSize: 16,
+                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+                color: valueColor ?? (isBold ? Color(0xff181681) : Colors.black87),
               ),
             ),
           ),

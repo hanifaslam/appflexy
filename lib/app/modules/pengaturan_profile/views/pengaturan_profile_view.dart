@@ -10,6 +10,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:apptiket/app/core/utils/auto_responsive.dart';
 import 'package:apptiket/app/core/constants/api_constants.dart';
+import 'package:apptiket/app/routes/app_pages.dart';
+import 'package:apptiket/app/modules/profileuser2/controllers/profileuser2_controller.dart';
 
 class PengaturanProfileView extends GetView<PengaturanProfileController> {
   final ImagePicker _picker = ImagePicker();
@@ -97,12 +99,19 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
             fontSize: res.sp(18),
           ),
         ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Get.back(result: true); // Pass true to indicate refresh needed
-            Get.find<HomeController>().fetchCompanyDetails(); // Refresh home data
+        centerTitle: true,        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),          onPressed: () {
+            // Always navigate back to profileuser2 view
+            if (Get.isRegistered<Profileuser2Controller>()) {
+              final profileController = Get.find<Profileuser2Controller>();
+              profileController.fetchCompanyDetails();
+            }
+            
+            // Update home controller data
+            Get.find<HomeController>().fetchCompanyDetails();
+            
+            // Use offNamed instead of back for more reliable navigation
+            Get.offNamed(Routes.PROFILEUSER2);
           },
         ),
       ),

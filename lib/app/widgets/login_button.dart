@@ -25,36 +25,51 @@ class _ProfileBtnState extends State<ProfileBtn> {
       });
     });
   }
-
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        _changeColor();
+    return Obx(() => ElevatedButton(
+      onPressed: controller.isLoading.value 
+          ? null // Button disabled during loading
+          : () async {
+              _changeColor();
 
-        // Get email and password from the controller
-        String email = controller.emailController.text.trim();
-        String password = controller.passwordController.text.trim();
+              // Get email and password from the controller
+              String email = controller.emailController.text.trim();
+              String password = controller.passwordController.text.trim();
 
-        controller.login(email, password);
-      },
+              controller.login(email, password);
+            },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-        backgroundColor: _buttonColor, // Use dynamic button color
+        backgroundColor: controller.isLoading.value 
+            ? Colors.grey.shade300 // Disabled color
+            : _buttonColor, // Use dynamic button color
+        disabledBackgroundColor: Colors.grey.shade300,
+        disabledForegroundColor: Colors.grey.shade600,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
       ),
-      child: const Text(
-        'Masuk',
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 16,
-          fontStyle: FontStyle.normal,
-          fontWeight: FontWeight.bold,
-          color: Colors.white, // Use Colors.white instead of Color.white
-        ),
-      ),
-    );
+      child: controller.isLoading.value
+          // Show loading spinner when loading
+          ? SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xff181681)),
+              ),
+            )
+          : const Text(
+              'Masuk',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 16,
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // Use Colors.white instead of Color.white
+              ),
+            ),
+    ));
   }
 }

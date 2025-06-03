@@ -1,18 +1,24 @@
 import 'dart:convert';
-
-import 'package:apptiket/app/modules/pembayaran_cash/controllers/pembayaran_cash_controller.dart';
-import 'package:apptiket/app/widgets/pdfpreview_page.dart';
-import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
+import 'package:bluetooth_print_plus/bluetooth_print_plus.dart' hide Alignment;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:intl/intl.dart';
-
 import '../modules/kasir/controllers/kasir_controller.dart';
-import '../modules/pembayaran_cash/views/pembayaran_cash_view.dart';
 import '../modules/pengaturan_profile/controllers/pengaturan_profile_controller.dart';
+import '../core/utils/auto_responsive.dart';
+
+// Modern color palette to match app theme
+const Color primaryColor = Color(0xff181681);
+const Color accentColor = Color(0xff2A23A3);
+const Color successColor = Color(0xff16812f);
+const Color errorColor = Color(0xffD32F2F);
+const Color backgroundColor = Color(0xFFFAFAFA);
+const Color cardColor = Colors.white;
+const Color textPrimary = Color(0xFF1F2937);
+const Color textSecondary = Color(0xFF6B7280);
+const Color borderColor = Color(0xFFE5E7EB);
 
 class BluetoothPage extends StatefulWidget {
   final double totalPembelian;
@@ -111,14 +117,22 @@ class _BluetoothPageState extends State<BluetoothPage> {
             case ConnectState.connected:
               if (_device != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Terhubung ke perangkat ${_device!.name}')),
+                  SnackBar(
+                    content: Text('Terhubung ke perangkat ${_device!.name}'),
+                    backgroundColor: successColor,
+                    behavior: SnackBarBehavior.floating,
+                  ),
                 );
               }
               break;
             case ConnectState.disconnected:
               _device = null;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Perangkat terputus')),
+                SnackBar(
+                  content: Text('Perangkat terputus'),
+                  backgroundColor: errorColor,
+                  behavior: SnackBarBehavior.floating,
+                ),
               );
               break;
           }
@@ -134,7 +148,11 @@ class _BluetoothPageState extends State<BluetoothPage> {
   Future<void> handleConnect(BluetoothDevice device) async {
     if (_connectState == ConnectState.connected && _device?.address == device.address) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sudah terhubung ke ${device.name}')),
+        SnackBar(
+          content: Text('Sudah terhubung ke ${device.name}'),
+          backgroundColor: Colors.amber.shade700,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       return;
     }
@@ -147,102 +165,294 @@ class _BluetoothPageState extends State<BluetoothPage> {
     } catch (e) {
       print('Connection error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menghubungkan: $e')),
+        SnackBar(
+          content: Text('Gagal menghubungkan: $e'),
+          backgroundColor: errorColor,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
+    // AutoResponsive setup
+    final res = AutoResponsive(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bluetooth Devices'),
-      ),
-      body: SafeArea(
-        child: BluetoothPrintPlus.isBlueOn
-            ? ListView(
-          children: _scanResults.map((device) => Container(
-            padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(device.name),
-                      Text(
-                        device.address,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                      Divider(),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 10),
-                OutlinedButton(
-                  onPressed: () => handleConnect(device),
-                  child: Text(
-                      _connectState == ConnectState.connected &&
-                          _device?.address == device.address
-                          ? "Connected"
-                          : "Connect"
-                  ),
-                ),
-              ],
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [primaryColor, accentColor],
             ),
-          )).toList(),
-        )
-            : buildBlueOffWidget(),
+          ),
+        ),
+        title: Text(
+          'Perangkat Bluetooth',
+          style: TextStyle(
+            fontSize: res.sp(18),
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        elevation: 0,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.grey.shade50, Colors.white],
+            stops: [0.0, 0.3],
+          ),
+        ),
+        child: SafeArea(
+          child: BluetoothPrintPlus.isBlueOn
+              ? _scanResults.isEmpty
+                  ? buildEmptyDeviceList(res)
+                  : buildDeviceList(res)
+              : buildBlueOffWidget(res),
+        ),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (BluetoothPrintPlus.isBlueOn) buildScanButton(context),
-          SizedBox(height: 10),
+          if (BluetoothPrintPlus.isBlueOn) buildScanButton(context, res),
+          SizedBox(height: res.hp(1.5)),
           if (_device != null && _connectState == ConnectState.connected)
-            FloatingActionButton(
-              onPressed: testPrint,
-              backgroundColor: Color(0xff181681),
-              child: Icon(Icons.print, color: Colors.white),
-              tooltip: "Test Print",
-            ),
+            buildPrintButton(res),
         ],
       ),
     );
   }
 
-  // ... rest of the existing code remains the same ...
-
-  Widget buildBlueOffWidget() {
+  Widget buildEmptyDeviceList(AutoResponsive res) {
     return Center(
-      child: Text(
-        "Bluetooth is turned off\nPlease turn on Bluetooth...",
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-          color: Colors.red,
-        ),
-        textAlign: TextAlign.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: res.wp(30),
+            height: res.wp(30),
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(0.05),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.bluetooth_searching,
+              size: res.wp(15),
+              color: primaryColor.withOpacity(0.7),
+            ),
+          ),
+          SizedBox(height: res.hp(2)),
+          Text(
+            "Tidak ada perangkat",
+            style: TextStyle(
+              fontSize: res.sp(18),
+              fontWeight: FontWeight.w600,
+              color: primaryColor,
+            ),
+          ),
+          SizedBox(height: res.hp(1)),
+          Text(
+            "Tekan tombol SCAN untuk mencari perangkat",
+            style: TextStyle(
+              fontSize: res.sp(14),
+              color: textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: res.hp(4)),
+          ElevatedButton.icon(
+            onPressed: onScanPressed,
+            icon: Icon(Icons.search),
+            label: Text("Mulai Pencarian"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                horizontal: res.wp(6),
+                vertical: res.hp(1.5),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(res.wp(2)),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildScanButton(BuildContext context) {
+  Widget buildDeviceList(AutoResponsive res) {
+    return ListView.builder(
+      padding: EdgeInsets.symmetric(horizontal: res.wp(4), vertical: res.hp(2)),
+      itemCount: _scanResults.length,
+      itemBuilder: (context, index) {
+        final device = _scanResults[index];
+        final isConnected = _connectState == ConnectState.connected && 
+                          _device?.address == device.address;
+        
+        return Card(
+          elevation: 2,
+          margin: EdgeInsets.only(bottom: res.hp(1.5)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(res.wp(3)),
+            side: BorderSide(
+              color: isConnected ? primaryColor : Colors.transparent,
+              width: 1.5,
+            ),
+          ),
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: res.wp(4), 
+              vertical: res.hp(1)
+            ),
+            leading: Container(
+              padding: EdgeInsets.all(res.wp(2)),
+              decoration: BoxDecoration(
+                color: isConnected 
+                    ? primaryColor.withOpacity(0.1)
+                    : Colors.grey.shade100,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.bluetooth,
+                color: isConnected ? primaryColor : Colors.grey.shade700,
+                size: res.wp(6),
+              ),
+            ),
+            title: Text(
+              device.name,
+              style: TextStyle(
+                fontSize: res.sp(16),
+                fontWeight: FontWeight.w500,
+                color: textPrimary,
+              ),
+            ),
+            subtitle: Text(
+              device.address,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: res.sp(12),
+                color: textSecondary,
+              ),
+            ),
+            trailing: ElevatedButton(
+              onPressed: () => handleConnect(device),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isConnected 
+                    ? successColor
+                    : primaryColor,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                  horizontal: res.wp(4),
+                  vertical: res.hp(0.8),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(res.wp(2)),
+                ),
+                elevation: isConnected ? 0 : 2,
+              ),
+              child: Text(
+                isConnected ? "Terhubung" : "Hubungkan",
+                style: TextStyle(
+                  fontSize: res.sp(14),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildBlueOffWidget(AutoResponsive res) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(res.wp(5)),
+            decoration: BoxDecoration(
+              color: errorColor.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.bluetooth_disabled,
+              size: res.wp(15),
+              color: errorColor,
+            ),
+          ),
+          SizedBox(height: res.hp(2)),
+          Text(
+            "Bluetooth tidak aktif",
+            style: TextStyle(
+              fontSize: res.sp(18),
+              fontWeight: FontWeight.w600,
+              color: errorColor,
+            ),
+          ),
+          SizedBox(height: res.hp(1)),
+          Text(
+            "Silakan aktifkan Bluetooth pada perangkat Anda",
+            style: TextStyle(
+              fontSize: res.sp(14),
+              color: textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildScanButton(BuildContext context, AutoResponsive res) {
     if (BluetoothPrintPlus.isScanningNow) {
       return FloatingActionButton(
         onPressed: onStopPressed,
-        backgroundColor: Colors.red,
+        backgroundColor: errorColor,
+        tooltip: 'Berhenti Mencari',
         child: Icon(Icons.stop),
       );
     } else {
-      return FloatingActionButton(
+      return FloatingActionButton.extended(
         onPressed: onScanPressed,
-        backgroundColor: Colors.green,
-        child: Text("SCAN"),
+        backgroundColor: accentColor,
+        label: Text(
+          "SCAN",
+          style: TextStyle(
+            fontSize: res.sp(14),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        icon: Icon(Icons.bluetooth_searching),
       );
     }
+  }
+  
+  Widget buildPrintButton(AutoResponsive res) {
+    return FloatingActionButton.extended(
+      onPressed: testPrint,
+      backgroundColor: successColor,
+      tooltip: 'Cetak Struk',
+      label: Text(
+        "Cetak Struk",
+        style: TextStyle(
+          fontSize: res.sp(14),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      icon: Icon(Icons.print, color: Colors.white),
+      elevation: 4,
+    );
   }
 
   Future onScanPressed() async {
@@ -264,16 +474,19 @@ class _BluetoothPageState extends State<BluetoothPage> {
   void testPrint() async {
     if (_device == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Tidak ada perangkat yang terhubung!")),
+        SnackBar(
+          content: Text("Tidak ada perangkat yang terhubung!"),
+          backgroundColor: errorColor,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       return;
     }
 
-    try {
+    try {      
       // Ambil data perusahaan dari ProfileController
       final PengaturanProfileController profileController = Get.put(
           PengaturanProfileController());
-      final KasirController kasirController = Get.put(KasirController());
 
       // Gunakan nilai uangTunai yang dikirim melalui constructor
       final double uangTunai = widget.uangTunai;
@@ -336,17 +549,25 @@ class _BluetoothPageState extends State<BluetoothPage> {
       print("Print result: $result");
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Print berhasil")),
+        SnackBar(
+          content: Text("Print berhasil"),
+          backgroundColor: successColor,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     } catch (e) {
       print("Print error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Gagal mencetak: $e")),
+        SnackBar(
+          content: Text("Gagal mencetak: $e"),
+          backgroundColor: errorColor,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
 
-// Fungsi untuk membuat teks di tengah
+  // Fungsi untuk membuat teks di tengah
   String centerText(String text, {int lineWidth = 32}) {
     if (text.length >= lineWidth) return text;
     final int spaces = (lineWidth - text.length) ~/ 2;
@@ -359,10 +580,9 @@ class _BluetoothPageState extends State<BluetoothPage> {
     final int spaces = lineWidth - totalLength;
     return "$label${" " * spaces}$value";
   }
-
 }
 
-  class LineText {
+class LineText {
   static const int TYPE_TEXT = 0;
   static const String ALIGN_LEFT = 'left';
   static const String ALIGN_CENTER = 'center';
