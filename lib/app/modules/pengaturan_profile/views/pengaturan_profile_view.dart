@@ -22,15 +22,14 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
       controller.selectedImage.value = File(image.path);
     }
   }
-
   Widget _buildImageWidget(AutoResponsive res) {
     if (controller.selectedImage.value != null) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(500),
+        borderRadius: BorderRadius.circular(res.wp(17.5)),
         child: Image.file(
           controller.selectedImage.value!,
-          width: res.wp(40),
-          height: res.wp(40),
+          width: res.wp(35),
+          height: res.wp(35),
           fit: BoxFit.cover,
         ),
       );
@@ -38,12 +37,13 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
       final token = controller.getToken();
 
       return ClipRRect(
-        borderRadius: BorderRadius.circular(500),
-        child: CachedNetworkImage(          imageUrl: controller.companyLogo.value.startsWith('http')
+        borderRadius: BorderRadius.circular(res.wp(17.5)),
+        child: CachedNetworkImage(
+          imageUrl: controller.companyLogo.value.startsWith('http')
               ? controller.companyLogo.value
               : ApiConstants.getStorageUrl(controller.companyLogo.value),
-          width: res.wp(40),
-          height: res.wp(40),
+          width: res.wp(35),
+          height: res.wp(35),
           fit: BoxFit.cover,
           cacheManager: CacheManager(
             Config(
@@ -62,12 +62,11 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
             'Authorization': 'Bearer $token',
             'Connection': 'keep-alive',
             'Keep-Alive': 'timeout=100, max=1000'
-          },
-          errorWidget: (context, url, error) {
+          },          errorWidget: (context, url, error) {
             print('Image error: $error');
-            return const Icon(
+            return Icon(
               Icons.error_outline,
-              size: 50,
+              size: res.sp(25),
               color: Colors.red,
             );
           },
@@ -76,8 +75,8 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
     } else {
       return Icon(
         Icons.add_photo_alternate,
-        size: res.wp(15),
-        color: Colors.grey,
+        size: res.sp(18),
+        color: Colors.grey.shade600,
       );
     }
   }
@@ -98,9 +97,14 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
             color: Colors.white,
             fontSize: res.sp(18),
           ),
-        ),
-        centerTitle: true,        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),          onPressed: () {
+        ),        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back, 
+            color: Colors.white,
+            size: res.sp(20),
+          ),
+          onPressed: () {
             // Always navigate back to profileuser2 view
             if (Get.isRegistered<Profileuser2Controller>()) {
               final profileController = Get.find<Profileuser2Controller>();
@@ -114,152 +118,266 @@ class PengaturanProfileView extends GetView<PengaturanProfileController> {
             Get.offNamed(Routes.PROFILEUSER2);
           },
         ),
-      ),
-      body: GestureDetector(
+      ),      body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(res.wp(5)),
+          padding: EdgeInsets.symmetric(
+            horizontal: res.wp(5),
+            vertical: res.hp(2),
+          ),
           child: Column(
-            children: [
+            children: [              Gap(res.hp(3)),
+
               // Logo Toko
-              GestureDetector(
-                onTap: _pickImage,
-                child: Obx(() {
-                  return Container(
-                    width: res.wp(40),
-                    height: res.wp(40),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(500),
-                    ),
-                    child: _buildImageWidget(res),
-                  );
-                }),
-              ),
-              Gap(res.hp(6)),
+              Center(
+                child: GestureDetector(
+                  onTap: _pickImage,
+                  child: Obx(() {
+                    return Container(
+                      width: res.wp(35),
+                      height: res.wp(35),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: res.wp(0.5),
+                        ),
+                        borderRadius: BorderRadius.circular(res.wp(17.5)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: res.wp(1),
+                            blurRadius: res.wp(3),
+                            offset: Offset(0, res.hp(0.5)),
+                          ),
+                        ],
+                      ),
+                      child: _buildImageWidget(res),
+                    );
+                  }),
+                ),
+              ),              Gap(res.hp(4)),
 
               // Nama Toko
               Obx(() {
-                return TextField(
-                  controller: TextEditingController.fromValue(
-                    TextEditingValue(
-                      text: controller.companyName.value,
-                      selection: TextSelection.collapsed(
-                        offset: controller.companyName.value.length,
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: res.wp(2)),
+                  child: TextField(
+                    controller: TextEditingController.fromValue(
+                      TextEditingValue(
+                        text: controller.companyName.value,
+                        selection: TextSelection.collapsed(
+                          offset: controller.companyName.value.length,
+                        ),
                       ),
                     ),
+                    onChanged: (value) => controller.companyName.value = value,
+                    decoration: InputDecoration(
+                      hintText: 'Nama Toko',
+                      hintStyle: TextStyle(
+                        fontSize: res.sp(15),
+                        color: Colors.grey.shade500,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.store,
+                        color: Colors.grey.shade600,
+                        size: res.sp(20),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade300,
+                          width: res.wp(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Color(0xff181681), 
+                          width: res.wp(0.5),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Color(0xff181681), 
+                          width: res.wp(0.2),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: res.hp(1.8),
+                        horizontal: res.wp(4),
+                      ),
+                    ),
+                    style: TextStyle(fontSize: res.sp(16)),
                   ),
-                  onChanged: (value) => controller.companyName.value = value,
-                  decoration: InputDecoration(
-                    hintText: 'Nama Toko',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(4)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(3.5)),
-                      borderSide: BorderSide(color: Color(0xff181681), width: 2.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(4)),
-                      borderSide: BorderSide(color: Color(0xff181681), width: 0.5),
-                    ),
-                  ),
-                  style: TextStyle(fontSize: res.sp(16)),
                 );
-              }),
-              Gap(res.hp(2)),
+              }),              Gap(res.hp(2.5)),
 
               // Bidang Usaha
               Obx(() {
-                return TextField(
-                  controller: TextEditingController.fromValue(
-                    TextEditingValue(
-                      text: controller.companyType.value,
-                      selection: TextSelection.collapsed(
-                        offset: controller.companyType.value.length,
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: res.wp(2)),
+                  child: TextField(
+                    controller: TextEditingController.fromValue(
+                      TextEditingValue(
+                        text: controller.companyType.value,
+                        selection: TextSelection.collapsed(
+                          offset: controller.companyType.value.length,
+                        ),
                       ),
                     ),
+                    onChanged: (value) => controller.companyType.value = value,
+                    decoration: InputDecoration(
+                      hintText: 'Bidang Usaha',
+                      hintStyle: TextStyle(
+                        fontSize: res.sp(15),
+                        color: Colors.grey.shade500,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.business,
+                        color: Colors.grey.shade600,
+                        size: res.sp(20),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade300,
+                          width: res.wp(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Color(0xff181681), 
+                          width: res.wp(0.5),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Color(0xff181681), 
+                          width: res.wp(0.2),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: res.hp(1.8),
+                        horizontal: res.wp(4),
+                      ),
+                    ),
+                    style: TextStyle(fontSize: res.sp(16)),
                   ),
-                  onChanged: (value) => controller.companyType.value = value,
-                  decoration: InputDecoration(
-                    hintText: 'Bidang Usaha',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(4)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(3.5)),
-                      borderSide: BorderSide(color: Color(0xff181681), width: 2.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(4)),
-                      borderSide: BorderSide(color: Color(0xff181681), width: 0.5),
-                    ),
-                  ),
-                  style: TextStyle(fontSize: res.sp(16)),
                 );
-              }),
-              Gap(res.hp(2)),
+              }),              Gap(res.hp(2.5)),
 
               // Alamat Toko
               Obx(() {
-                return TextField(
-                  controller: TextEditingController.fromValue(
-                    TextEditingValue(
-                      text: controller.companyAddress.value,
-                      selection: TextSelection.collapsed(
-                        offset: controller.companyAddress.value.length,
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: res.wp(2)),
+                  child: TextField(
+                    controller: TextEditingController.fromValue(
+                      TextEditingValue(
+                        text: controller.companyAddress.value,
+                        selection: TextSelection.collapsed(
+                          offset: controller.companyAddress.value.length,
+                        ),
+                      ),
+                    ),
+                    onChanged: (value) => controller.companyAddress.value = value,
+                    maxLines: 3,
+                    minLines: 2,
+                    decoration: InputDecoration(
+                      hintText: 'Alamat Lengkap Toko',
+                      hintStyle: TextStyle(
+                        fontSize: res.sp(15),
+                        color: Colors.grey.shade500,
+                      ),
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.only(bottom: res.hp(3)),
+                        child: Icon(
+                          Icons.location_on,
+                          color: Colors.grey.shade600,
+                          size: res.sp(20),
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade300,
+                          width: res.wp(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Color(0xff181681), 
+                          width: res.wp(0.5),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                        borderSide: BorderSide(
+                          color: Color(0xff181681), 
+                          width: res.wp(0.2),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: res.hp(2),
+                        horizontal: res.wp(4),
+                      ),
+                    ),
+                    style: TextStyle(fontSize: res.sp(16)),
+                  ),
+                );
+              }),              Gap(res.hp(4)),
+
+              // Tombol Simpan
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: res.wp(2)),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (controller.companyName.value.trim().isEmpty ||
+                          controller.companyType.value.trim().isEmpty ||
+                          controller.companyAddress.value.trim().isEmpty) {
+                        Get.snackbar(
+                          'Error',
+                          'Semua field harus diisi',
+                          backgroundColor: Colors.red.withOpacity(0.2),
+                          colorText: Colors.red,
+                          snackPosition: SnackPosition.TOP,
+                          margin: EdgeInsets.all(res.wp(4)),
+                        );
+                        return;
+                      }
+                      controller.updateStore();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: res.wp(8), 
+                        vertical: res.hp(2.2),
+                      ),
+                      backgroundColor: Color(0xff181681),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(res.wp(3)),
+                      ),
+                      elevation: 3,
+                      shadowColor: Color(0xff181681).withOpacity(0.3),
+                    ),
+                    child: Text(
+                      'Simpan Perubahan',
+                      style: TextStyle(
+                        color: Colors.white, 
+                        fontSize: res.sp(16),
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  onChanged: (value) => controller.companyAddress.value = value,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    hintText: 'Alamat',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(4)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(3.5)),
-                      borderSide: BorderSide(color: Color(0xff181681), width: 2.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(res.wp(4)),
-                      borderSide: BorderSide(color: Color(0xff181681), width: 0.5),
-                    ),
-                  ),
-                  style: TextStyle(fontSize: res.sp(16)),
-                );
-              }),
-              Gap(res.hp(2)),
-
-              // Tombol Simpan
-              ElevatedButton(
-                onPressed: () {
-                  if (controller.companyName.value.trim().isEmpty ||
-                      controller.companyType.value.trim().isEmpty ||
-                      controller.companyAddress.value.trim().isEmpty) {
-                    Get.snackbar(
-                      'Error',
-                      'Semua field harus diisi',
-                      backgroundColor: Colors.red.withOpacity(0.2),
-                      colorText: Colors.red,
-                    );
-                    return;
-                  }
-                  controller.updateStore();
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: res.wp(8), vertical: res.hp(2)),
-                  backgroundColor: Color(0xff181681),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(res.wp(2)),
-                  ),
-                ),
-                child: Text(
-                  'Simpan',
-                  style: TextStyle(color: Colors.white, fontSize: res.sp(16)),
                 ),
               ),
+              
+              SizedBox(height: res.hp(3)),
             ],
           ),
         ),
