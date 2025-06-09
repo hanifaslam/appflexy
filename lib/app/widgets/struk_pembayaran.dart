@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:apptiket/app/modules/pengaturan_profile/controllers/pengaturan_profile_controller.dart';
+import 'package:apptiket/app/core/utils/auto_responsive.dart';
 import 'bluetooth.dart';
 
 class StrukPembayaranPage extends StatelessWidget {
@@ -19,18 +20,17 @@ class StrukPembayaranPage extends StatelessWidget {
     required this.orderItems,
     required this.orderDate,
   });
-
   @override
   Widget build(BuildContext context) {
+    final res = AutoResponsive(context);
     final NumberFormat currencyFormat =
     NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 2);
 
     final PengaturanProfileController profileController = Get.put(PengaturanProfileController());
     final KasirController kasirController = Get.put(KasirController());
     
-    // Get screen size for responsive design
-    final screenSize = MediaQuery.of(context).size;
-    final isTablet = screenSize.width > 600;
+    // Responsive design based on screen width
+    final isTablet = res.width > 600;
 
     return Scaffold(
       appBar: AppBar(
@@ -48,11 +48,10 @@ class StrukPembayaranPage extends StatelessWidget {
             stops: [0.0, 0.3],
           ),
         ),
-        child: SafeArea(
-          child: Padding(
+        child: SafeArea(          child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: isTablet ? 32.0 : 16.0,
-              vertical: 16.0,
+              horizontal: res.wp(isTablet ? 8 : 4),
+              vertical: res.hp(2),
             ),
             child: Card(
               elevation: 8,
@@ -62,10 +61,9 @@ class StrukPembayaranPage extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Success Header
+                children: [                  // Success Header
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                    padding: EdgeInsets.symmetric(vertical: res.hp(2.5), horizontal: res.wp(4)),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -79,7 +77,7 @@ class StrukPembayaranPage extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.all(12),
+                          padding: EdgeInsets.all(res.wp(3)),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.2),
                             shape: BoxShape.circle,
@@ -87,15 +85,15 @@ class StrukPembayaranPage extends StatelessWidget {
                           child: Icon(
                             Icons.check_circle_outline,
                             color: Colors.white,
-                            size: isTablet ? 60 : 48,
+                            size: res.sp(isTablet ? 60 : 48),
                           ),
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: res.hp(2)),
                         Text(
                           "Transaksi Berhasil",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: isTablet ? 24 : 20,
+                            fontSize: res.sp(isTablet ? 24 : 20),
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.5,
                           ),

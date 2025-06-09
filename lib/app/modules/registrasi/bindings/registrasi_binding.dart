@@ -7,6 +7,7 @@ class RegistrasiBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<RegistrasiController>(
       () => RegistrasiController(),
+      fenix: true, // This allows the controller to be recreated when accessed again
     );
   }
 }

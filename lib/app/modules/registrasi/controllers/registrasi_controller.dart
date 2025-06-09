@@ -28,6 +28,39 @@ class RegistrasiController extends GetxController {
     isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
   }
 
+  // Method to clear all text fields
+  void clearAllFields() {
+    nameController.clear();
+    emailController.clear();
+    passwordController.clear();
+    confirmPasswordController.clear();
+  }
+
+  // Method to clear individual fields
+  void clearNameField() {
+    nameController.clear();
+  }
+
+  void clearEmailField() {
+    emailController.clear();
+  }
+
+  void clearPasswordField() {
+    passwordController.clear();
+  }
+
+  void clearConfirmPasswordField() {
+    confirmPasswordController.clear();
+  }
+
+  // Method to reset form state
+  void resetForm() {
+    clearAllFields();
+    isPasswordHidden.value = true;
+    isConfirmPasswordHidden.value = true;
+    isLoading.value = false;
+  }
+
   Future<void> register(String email, String password, String confirmPassword,
       String name) async {
     if (email.isEmpty ||
@@ -111,14 +144,15 @@ class RegistrasiController extends GetxController {
         box.remove('store_id'); // Remove store_id if exists
 
         print('Token: $token');
-        print('User ID: $userId');
-
-        Get.snackbar('Success', 'Registration successful!',
+        print('User ID: $userId');        Get.snackbar('Success', 'Registration successful!',
             icon: Icon(
               Icons.check,
               color: Colors.green,
             ),
             duration: const Duration(seconds: 2));
+
+        // Clear all fields after successful registration
+        clearAllFields();
 
         Get.offNamed(Routes.PROFILE);
 
@@ -142,6 +176,19 @@ class RegistrasiController extends GetxController {
       Navigator.of(Get.context!).pop();
     } finally {
       isLoading(false);
+    }  }
+
+  @override
+  void onClose() {
+    // Safely dispose TextEditingControllers
+    try {
+      nameController.dispose();
+      emailController.dispose();
+      passwordController.dispose();
+      confirmPasswordController.dispose();
+    } catch (e) {
+      print('Error disposing controllers: $e');
     }
+    super.onClose();
   }
 }

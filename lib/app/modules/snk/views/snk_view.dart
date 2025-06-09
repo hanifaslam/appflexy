@@ -1,24 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:apptiket/app/core/utils/auto_responsive.dart'; // tambahkan import ini
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Syarat & Ketentuan',
-      theme: ThemeData(
-        primaryColor: const Color(0xff181681),
-      ),
-      home: const SnkView(),
-    );
-  }
-}
+import 'package:apptiket/app/core/utils/auto_responsive.dart';
 
 class SnkView extends StatelessWidget {
   const SnkView({super.key});
@@ -27,21 +8,21 @@ class SnkView extends StatelessWidget {
   Widget build(BuildContext context) {
     final res = AutoResponsive(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return Scaffold(      appBar: AppBar(
         backgroundColor: const Color(0xff181681),
         elevation: 1,
-        title: const Text(
+        title: Text(
           'Syarat & Ketentuan',
           style: TextStyle(
             fontFamily: 'Inter',
             fontWeight: FontWeight.bold,
             color: Colors.white,
+            fontSize: res.sp(18),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white, size: res.sp(22)),
           onPressed: () {
             Navigator.of(context).pop(); // Kembali ke halaman sebelumnya
           },
@@ -49,17 +30,17 @@ class SnkView extends StatelessWidget {
       ),
       body: ListView(
         padding: EdgeInsets.all(res.wp(4)),
-        children: [
-          ListTile(
-            leading: const Icon(Icons.description, color: Colors.black),
-            title: const Text(
+        children: [          ListTile(
+            leading: Icon(Icons.description, color: Colors.black, size: res.sp(20)),
+            title: Text(
               'Kebijakan Privasi',
               style: TextStyle(
                 fontFamily: 'Inter',
-                fontSize: 16,
+                fontSize: res.sp(16),
                 fontWeight: FontWeight.bold,
               ),
             ),
+            contentPadding: EdgeInsets.symmetric(horizontal: res.wp(4), vertical: res.hp(1)),
             onTap: () {
               Navigator.push(
                 context,
@@ -73,16 +54,16 @@ class SnkView extends StatelessWidget {
             },
           ),
           Divider(height: 1, color: Colors.grey.shade300),
-          ListTile(
-            leading: const Icon(Icons.description, color: Colors.black),
-            title: const Text(
+          ListTile(            leading: Icon(Icons.description, color: Colors.black, size: res.sp(20)),
+            title: Text(
               'Syarat & Ketentuan Flexy',
               style: TextStyle(
                 fontFamily: 'Inter',
-                fontSize: 16,
+                fontSize: res.sp(16),
                 fontWeight: FontWeight.bold,
               ),
             ),
+            contentPadding: EdgeInsets.symmetric(horizontal: res.wp(4), vertical: res.hp(1)),
             onTap: () {
               Navigator.push(
                 context,
@@ -111,21 +92,21 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final res = AutoResponsive(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return Scaffold(      appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Inter',
             fontWeight: FontWeight.bold,
             color: Colors.black,
+            fontSize: res.sp(18),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.black, size: res.sp(22)),
           onPressed: () {
             Navigator.of(context).pop(); // Kembali ke halaman sebelumnya
           },

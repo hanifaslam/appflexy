@@ -7,27 +7,25 @@ import '../../../routes/app_pages.dart';
 import '../../../core/utils/auto_responsive.dart'; // tambahkan import ini
 
 class RegistrasiView extends GetView<RegistrasiController> {
-  final RegistrasiController controller = Get.put(RegistrasiController());
-
   @override
   Widget build(BuildContext context) {
-    final res = AutoResponsive(context);
-
-    // Gunakan WillPopScope untuk menangani tombol back dari hardware
+    final res = AutoResponsive(context);    // Gunakan WillPopScope untuk menangani tombol back dari hardware
     return WillPopScope(
       // Ketika tombol back ditekan, kembali ke halaman login
       onWillPop: () async {
-        Get.offAllNamed(Routes.LOGIN);
+        controller.clearAllFields(); // Kosongkan semua field sebelum kembali
+        Get.offNamed(Routes.LOGIN);
         return false; // Mencegah navigasi default
       },
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: res.hp(8), // Responsive toolbar height
+          toolbarHeight: res.hp(6), // Responsive toolbar height
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              // Kembali ke halaman login ketika tombol back di AppBar ditekan
-              Get.offAllNamed(Routes.LOGIN);
+              // kosongkan semua field sebelum kembali
+              controller.clearAllFields(); 
+              Get.offNamed(Routes.LOGIN);
             },
           ),
           title: Text(
@@ -49,9 +47,8 @@ class RegistrasiView extends GetView<RegistrasiController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: res.hp(3)),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(res.wp(7)),
+                    borderRadius: BorderRadius.circular(res.wp(1)),
                     child: Container(
                       height: res.wp(55),
                       width: res.wp(55),
@@ -68,10 +65,15 @@ class RegistrasiView extends GetView<RegistrasiController> {
                     padding: EdgeInsets.symmetric(horizontal: res.wp(2)),
                     child: TextField(
                       controller: controller.nameController,
-                      style: TextStyle(fontSize: res.sp(16)),
+                      style: TextStyle(fontSize: res.sp(14)),
                       decoration: InputDecoration(
                         hintText: 'Nama',
-                        hintStyle: TextStyle(fontSize: res.sp(16)),
+                        hintStyle: TextStyle(fontSize: res.sp(14)),
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: Colors.grey,
+                          size: res.sp(18),
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(res.wp(4)),
                           borderSide: const BorderSide(color: Color(0xFF84AFC2)),
@@ -89,10 +91,15 @@ class RegistrasiView extends GetView<RegistrasiController> {
                     padding: EdgeInsets.symmetric(horizontal: res.wp(2)),
                     child: TextField(
                       controller: controller.emailController,
-                      style: TextStyle(fontSize: res.sp(16)),
+                      style: TextStyle(fontSize: res.sp(14)),
                       decoration: InputDecoration(
                         hintText: 'Email',
-                        hintStyle: TextStyle(fontSize: res.sp(16)),
+                        hintStyle: TextStyle(fontSize: res.sp(14)),
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Colors.grey,
+                          size: res.sp(18),
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(res.wp(4)),
                           borderSide: const BorderSide(color: Color(0xFF84AFC2)),
@@ -111,10 +118,15 @@ class RegistrasiView extends GetView<RegistrasiController> {
                     child: Obx(() => TextField(
                           controller: controller.passwordController,
                           obscureText: controller.isPasswordHidden.value,
-                          style: TextStyle(fontSize: res.sp(16)),
+                          style: TextStyle(fontSize: res.sp(14)),
                           decoration: InputDecoration(
                             hintText: 'Kata Sandi',
-                            hintStyle: TextStyle(fontSize: res.sp(16)),
+                            hintStyle: TextStyle(fontSize: res.sp(14)),
+                            prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.grey,
+                              size: res.sp(18),
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(res.wp(4)),
                               borderSide: const BorderSide(color: Color(0xFF84AFC2)),
@@ -139,10 +151,15 @@ class RegistrasiView extends GetView<RegistrasiController> {
                     child: Obx(() => TextField(
                           controller: controller.confirmPasswordController,
                           obscureText: controller.isConfirmPasswordHidden.value,
-                          style: TextStyle(fontSize: res.sp(16)),
+                          style: TextStyle(fontSize: res.sp(14)),
                           decoration: InputDecoration(
                             hintText: 'Konfirmasi Kata Sandi',
-                            hintStyle: TextStyle(fontSize: res.sp(16)),
+                            hintStyle: TextStyle(fontSize: res.sp(14)),
+                            prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.grey,
+                              size: res.sp(18),
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(res.wp(4)),
                               borderSide: const BorderSide(color: Color(0xFF84AFC2)),
@@ -157,10 +174,9 @@ class RegistrasiView extends GetView<RegistrasiController> {
                                   : Icons.visibility_off),
                               onPressed: controller.toggleConfirmPasswordVisibility,
                             ),
-                          ),
-                        )),
+                          ),                        )),
                   ),
-                  SizedBox(height: res.hp(4)),
+                  SizedBox(height: res.hp(3)),
                   RegisterButton(),
                 ],
               ),

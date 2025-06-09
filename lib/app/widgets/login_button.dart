@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../modules/login/controllers/login_controller.dart';
+import '../core/utils/auto_responsive.dart';
 
 class ProfileBtn extends StatefulWidget {
   @override
@@ -9,8 +10,9 @@ class ProfileBtn extends StatefulWidget {
 
 class _ProfileBtnState extends State<ProfileBtn> {
   Color _buttonColor = const Color(0xff181681); // Initial button color
-  final LoginController controller =
-      Get.find<LoginController>(); // Retrieve the controller
+  
+  // Gunakan Get.find untuk mendapatkan controller yang sudah ada
+  LoginController get controller => Get.find<LoginController>();
 
   void _changeColor() {
     setState(() {
@@ -25,51 +27,75 @@ class _ProfileBtnState extends State<ProfileBtn> {
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return Obx(() => ElevatedButton(
-      onPressed: controller.isLoading.value 
-          ? null // Button disabled during loading
-          : () async {
-              _changeColor();
+    final res = AutoResponsive(context);
+    
+    return Obx(() => Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: res.wp(2.5)),
+      child: ElevatedButton(
+        onPressed: controller.isLoading.value 
+            ? null // Button disabled during loading
+            : () async {
+                _changeColor();
 
-              // Get email and password from the controller
-              String email = controller.emailController.text.trim();
-              String password = controller.passwordController.text.trim();
+                // Get email and password from the controller
+                String email = controller.emailController.text.trim();
+                String password = controller.passwordController.text.trim();
 
-              controller.login(email, password);
-            },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-        backgroundColor: controller.isLoading.value 
-            ? Colors.grey.shade300 // Disabled color
-            : _buttonColor, // Use dynamic button color
-        disabledBackgroundColor: Colors.grey.shade300,
-        disabledForegroundColor: Colors.grey.shade600,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+                controller.login(email, password);
+              },        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(
+            horizontal: res.wp(20), 
+            vertical: res.hp(2)
+          ),
+          backgroundColor: controller.isLoading.value 
+              ? _buttonColor.withOpacity(0.5) // Consistent with register button
+              : _buttonColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(res.wp(4)),
+          ),
+          elevation: controller.isLoading.value ? 0 : 3,
+          shadowColor: _buttonColor.withOpacity(0.3),
+        ),child: controller.isLoading.value
+            // Show loading spinner and text when loading
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: res.sp(20),
+                    height: res.sp(20),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                  SizedBox(width: res.wp(3)),
+                  Text(
+                    'Masuk...',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: res.sp(16),
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              )
+            : Text(
+                'Masuk',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: res.sp(16),
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
       ),
-      child: controller.isLoading.value
-          // Show loading spinner when loading
-          ? SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xff181681)),
-              ),
-            )
-          : const Text(
-              'Masuk',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.bold,
-                color: Colors.white, // Use Colors.white instead of Color.white
-              ),
-            ),
     ));
   }
 }

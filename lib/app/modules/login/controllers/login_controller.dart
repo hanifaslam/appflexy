@@ -28,6 +28,28 @@ class LoginController extends GetxController {
     isPasswordHidden.value = !isPasswordHidden.value;
   }
 
+  // Method to clear all text fields
+  void clearAllFields() {
+    emailController.clear();
+    passwordController.clear();
+  }
+
+  // Method to clear individual fields
+  void clearEmailField() {
+    emailController.clear();
+  }
+
+  void clearPasswordField() {
+    passwordController.clear();
+  }
+
+  // Method to reset form state
+  void resetForm() {
+    clearAllFields();
+    isPasswordHidden.value = true;
+    isLoading.value = false;
+  }
+
   // Save token and user_id in GetStorage
   Future<void> saveTokenAndUserId(String token, int userId) async {
     final box = GetStorage();
@@ -293,12 +315,15 @@ class LoginController extends GetxController {
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     return emailRegex.hasMatch(email);
   }
-  
-  @override
+    @override
   void onClose() {
-    // Clean up controllers when the controller is disposed
-    emailController.dispose();
-    passwordController.dispose();
+    // Safely dispose TextEditingControllers
+    try {
+      emailController.dispose();
+      passwordController.dispose();
+    } catch (e) {
+      print('Error disposing controllers: $e');
+    }
     super.onClose();
   }
 }

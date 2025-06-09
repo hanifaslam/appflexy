@@ -7,6 +7,7 @@ class LoginBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<LoginController>(
       () => LoginController(),
+      fenix: true, // This allows the controller to be recreated when accessed again
     );
   }
 }

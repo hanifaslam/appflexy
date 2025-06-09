@@ -1,20 +1,14 @@
-import 'package:apptiket/app/modules/daftar_kasir/controllers/daftar_kasir_controller.dart';
 import 'package:apptiket/app/widgets/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_pages.dart';
-import '../../registrasi/views/registrasi_view.dart';
 import '../controllers/login_controller.dart';
-import '../../../core/utils/auto_responsive.dart'; // tambahkan import ini
+import '../../../core/utils/auto_responsive.dart';
 
 class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
-    if (!Get.isRegistered<DaftarKasirController>()) {
-      Get.put(DaftarKasirController());
-    }
-
     final res = AutoResponsive(context);
 
     return Scaffold(
@@ -54,7 +48,7 @@ class LoginView extends GetView<LoginController> {
                     "Buka tiket Anda untuk pengalaman luar biasa!",
                     style: TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: res.sp(16),
+                      fontSize: res.sp(14),
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold,
                     ),
@@ -68,10 +62,15 @@ class LoginView extends GetView<LoginController> {
                     padding: EdgeInsets.symmetric(horizontal: res.wp(2.5)),
                     child: TextField(
                       controller: controller.emailController,
-                      style: TextStyle(fontSize: res.sp(16)),
+                      style: TextStyle(fontSize: res.sp(14)),
                       decoration: InputDecoration(
                         hintText: "Email",
-                        hintStyle: TextStyle(fontSize: res.sp(16)),
+                        hintStyle: TextStyle(fontSize: res.sp(15)),
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Colors.grey,
+                          size: res.sp(18),
+                        ),
                         labelStyle: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: res.sp(16),
@@ -98,10 +97,15 @@ class LoginView extends GetView<LoginController> {
                         child: TextField(
                           controller: controller.passwordController,
                           obscureText: controller.isPasswordHidden.value,
-                          style: TextStyle(fontSize: res.sp(16)),
+                          style: TextStyle(fontSize: res.sp(14)),
                           decoration: InputDecoration(
                             hintText: "Kata Sandi",
-                            hintStyle: TextStyle(fontSize: res.sp(16)),
+                            hintStyle: TextStyle(fontSize: res.sp(15)),
+                            prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.grey,
+                              size: res.sp(18),
+                            ),
                             labelStyle: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: res.sp(16),
@@ -123,36 +127,39 @@ class LoginView extends GetView<LoginController> {
                               ),
                               onPressed: controller.togglePasswordVisibility,
                             ),
-                          ),
-                        ),
+                          ),                        ),
                       )),
+                  SizedBox(height: res.hp(3)),
 
-                  SizedBox(height: res.hp(4)), // Spacing between password input and button
-                  // Button
+                  // Login Button
                   ProfileBtn(),
 
-                  SizedBox(height: res.hp(2.5)),
-                  Padding(
+                  SizedBox(height: res.hp(2.5)),                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: res.wp(2)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'Belum punya akun?',
-                          style: TextStyle(fontSize: res.sp(16)),
+                          style: TextStyle(fontSize: res.sp(14)),
                         ),
                         SizedBox(width: res.wp(2)),
                         GestureDetector(
-                            onTap: () {
-                              Get.toNamed(Routes.REGISTRASI);
-                            },
-                            child: Text(
-                              'Daftar disini',
-                              style: TextStyle(color: Colors.blue, fontSize: res.sp(16)),
-                            )),
+                          onTap: () {
+                            controller.clearAllFields();
+                            Get.toNamed(Routes.REGISTRASI);
+                          },
+                          child: Text(
+                            'Daftar disini',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: res.sp(14),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

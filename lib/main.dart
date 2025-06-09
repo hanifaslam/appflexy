@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Application",
       initialRoute:
-          '/home', // Ganti ke route yang kamu inginkan, misalnya '/login' atau '/dashboard'
+          '/login', // Ganti ke route yang kamu inginkan, misalnya '/login' atau '/dashboard'
       getPages: AppPages.routes,
     );
 
